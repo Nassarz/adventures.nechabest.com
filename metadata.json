@@ -1,0 +1,7 @@
+{
+  "name": "Nechabest Sustainable Initiatives",
+  "description": "Building a Sustainable Future for People and Nature. Empowering Ugandan communities through clean water, renewable energy, climate-smart farming, and eco-tourism.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
