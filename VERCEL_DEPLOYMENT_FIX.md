@@ -29,7 +29,7 @@ Your production site at https://nechabest.vercel.app is failing because:
 
 | Variable Name | Value | Environment |
 |--------------|-------|-------------|
-| `MONGODB_URI` | `mongodb+srv://NechaBest:NechaBest-Intcode256@cluster0.l0ne8zk.mongodb.net/nechabest?retryWrites=true&w=majority` | Production, Preview, Development |
+| `MONGODB_URI` | `mongodb+srv://<username>:<password>@<cluster-url>/<db>?retryWrites=true&w=majority` | Production, Preview, Development |
 | `MONGODB_DB` | `nechabest` | Production, Preview, Development |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | `pk_live_YOUR_PRODUCTION_KEY` | Production, Preview, Development |
 | `CLERK_SECRET_KEY` | `sk_live_YOUR_PRODUCTION_SECRET` | Production, Preview, Development |
@@ -94,10 +94,10 @@ git push origin main
 ### Local Development (.env.local)
 ```env
 # Use TEST keys for development
-MONGODB_URI="mongodb+srv://NechaBest:NechaBest-Intcode256@cluster0.l0ne8zk.mongodb.net/nechabest?retryWrites=true&w=majority"
+MONGODB_URI="mongodb+srv://<username>:<password>@<cluster-url>/nechabest?retryWrites=true&w=majority"
 MONGODB_DB=nechabest
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_ZmluZS1sYWNld2luZy0zNS5jbGVyay5hY2NvdW50cy5kZXYk
-CLERK_SECRET_KEY=sk_test_Bz2Jm7T3AfA9xNjrJch5VdsyBJurAgHEbXOC7buo1g
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxx
+CLERK_SECRET_KEY=sk_test_xxxxx
 ADMIN_EMAILS=owner@nechabest.org
 APP_URL="http://localhost:3000"
 ```
@@ -105,7 +105,7 @@ APP_URL="http://localhost:3000"
 ### Production (Vercel Dashboard)
 ```env
 # Use LIVE keys for production - SET IN VERCEL DASHBOARD ONLY
-MONGODB_URI=mongodb+srv://NechaBest:NechaBest-Intcode256@cluster0.l0ne8zk.mongodb.net/nechabest?retryWrites=true&w=majority
+MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-url>/nechabest?retryWrites=true&w=majority
 MONGODB_DB=nechabest
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_[GET_FROM_CLERK_DASHBOARD]
 CLERK_SECRET_KEY=sk_live_[GET_FROM_CLERK_DASHBOARD]

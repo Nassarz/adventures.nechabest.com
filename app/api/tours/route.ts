@@ -33,6 +33,12 @@ export async function GET(request: NextRequest) {
     );
   } catch (error) {
     console.error('Error fetching tours:', error);
-    return NextResponse.json({ error: 'Failed to fetch tours' }, { status: 500 });
+    // Keep public pages operational even if the database is temporarily unavailable.
+    return NextResponse.json([], {
+      status: 200,
+      headers: {
+        'Cache-Control': 'no-store',
+      },
+    });
   }
 }

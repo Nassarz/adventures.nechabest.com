@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { requireAdminAccess } from '@/lib/adminAuth';
-import { currentUser } from '@clerk/nextjs/server';
 
 export async function GET() {
   try {
@@ -37,10 +36,8 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const db = await getDb();
-    const user = await currentUser();
-    const fullName = `${user?.firstName || ''} ${user?.lastName || ''}`.trim();
-    const uploaderName = fullName || user?.username || user?.emailAddresses?.[0]?.emailAddress || 'Admin';
-    const uploaderImage = user?.imageUrl || `https://picsum.photos/seed/${uploaderName}/100/100`;
+    const uploaderName = body.author?.trim() || adminCheck.email || 'Admin';
+    const uploaderImage = body.avatar || `https://picsum.photos/seed/${String(uploaderName)}/100/100`;
 
     const blog = {
       ...body,
@@ -53,7 +50,7 @@ export async function POST(request: NextRequest) {
       createdAt: new Date(),
       updatedAt: new Date(),
       createdBy: adminCheck.userId,
-      createdByEmail: adminCheck.email || user?.emailAddresses?.[0]?.emailAddress || null,
+      createdByEmail: adminCheck.email || null,
     };
 
     const result = await db.collection('blogs').insertOne(blog);
