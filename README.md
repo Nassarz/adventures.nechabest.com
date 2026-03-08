@@ -116,11 +116,40 @@ Access the admin dashboard at `/admin` (requires authentication and admin email 
 
 The application is deployed on Vercel at [https://nechabest.vercel.app](https://nechabest.vercel.app).
 
-To deploy your own instance:
+### 🚨 Production Deployment Setup
+
+**CRITICAL**: Before deploying to production, you MUST configure production Clerk keys and environment variables.
+
+**See [VERCEL_DEPLOYMENT_FIX.md](./VERCEL_DEPLOYMENT_FIX.md) for complete setup instructions.**
+
+### Quick Deployment Checklist
+
+1. **Get Production Clerk Keys:**
+   - Go to [Clerk Dashboard](https://dashboard.clerk.com/)
+   - Switch to **Production** tab
+   - Copy `pk_live_...` and `sk_live_...` keys (NOT test keys!)
+
+2. **Configure Vercel Environment Variables:**
+   - Go to Vercel Dashboard → Your Project → Settings → Environment Variables
+   - Add all required variables (see [VERCEL_DEPLOYMENT_FIX.md](./VERCEL_DEPLOYMENT_FIX.md))
+   - **NEVER** use `pk_test_...` or `sk_test_...` in production
+
+3. **Add Production Domain to Clerk:**
+   - In Clerk Dashboard → Domains
+   - Add: `your-app.vercel.app`
+
+4. **Redeploy:**
+   - Push to main branch or manually redeploy in Vercel
+   - Verify no "development keys" warning in browser console
+   - Test admin dashboard access
+
+### Deploy Your Own Instance
+
 1. Fork this repository
 2. Connect to Vercel
-3. Configure environment variables in Vercel dashboard
-4. Deploy!
+3. Follow the [complete setup guide](./VERCEL_DEPLOYMENT_FIX.md)
+4. Configure all environment variables in Vercel dashboard
+5. Deploy!
 
 ## Environment Variables
 
