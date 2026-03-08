@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User, Github, Chrome } from 'lucide-react';
 import { auth, db } from '@/lib/firebase';
 import { 
@@ -96,17 +96,21 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className="relative w-full max-w-md glass rounded-[2.5rem] overflow-hidden shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="auth-modal-title"
           >
             <button 
               onClick={onClose}
-              className="absolute top-6 right-6 p-2 rounded-full hover:bg-black/5 transition-colors"
+              className="absolute top-6 right-6 p-2 rounded-full hover:bg-black/5 transition-colors focus:outline-none focus:ring-4 focus:ring-primary/20"
+              aria-label="Close authentication modal"
             >
               <X className="w-5 h-5" />
             </button>
 
             <div className="p-8 md:p-12">
               <div className="text-center mb-10">
-                <h2 className="font-display text-3xl font-bold text-primary mb-2">
+                <h2 id="auth-modal-title" className="font-display text-3xl font-bold text-primary mb-2">
                   {isLogin ? 'Welcome Back' : 'Join Nechabest'}
                 </h2>
                 <p className="text-foreground/60">

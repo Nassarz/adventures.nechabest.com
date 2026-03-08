@@ -1,0 +1,117 @@
+// ==========================================
+// FIRESTORE SECURITY RULES FOR NECHABEST
+// ==========================================
+// 
+// INSTRUCTIONS:
+// 1. Go to Firebase Console: https://console.firebase.google.com
+// 2. Select your project
+// 3. Go to Firestore Database > Rules
+// 4. Copy ALL the code below and paste it
+// 5. Click "Publish"
+// 
+// ==========================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ========== HELPER FUNCTIONS ==========
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isAdmin == true;
+    }
+    
+    function userExists() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+    
+    // ========== PUBLIC COLLECTIONS (Readable by everyone) ==========
+    
+    // Blog posts - Public read access
+    match /blogs/{document=**} {
+      allow read;
+      allow create, update, delete: if isAuthenticated();
+    }
+    
+    // Tours - Public read access
+    match /tours/{document=**} {
+      allow read;
+      allow create, update, delete: if isAuthenticated();
+    }
+    
+    // Bookings - Users can read their own, authenticated users can create
+    match /bookings/{document=**} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAuthenticated();
+    }
+    
+    // Newsletter subscribers - Write access for newsletter sign-ups
+    match /subscribers/{document=**} {
+      allow read: if isAuthenticated();
+      allow create: if true; // Allow anyone to subscribe
+      allow update, delete: if isAuthenticated();
+    }
+    
+    // Media (Images/Files) - Public read access
+    match /media/{document=**} {
+      allow read;
+      allow create, update, delete: if isAuthenticated();
+    }
+    
+    // Broadcasts - Authenticated users can read and write
+    match /broadcasts/{document=**} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAuthenticated();
+    }
+    
+    // Settings - Public read, authenticated write
+    match /settings/{document=**} {
+      allow read;
+      allow create, update, delete: if isAuthenticated();
+    }
+    
+    // Users collection - Users can read/write their own data
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if request.auth.uid == userId || isAuthenticated();
+    }
+    
+    // Admins collection - Admins can manage
+    match /admins/{document=**} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // Site Analytics
+    match /analytics/{document=**} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // Default deny all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+// ========== IMPORTANT NOTES ==========
+// 
+// These rules allow:
+// 1. Everyone to READ blogs, tours, media, and settings
+// 2. Everyone to SUBSCRIBE to newsletter (create subscriber entry)
+// 3. Authenticated users to CREATE, READ, UPDATE, DELETE:
+//    - Blog posts
+//    - Tours
+//    - Bookings
+//    - Media files
+//    - Broadcasts
+//    - Settings
+// 
+// To add admin-only features, replace isAuthenticated() with isAdmin()
+// 
+// For production, you should implement stricter rules:
+// - Verify user email domain
+// - Check user roles from custom claims
+// - Implement rate limiting for sensitive operations

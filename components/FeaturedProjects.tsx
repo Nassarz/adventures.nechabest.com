@@ -1,9 +1,10 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { ExternalLink, Calendar, ArrowRight } from 'lucide-react';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const projects = [
   {
@@ -48,6 +49,8 @@ const research = [
 ];
 
 export default function FeaturedProjects() {
+  const { get } = useSiteContent('home');
+
   return (
     <section id="blog" className="py-16 md:py-32 bg-[#fdfdfb] overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 md:px-12">
@@ -55,10 +58,10 @@ export default function FeaturedProjects() {
           <div className="space-y-3 md:space-y-4">
             <div className="flex items-center gap-3">
               <span className="w-8 md:w-12 h-[1px] bg-primary/30" />
-              <span className="text-primary font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs">Innovation & Research</span>
+              <span className="text-primary font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs">{get('home.projects.kicker', 'Innovation & Research')}</span>
             </div>
             <h2 className="font-display text-4xl md:text-7xl font-bold text-primary leading-tight">
-              Featured <span className="italic font-light text-secondary">Projects</span>
+              {get('home.projects.heading', 'Featured Projects')}
             </h2>
           </div>
         </div>
@@ -75,6 +78,7 @@ export default function FeaturedProjects() {
               src={projects[0].image}
               alt={projects[0].title}
               fill
+              sizes="(max-width: 768px) 100vw, 66vw"
               className="object-cover group-hover:scale-105 transition-transform duration-1000"
               referrerPolicy="no-referrer"
             />
@@ -93,7 +97,7 @@ export default function FeaturedProjects() {
                 <span>{projects[0].year}</span>
               </div>
               <h3 className="font-display text-2xl md:text-5xl font-bold text-white max-w-2xl">
-                {projects[0].title}
+                {get('home.projects.featuredTitle', projects[0].title)}
               </h3>
               <p className="text-white/70 text-sm md:text-lg max-w-xl line-clamp-2 group-hover:line-clamp-none transition-all duration-500">
                 {projects[0].desc}
@@ -121,6 +125,7 @@ export default function FeaturedProjects() {
                   src={project.image}
                   alt={project.title}
                   fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
                   referrerPolicy="no-referrer"
                 />

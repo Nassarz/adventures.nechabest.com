@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const slides = [
   {
@@ -29,15 +30,37 @@ const slides = [
 export default function AboutSlideshow() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+  const { get } = useSiteContent('home');
 
-  const nextSlide = () => {
+  const dynamicSlides = [
+    {
+      title: get('home.about.slide1.title', slides[0].title),
+      desc: get('home.about.slide1.desc', slides[0].desc),
+      cta: get('home.about.slide1.cta', slides[0].cta),
+      image: get('home.about.slide1.image', slides[0].image),
+    },
+    {
+      title: get('home.about.slide2.title', slides[1].title),
+      desc: get('home.about.slide2.desc', slides[1].desc),
+      cta: get('home.about.slide2.cta', slides[1].cta),
+      image: get('home.about.slide2.image', slides[1].image),
+    },
+    {
+      title: get('home.about.slide3.title', slides[2].title),
+      desc: get('home.about.slide3.desc', slides[2].desc),
+      cta: get('home.about.slide3.cta', slides[2].cta),
+      image: get('home.about.slide3.image', slides[2].image),
+    },
+  ];
+
+  const nextSlide = useCallback(() => {
     setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % slides.length);
-  };
+    setCurrentIndex((prev) => (prev + 1) % dynamicSlides.length);
+  }, [dynamicSlides.length]);
 
   const prevSlide = () => {
     setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
+    setCurrentIndex((prev) => (prev - 1 + dynamicSlides.length) % dynamicSlides.length);
   };
 
   useEffect(() => {
@@ -45,7 +68,7 @@ export default function AboutSlideshow() {
       nextSlide();
     }, 6000);
     return () => clearInterval(timer);
-  }, [currentIndex]);
+  }, [nextSlide]);
 
   return (
     <section id="about" className="py-16 md:py-24 bg-white">
@@ -63,11 +86,12 @@ export default function AboutSlideshow() {
                 className="absolute inset-0 will-change-transform"
               >
                 <Image
-                  src={slides[currentIndex].image}
-                  alt={slides[currentIndex].title}
+                  src={dynamicSlides[currentIndex].image}
+                  alt={dynamicSlides[currentIndex].title}
                   fill
                   className="object-cover"
                   referrerPolicy="no-referrer"
+                  unoptimized
                   priority={currentIndex === 0}
                 />
               </motion.div>
@@ -85,17 +109,20 @@ export default function AboutSlideshow() {
                   exit={{ opacity: 0, x: -30 * (direction || 1) }}
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                   className="space-y-6 md:space-y-8 absolute inset-0 flex flex-col justify-center will-change-transform"
+                  role="region"
+                  aria-live="polite"
+                  aria-atomic="true"
                 >
                   <h2 className="font-display text-4xl md:text-7xl font-bold text-[#1A3C34] leading-tight">
-                    {slides[currentIndex].title}
+                    {dynamicSlides[currentIndex].title}
                   </h2>
                   <div className="w-12 md:w-16 h-1 bg-[#1A3C34] rounded-full" />
                   <p className="text-lg md:text-2xl text-foreground/70 leading-relaxed max-w-lg">
-                    {slides[currentIndex].desc}
+                    {dynamicSlides[currentIndex].desc}
                   </p>
                   <div>
                     <button className="text-lg md:text-xl font-bold text-[#1A3C34] hover:text-nature transition-colors flex items-center gap-2 group">
-                      {slides[currentIndex].cta}
+                      {dynamicSlides[currentIndex].cta}
                     </button>
                   </div>
                 </motion.div>
@@ -107,13 +134,15 @@ export default function AboutSlideshow() {
               <div className="flex gap-3 md:gap-4">
                 <button 
                   onClick={prevSlide}
-                  className="w-12 h-12 md:w-14 md:h-14 rounded-full border border-black/10 flex items-center justify-center hover:bg-[#1A3C34] hover:text-white transition-all group"
+                  className="w-12 h-12 md:w-14 md:h-14 rounded-full border border-black/10 flex items-center justify-center hover:bg-[#1A3C34] hover:text-white transition-all group focus:outline-none focus:ring-4 focus:ring-[#1A3C34]/30"
+                  aria-label="Previous slide"
                 >
                   <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
                 </button>
                 <button 
                   onClick={nextSlide}
-                  className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#1A3C34] text-white flex items-center justify-center hover:bg-nature transition-all shadow-lg shadow-[#1A3C34]/20"
+                  className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#1A3C34] text-white flex items-center justify-center hover:bg-nature transition-all shadow-lg shadow-[#1A3C34]/20 focus:outline-none focus:ring-4 focus:ring-nature/50"
+                  aria-label="Next slide"
                 >
                   <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
                 </button>
@@ -125,7 +154,7 @@ export default function AboutSlideshow() {
                   <motion.div 
                     className="h-full bg-[#1A3C34]"
                     initial={{ width: '0%' }}
-                    animate={{ width: `${((currentIndex + 1) / slides.length) * 100}%` }}
+                    animate={{ width: `${((currentIndex + 1) / dynamicSlides.length) * 100}%` }}
                     transition={{ duration: 0.5 }}
                   />
                 </div>

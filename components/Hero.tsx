@@ -1,17 +1,18 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
-
-const HERO_IMAGES = [
-  'https://iili.io/fdC0KF9.jpg',
-  'https://iili.io/fdClSYg.png',
-  'https://iili.io/fdClSYg.png', // User provided this twice
-];
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 export default function Hero() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const { get } = useSiteContent('home');
+
+  const HERO_IMAGES = [
+    get('home.hero.image1', 'https://iili.io/fdC0KF9.jpg'),
+    get('home.hero.image2', 'https://iili.io/fdClSYg.png'),
+  ];
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -19,7 +20,7 @@ export default function Hero() {
     }, 6000); // Change image every 6 seconds
 
     return () => clearInterval(timer);
-  }, []);
+  }, [HERO_IMAGES.length]);
 
   return (
     <section className="relative h-screen w-full flex items-center overflow-hidden">
@@ -36,6 +37,8 @@ export default function Hero() {
             style={{ 
               backgroundImage: `url("${HERO_IMAGES[currentImageIndex]}")`,
             }}
+            role="img"
+            aria-label={`Hero image ${currentImageIndex + 1}`}
           />
         </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70" />
@@ -50,28 +53,32 @@ export default function Hero() {
             className="space-y-8"
           >
             <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white font-normal leading-[1.1] tracking-tight">
-              Building a <span className="text-nature italic">Sustainable Future</span> for People and Nature.
+              {get('home.hero.title', 'Building a Sustainable Future for People and Nature.')}
             </h1>
             
             <p className="text-lg md:text-2xl text-white/90 font-medium leading-relaxed max-w-3xl mx-auto">
-              Empowering Ugandan communities through clean water, renewable energy, climate-smart farming, and eco-tourism.
+              {get('home.hero.subtitle', 'Empowering Ugandan communities through clean water, renewable energy, climate-smart farming, and eco-tourism.')}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
-              <motion.button
+              <motion.a
+                href="#about"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto px-10 py-5 rounded-full bg-nature text-white font-bold text-lg shadow-2xl shadow-nature/40 hover:bg-white hover:text-nature transition-all"
+                className="w-full sm:w-auto px-10 py-5 rounded-full bg-nature text-white font-bold text-lg shadow-2xl shadow-nature/40 hover:bg-white hover:text-nature transition-all text-center"
+                aria-label="Explore our sustainable development work"
               >
                 Explore Our Work
-              </motion.button>
-              <motion.button
+              </motion.a>
+              <motion.a
+                href="#tours"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto px-10 py-5 rounded-full bg-white/10 backdrop-blur-md text-white border border-white/30 font-bold text-lg hover:bg-white hover:text-primary transition-all"
+                className="w-full sm:w-auto px-10 py-5 rounded-full bg-white/10 backdrop-blur-md text-white border border-white/30 font-bold text-lg hover:bg-white hover:text-primary transition-all text-center"
+                aria-label="Book an eco-tourism tour"
               >
                 Book a Tour
-              </motion.button>
+              </motion.a>
             </div>
           </motion.div>
         </div>
@@ -86,7 +93,8 @@ export default function Hero() {
       >
         <button 
           onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
-          className="w-16 h-16 rounded-full glass flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all cursor-pointer"
+          className="w-16 h-16 rounded-full glass flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all cursor-pointer focus:outline-none focus:ring-4 focus:ring-nature/50"
+          aria-label="Scroll down to about section"
         >
           <ArrowDown className="w-6 h-6" />
         </button>

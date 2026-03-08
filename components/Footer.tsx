@@ -1,14 +1,17 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { Facebook, Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin, ArrowRight, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 export default function Footer() {
+  const { get } = useSiteContent('home');
+
   return (
-    <footer className="bg-[#000000] text-white pt-24 pb-8 overflow-hidden relative border-t border-white/5">
+    <footer className="bg-[#1A3C34] text-white pt-24 pb-8 overflow-hidden relative border-t border-white/10">
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
           {/* Brand & Description */}
@@ -26,20 +29,21 @@ export default function Footer() {
                   fill 
                   className="object-contain"
                   referrerPolicy="no-referrer"
+                  unoptimized
                 />
               </div>
               <div>
                 <span className="block font-display font-bold text-2xl tracking-tighter leading-none">
-                  Nechabest
+                  {get('global.nav.logoTextMobile', 'Nechabest')}
                 </span>
                 <span className="text-[10px] text-nature font-bold uppercase tracking-widest">
-                  Sustainable Initiatives
+                  {get('global.footer.brandSubLabel', 'Sustainable Initiatives')}
                 </span>
               </div>
             </Link>
-            <p className="text-nature font-bold text-lg tracking-tight">Together for a Greener Future.</p>
+            <p className="text-nature font-bold text-lg tracking-tight">{get('global.footer.tagline', 'Together for a Greener Future.')}</p>
             <p className="text-white/40 leading-relaxed text-sm font-medium">
-              Building climate-resilient communities through sustainable innovation, conservation, and empowerment.
+              {get('global.footer.description', 'Building climate-resilient communities through sustainable innovation, conservation, and empowerment.')}
             </p>
           </motion.div>
 
@@ -114,15 +118,15 @@ export default function Footer() {
                 <Mail className="w-5 h-5 text-nature shrink-0" />
                 <div className="text-sm">
                   <p className="font-bold text-white mb-1">Email</p>
-                  <p className="text-white/40 font-medium">info@nechabest.com</p>
-                  <p className="text-white/40 font-medium">research@nechabest.com</p>
+                  <p className="text-white/40 font-medium">{get('global.footer.emailPrimary', 'info@nechabest.com')}</p>
+                  <p className="text-white/40 font-medium">{get('global.footer.emailSecondary', 'research@nechabest.com')}</p>
                 </div>
               </div>
               <div className="flex gap-4">
                 <Phone className="w-5 h-5 text-nature shrink-0" />
                 <div className="text-sm">
                   <p className="font-bold text-white mb-1">Phone</p>
-                  <p className="text-white/40 font-medium">+256 763 860866</p>
+                  <p className="text-white/40 font-medium">{get('global.footer.phone', '+256 763 860866')}</p>
                 </div>
               </div>
             </div>
@@ -172,10 +176,16 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">
           <p>© 2025 Nechabest Sustainable Initiatives. All Rights Reserved. | Made with 🌿 for a sustainable future</p>
-          <div className="flex space-x-8">
+          <div className="flex items-center gap-8">
             <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
             <Link href="#" className="hover:text-white transition-colors">Cookie Policy</Link>
+            <Link
+              href="/admin"
+              className="rounded-full border border-white/20 px-4 py-2 text-[10px] text-white/80 hover:text-white hover:border-white/40 transition-colors"
+            >
+              Admin Login
+            </Link>
           </div>
         </div>
       </div>

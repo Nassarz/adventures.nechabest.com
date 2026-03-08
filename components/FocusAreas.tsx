@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { Droplets, Zap, Sprout, Heart } from 'lucide-react';
 
 import Image from 'next/image';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const areas = [
   {
@@ -34,19 +35,48 @@ const areas = [
 ];
 
 export default function FocusAreas() {
+  const { get } = useSiteContent('home');
+
+  const dynamicAreas = [
+    {
+      ...areas[0],
+      title: get('home.focus.area1.title', areas[0].title),
+      desc: get('home.focus.area1.desc', areas[0].desc),
+      image: get('home.focus.area1.image', areas[0].image),
+    },
+    {
+      ...areas[1],
+      title: get('home.focus.area2.title', areas[1].title),
+      desc: get('home.focus.area2.desc', areas[1].desc),
+      image: get('home.focus.area2.image', areas[1].image),
+    },
+    {
+      ...areas[2],
+      title: get('home.focus.area3.title', areas[2].title),
+      desc: get('home.focus.area3.desc', areas[2].desc),
+      image: get('home.focus.area3.image', areas[2].image),
+    },
+    {
+      ...areas[3],
+      title: get('home.focus.area4.title', areas[3].title),
+      desc: get('home.focus.area4.desc', areas[3].desc),
+      image: get('home.focus.area4.image', areas[3].image),
+    },
+  ];
+
   return (
     <section className="py-16 md:py-24 bg-[#F8F9FA]">
       <div className="max-w-7xl mx-auto px-4 md:px-12">
         <div className="text-center mb-12 md:mb-20 space-y-3 md:space-y-4">
-          <h2 className="font-display text-3xl md:text-6xl font-bold text-primary">Our Core Focus Areas</h2>
+          <h2 className="font-display text-3xl md:text-6xl font-bold text-primary">{get('home.focus.heading', 'Our Core Focus Areas')}</h2>
           <p className="text-foreground/60 max-w-2xl mx-auto text-base md:text-lg">
-            Three Pillars of Sustainable Development driving our mission in Uganda.
+            {get('home.focus.subtitle', 'Three Pillars of Sustainable Development driving our mission in Uganda.')}
           </p>
           <div className="w-20 md:w-24 h-1 md:h-1.5 bg-nature mx-auto rounded-full" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-          {areas.map((area, i) => (
+          {dynamicAreas.map((area, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 30, scale: 0.95 }}
@@ -64,13 +94,14 @@ export default function FocusAreas() {
                   src={area.image} 
                   alt={area.title} 
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
                   referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="absolute bottom-6 left-6 right-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
                   <button className="w-full py-3 bg-white text-primary font-bold rounded-xl text-sm hover:bg-nature hover:text-white transition-colors">
-                    Learn More
+                    {get('home.focus.learnMoreLabel', 'Learn More')}
                   </button>
                 </div>
               </div>

@@ -1,9 +1,10 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { TreePine, Zap, Users, Handshake } from 'lucide-react';
+import { useSiteContent } from '@/hooks/useSiteContent';
 
 const stats = [
   { label: 'Trees Planted', value: '10,000+', icon: TreePine, color: 'bg-nature' },
@@ -13,6 +14,8 @@ const stats = [
 ];
 
 export default function Impact() {
+  const { get } = useSiteContent('home');
+
   return (
     <section className="py-16 md:py-32 bg-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 md:px-12 relative z-10">
@@ -32,14 +35,13 @@ export default function Impact() {
                 transition={{ delay: 0.3 }}
                 className="text-primary font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs block"
               >
-                Our Measurable Impact
+                {get('home.impact.kicker', 'Our Measurable Impact')}
               </motion.span>
               <h2 className="font-display text-4xl md:text-8xl font-bold text-primary leading-[1] md:leading-[0.9]">
-                Driving Change <br />
-                <span className="text-nature italic font-light">Across Uganda</span>
+                {get('home.impact.heading', 'Driving Change Across Uganda')}
               </h2>
               <p className="text-lg md:text-xl text-foreground/60 leading-relaxed max-w-lg pt-2 md:pt-4">
-                We believe in transparency and results. Every initiative we launch is tracked, measured, and optimized for maximum community benefit.
+                {get('home.impact.subtitle', 'We believe in transparency and results. Every initiative we launch is tracked, measured, and optimized for maximum community benefit.')}
               </p>
             </div>
 
@@ -78,9 +80,10 @@ export default function Impact() {
           >
             <div className="relative aspect-[1/1] md:aspect-[4/5] rounded-[2.5rem] md:rounded-[4rem] overflow-hidden shadow-2xl group">
               <Image 
-                src="https://picsum.photos/seed/impact-uganda/1000/1250" 
+                src={get('home.impact.image', 'https://picsum.photos/seed/impact-uganda/1000/1250')} 
                 alt="Impact in action" 
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-1000"
                 referrerPolicy="no-referrer"
               />
