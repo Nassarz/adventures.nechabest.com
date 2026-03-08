@@ -64,25 +64,24 @@ export async function requireAdminAccess(): Promise<AdminCheckResult> {
     console.log('[AdminAuth] Checking access for:', emailFromClaims || '(email unavailable)');
     console.log('[AdminAuth] NODE_ENV:', process.env.NODE_ENV);
 
-    // In development, allow local admin API usage without enforcing Clerk session.
-    // This matches the admin UI behavior and avoids noisy fetch failures while coding.
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('[AdminAuth] Development mode - allowing local admin access');
-      return {
-        ok: true,
-        status: 200,
-        userId: userId || 'dev-local-admin',
-        email: emailFromClaims || 'dev@local',
-      };
-    }
-
+    // If user not authenticated, check if development bypass is explicitly enabled
     if (!userId) {
+      const devBypass = process.env.DEV_SKIP_ADMIN_AUTH === 'true';
+      if (devBypass && process.env.NODE_ENV !== 'production') {
+        console.warn('[AdminAuth] ⚠️ DEVELOPMENT MODE: Admin auth bypassed (DEV_SKIP_ADMIN_AUTH=true)');
+        return {
+          ok: true,
+          status: 200,
+          userId: 'dev-bypass',
+          email: 'dev@bypass',
+        };
+      }
       return { ok: false, status: 401, error: 'Unauthorized' };
     }
 
-    // In production, enforce the admin allowlist.
+    // User is authenticated. Now check the admin allowlist.
     const adminEmails = parseAdminEmails();
-    console.log('[AdminAuth] Production mode - checking against allowlist:', adminEmails);
+    console.log('[AdminAuth] Checking against allowlist:', adminEmails);
 
     if (adminEmails.length === 0) {
       return {
