@@ -57,6 +57,7 @@ export default function AdminDashboard() {
   const [bookings, setBookings] = useState<RecentBooking[]>([]);
   const [comments, setComments] = useState<RecentComment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [quickAccessOpen, setQuickAccessOpen] = useState(true);
 
@@ -64,11 +65,23 @@ export default function AdminDashboard() {
     const loadDashboardData = async () => {
       try {
         setLoading(true);
+        setErrorMessage(null);
         const [statsRes, bookingsRes, commentsRes] = await Promise.all([
           fetch('/api/admin/stats', { cache: 'no-store' }),
           fetch('/api/admin/bookings', { cache: 'no-store' }),
           fetch('/api/admin/comments?status=all', { cache: 'no-store' }),
         ]);
+
+        const responses = [statsRes, bookingsRes, commentsRes];
+        const unauthorized = responses.some((res) => res.status === 401 || res.status === 403);
+        if (unauthorized) {
+          setErrorMessage('Your admin session is not authorized. Please sign in with an allowed admin account.');
+        }
+
+        const serverError = responses.some((res) => res.status >= 500);
+        if (!unauthorized && serverError) {
+          setErrorMessage('Some admin data could not be loaded from the backend. Check MongoDB and server logs.');
+        }
 
         if (statsRes.ok) {
           const statsData = (await statsRes.json()) as DashboardStats;
@@ -92,6 +105,7 @@ export default function AdminDashboard() {
         }
       } catch (error) {
         console.error('Error loading dashboard data:', error);
+        setErrorMessage('Failed to load admin dashboard data. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -157,6 +171,12 @@ export default function AdminDashboard() {
 
       <div className="flex-1 overflow-auto">
         <div className="p-5 md:p-6">
+          {errorMessage && (
+            <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+              {errorMessage}
+            </div>
+          )}
+
           <div className="flex gap-5 items-start">
             <aside
               className={`shrink-0 transition-all duration-300 ${
