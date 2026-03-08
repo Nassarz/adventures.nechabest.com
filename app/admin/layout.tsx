@@ -10,7 +10,7 @@ export default async function AdminRouteLayout({ children }: AdminRouteLayoutPro
 
   if (!adminCheck.ok) {
     if (adminCheck.status === 503) {
-      redirect('/?admin=auth-unavailable');
+      redirect('/admin/auth-unavailable');
     }
 
     if (adminCheck.status === 401) {
