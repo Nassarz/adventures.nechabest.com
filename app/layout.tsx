@@ -74,25 +74,17 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const publishableKey = (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '').replace(/\$/g, '');
-  const hasClerkKeys = Boolean(publishableKey);
+  const publishableKey = (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '').replace(/\$/g, '').trim();
 
   return (
     <html lang="en" className={`${inter.variable} ${display.variable}`}>
       <body suppressHydrationWarning className="font-sans antialiased">
         <ChunkErrorHandler />
         <ChunkErrorBoundary>
-          {hasClerkKeys ? (
-            <ClerkProvider publishableKey={publishableKey}>
-              <ViewTracker />
-              {children}
-            </ClerkProvider>
-          ) : (
-            <>
-              <ViewTracker />
-              {children}
-            </>
-          )}
+          <ClerkProvider {...(publishableKey ? { publishableKey } : {})}>
+            <ViewTracker />
+            {children}
+          </ClerkProvider>
         </ChunkErrorBoundary>
       </body>
     </html>
