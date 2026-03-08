@@ -74,7 +74,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const publishableKey = (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '').replace(/\$/g, '').trim();
+  const publishableKeyRaw = (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '').replace(/\$/g, '').trim();
+  const publishableKey = publishableKeyRaw.match(/(pk_(?:test|live)_[A-Za-z0-9._-]+)/)?.[1] || '';
 
   return (
     <html lang="en" className={`${inter.variable} ${display.variable}`}>

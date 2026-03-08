@@ -9,6 +9,10 @@ export default async function AdminRouteLayout({ children }: AdminRouteLayoutPro
   const adminCheck = await requireAdminAccess();
 
   if (!adminCheck.ok) {
+    if (adminCheck.status === 503) {
+      redirect('/?admin=auth-unavailable');
+    }
+
     if (adminCheck.status === 401) {
       redirect('/sign-in?redirect_url=/admin');
     }

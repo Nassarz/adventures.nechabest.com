@@ -15,6 +15,19 @@ function parseAdminEmails(): string[] {
     .filter(Boolean);
 }
 
+function extractEnvKey(value: string | undefined, prefix: 'pk' | 'sk'): string {
+  if (!value) {
+    return '';
+  }
+
+  const normalized = value.replace(/\$/g, '').trim();
+  const pattern = prefix === 'pk'
+    ? /(pk_(?:test|live)_[A-Za-z0-9._-]+)/
+    : /(sk_(?:test|live)_[A-Za-z0-9._-]+)/;
+  const match = normalized.match(pattern);
+  return match?.[1] || '';
+}
+
 function getEmailFromSessionClaims(sessionClaims: unknown): string | undefined {
   if (!sessionClaims || typeof sessionClaims !== 'object') {
     return undefined;
@@ -36,6 +49,15 @@ function getEmailFromSessionClaims(sessionClaims: unknown): string | undefined {
 
 export async function requireAdminAccess(): Promise<AdminCheckResult> {
   try {
+    if (process.env.NODE_ENV === 'production') {
+      const publishableKey = extractEnvKey(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY, 'pk');
+      const secretKey = extractEnvKey(process.env.CLERK_SECRET_KEY, 'sk');
+      if (!publishableKey || !secretKey) {
+        console.error('[AdminAuth] Clerk environment keys are missing or invalid in production');
+        return { ok: false, status: 503, error: 'Authentication service not configured' };
+      }
+    }
+
     const { userId, sessionClaims } = await auth();
     const emailFromClaims = getEmailFromSessionClaims(sessionClaims);
 

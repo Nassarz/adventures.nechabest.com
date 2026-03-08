@@ -1,8 +1,10 @@
 import { clerkMiddleware } from '@clerk/nextjs/server';
 import { NextResponse, type NextFetchEvent, type NextRequest } from 'next/server';
 
-const publishableKey = (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '').replace(/\$/g, '').trim();
-const secretKey = (process.env.CLERK_SECRET_KEY || '').replace(/\$/g, '').trim();
+const publishableKeyRaw = (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '').replace(/\$/g, '').trim();
+const secretKeyRaw = (process.env.CLERK_SECRET_KEY || '').replace(/\$/g, '').trim();
+const publishableKey = publishableKeyRaw.match(/(pk_(?:test|live)_[A-Za-z0-9._-]+)/)?.[1] || '';
+const secretKey = secretKeyRaw.match(/(sk_(?:test|live)_[A-Za-z0-9._-]+)/)?.[1] || '';
 const isClerkConfigured = Boolean(publishableKey && secretKey);
 
 const baseMiddleware = isClerkConfigured
