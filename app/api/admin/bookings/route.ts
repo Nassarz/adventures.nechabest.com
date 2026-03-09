@@ -14,7 +14,29 @@ export async function GET() {
     const bookings = await db.collection('bookings').find({}).sort({ createdAt: -1 }).toArray();
 
     return NextResponse.json(
-      bookings.map((booking) => ({ ...booking, id: booking._id.toString() }))
+      bookings.map((booking) => {
+        const customerName = booking.customerName || booking.fullName || '';
+        const tourName = booking.tourName || booking.tourTitle || '';
+        const date = booking.date || booking.bookingDate || booking.createdAt || null;
+        const participants = Number.isFinite(booking.participants)
+          ? booking.participants
+          : Number.isFinite(booking.numberOfPeople)
+            ? booking.numberOfPeople
+            : 0;
+        const normalizedStatus = typeof booking.status === 'string'
+          ? `${booking.status.charAt(0).toUpperCase()}${booking.status.slice(1).toLowerCase()}`
+          : 'Pending';
+
+        return {
+          ...booking,
+          id: booking._id.toString(),
+          customerName,
+          tourName,
+          date,
+          participants,
+          status: normalizedStatus,
+        };
+      })
     );
   } catch (error) {
     console.error('Error fetching bookings:', error);

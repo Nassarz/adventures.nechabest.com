@@ -8,16 +8,55 @@ import AdminHeader from '@/components/admin/AdminHeader';
 
 interface Booking {
   id?: string;
-  tourName: string;
-  customerName: string;
-  email: string;
-  phone: string;
-  date: string;
+  tourName?: string;
+  tourTitle?: string;
+  customerName?: string;
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  date?: string;
+  bookingDate?: string;
   participants: number;
-  status: 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
+  numberOfPeople?: number;
+  status: 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled' | 'pending' | 'confirmed' | 'completed' | 'cancelled';
   totalPrice: number;
   createdAt: string;
+  hasIncompleteFields?: boolean;
 }
+
+const asText = (value: unknown): string => {
+  if (typeof value === 'string') return value;
+  if (value === null || value === undefined) return '';
+  return String(value);
+};
+
+const normalizeStatus = (status?: string): 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled' => {
+  const normalized = asText(status).toLowerCase();
+  if (normalized === 'confirmed') return 'Confirmed';
+  if (normalized === 'completed') return 'Completed';
+  if (normalized === 'cancelled') return 'Cancelled';
+  return 'Pending';
+};
+
+const normalizeBooking = (booking: Booking): Booking => ({
+  ...booking,
+  customerName: asText(booking.customerName || booking.fullName),
+  tourName: asText(booking.tourName || booking.tourTitle),
+  email: asText(booking.email),
+  phone: asText(booking.phone),
+  date: asText(booking.date || booking.bookingDate),
+  participants: Number.isFinite(booking.participants)
+    ? booking.participants
+    : Number.isFinite(booking.numberOfPeople)
+      ? Number(booking.numberOfPeople)
+      : 0,
+  totalPrice: Number.isFinite(booking.totalPrice) ? booking.totalPrice : 0,
+  status: normalizeStatus(asText(booking.status)),
+  hasIncompleteFields: !asText(booking.customerName || booking.fullName)
+    || !asText(booking.tourName || booking.tourTitle)
+    || !asText(booking.email)
+    || !asText(booking.date || booking.bookingDate),
+});
 
 export default function AdminBookings() {
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -35,7 +74,7 @@ export default function AdminBookings() {
       const res = await fetch('/api/admin/bookings', { cache: 'no-store' });
       if (!res.ok) throw new Error('Failed to fetch bookings');
       const bookingsData = (await res.json()) as Booking[];
-      setBookings(bookingsData);
+      setBookings(bookingsData.map(normalizeBooking));
     } catch (error) {
       console.error('Error fetching bookings:', error);
     } finally {
@@ -59,12 +98,16 @@ export default function AdminBookings() {
 
   const statuses = ['All', 'Pending', 'Confirmed', 'Completed', 'Cancelled'];
 
+  const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+
   const filteredBookings = bookings.filter(booking =>
     (filterStatus === 'All' || booking.status === filterStatus) &&
-    (booking.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      booking.tourName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      booking.email.toLowerCase().includes(searchTerm.toLowerCase()))
+    (asText(booking.customerName).toLowerCase().includes(normalizedSearchTerm) ||
+      asText(booking.tourName).toLowerCase().includes(normalizedSearchTerm) ||
+      asText(booking.email).toLowerCase().includes(normalizedSearchTerm))
   );
+
+  const incompleteCount = bookings.filter((booking) => booking.hasIncompleteFields).length;
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
@@ -137,6 +180,14 @@ export default function AdminBookings() {
             ))}
           </div>
 
+          {incompleteCount > 0 && (
+            <div className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-amber-800">
+              <p className="text-sm font-semibold">
+                {incompleteCount} booking record{incompleteCount === 1 ? '' : 's'} have incomplete fields and were auto-normalized for display.
+              </p>
+            </div>
+          )}
+
           {/* Bookings Table */}
           <div className="bg-white rounded-xl border border-black/10 overflow-hidden">
             {loading ? (
@@ -157,15 +208,18 @@ export default function AdminBookings() {
                   </thead>
                   <tbody>
                     {filteredBookings.map((booking) => (
-                      <tr key={booking.id} className="border-b border-black/5 hover:bg-black/2 transition-all">
+                      <tr key={booking.id} className={`border-b border-black/5 hover:bg-black/2 transition-all ${booking.hasIncompleteFields ? 'bg-amber-50/40' : ''}`}>
                         <td className="px-6 py-4">
                           <div>
-                            <p className="text-black font-medium">{booking.customerName}</p>
-                            <p className="text-black/60 text-sm">{booking.email}</p>
+                            <p className="text-black font-medium">{booking.customerName || 'Unknown customer'}</p>
+                            <p className="text-black/60 text-sm">{booking.email || '-'}</p>
+                            {booking.hasIncompleteFields && (
+                              <p className="text-amber-700 text-xs font-semibold">Incomplete record</p>
+                            )}
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-black font-medium">{booking.tourName}</td>
-                        <td className="px-6 py-4 text-black/60">{booking.date}</td>
+                        <td className="px-6 py-4 text-black font-medium">{booking.tourName || 'Untitled tour'}</td>
+                        <td className="px-6 py-4 text-black/60">{booking.date ? new Date(booking.date).toLocaleDateString() : '-'}</td>
                         <td className="px-6 py-4 text-black">{booking.participants}</td>
                         <td className="px-6 py-4 text-black font-bold">${booking.totalPrice}</td>
                         <td className="px-6 py-4">

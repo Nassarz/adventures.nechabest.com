@@ -73,7 +73,7 @@ export default function EcoTourismPage() {
     const fetchEcoTours = async () => {
       try {
         setLoadingTours(true);
-        const response = await fetch('/api/tours?placement=eco', { cache: 'no-store' });
+        const response = await fetch('/api/tours', { cache: 'no-store' });
         if (!response.ok) {
           throw new Error('Failed to fetch eco tours');
         }

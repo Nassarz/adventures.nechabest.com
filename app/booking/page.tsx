@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
-import { Calendar, Users, Mail, Phone, CreditCard, CheckCircle, AlertCircle, Sparkles, MapPin, Clock, DollarSign } from 'lucide-react';
+import { Calendar, Users, Mail, Phone, CreditCard, CheckCircle, AlertCircle, Sparkles, MapPin, Clock, DollarSign, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -17,6 +17,17 @@ interface Tour {
   duration: string;
   image: string;
   maxPeople: number;
+}
+
+interface ApiTour {
+  id: string;
+  title?: string;
+  location?: string;
+  price?: number | string;
+  duration?: string;
+  image?: string;
+  group?: string;
+  maxPeople?: number;
 }
 
 interface BookingData {
@@ -37,62 +48,30 @@ interface FormErrors {
   [key: string]: string;
 }
 
-const tours: Tour[] = [
-  {
-    id: '1',
-    title: 'Rwenzori Peaks Trek',
-    location: 'Kasese, Uganda',
-    price: 450,
-    duration: '7 Days',
-    image: 'https://picsum.photos/seed/mountain/800/600',
-    maxPeople: 12
-  },
-  {
-    id: '2',
-    title: 'Coffee Farm Heritage',
-    location: 'Foothills, Rwenzori',
-    price: 85,
-    duration: 'Full Day',
-    image: 'https://picsum.photos/seed/coffee/800/600',
-    maxPeople: 20
-  },
-  {
-    id: '3',
-    title: 'WEF Nexus Field Tour',
-    location: 'Mubuku Valley',
-    price: 120,
-    duration: '6 Hours',
-    image: 'https://picsum.photos/seed/water-tech/800/600',
-    maxPeople: 15
-  },
-  {
-    id: '4',
-    title: 'Lake Victoria Eco Cruise',
-    location: 'Entebbe, Uganda',
-    price: 350,
-    duration: '5 Days',
-    image: 'https://picsum.photos/seed/lake/800/600',
-    maxPeople: 30
-  },
-  {
-    id: '5',
-    title: 'Rainforest Wildlife Safari',
-    location: 'Kibale Forest, Uganda',
-    price: 500,
-    duration: '4 Days',
-    image: 'https://picsum.photos/seed/rainforest/800/600',
-    maxPeople: 10
-  },
-  {
-    id: '6',
-    title: 'Wildlife Conservation Park',
-    location: 'Murchison Falls, Uganda',
-    price: 400,
-    duration: '3 Days',
-    image: 'https://picsum.photos/seed/wildlife/800/600',
-    maxPeople: 25
+const extractMaxPeople = (group?: string): number => {
+  const groupMatch = group?.match(/(\d+)/);
+  if (groupMatch) return Number(groupMatch[1]);
+  return 20;
+};
+
+const normalizePrice = (price?: number | string): number => {
+  if (typeof price === 'number') return price;
+  if (typeof price === 'string') {
+    const parsed = Number(price.replace(/[^\d.]/g, ''));
+    return Number.isFinite(parsed) ? parsed : 0;
   }
-];
+  return 0;
+};
+
+const normalizeTour = (tour: ApiTour): Tour => ({
+  id: tour.id,
+  title: tour.title || 'Untitled Tour',
+  location: tour.location || 'Uganda',
+  price: normalizePrice(tour.price),
+  duration: tour.duration || 'Flexible',
+  image: tour.image || 'https://picsum.photos/seed/tour/800/600',
+  maxPeople: Number.isFinite(tour.maxPeople) ? Number(tour.maxPeople) : extractMaxPeople(tour.group),
+});
 
 export default function Booking() {
   const { get } = useSiteContent('booking');
@@ -104,6 +83,9 @@ export default function Booking() {
   });
 
   const [step, setStep] = useState(1);
+  const [tours, setTours] = useState<Tour[]>([]);
+  const [loadingTours, setLoadingTours] = useState(true);
+  const [toursError, setToursError] = useState('');
   const [selectedTour, setSelectedTour] = useState<Tour | null>(null);
   const [bookingData, setBookingData] = useState<BookingData>({
     tourId: '',
@@ -123,17 +105,37 @@ export default function Booking() {
   const [confirmed, setConfirmed] = useState(false);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const tourId = params.get('tour');
-    if (tourId && tours.length > 0) {
-      const tour = tours.find(t => t.id === tourId);
-      if (tour) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setSelectedTour(tour);
-         
-        setBookingData(prev => ({ ...prev, tourId: tour.id }));
+    const fetchTours = async () => {
+      try {
+        setLoadingTours(true);
+        setToursError('');
+        const response = await fetch('/api/tours', { cache: 'no-store' });
+        if (!response.ok) {
+          throw new Error('Failed to load tours');
+        }
+        const data = (await response.json()) as ApiTour[];
+        const normalized = data.map(normalizeTour);
+        setTours(normalized);
+
+        const params = new URLSearchParams(window.location.search);
+        const tourId = params.get('tour');
+        if (tourId) {
+          const preSelectedTour = normalized.find((tour) => tour.id === tourId);
+          if (preSelectedTour) {
+            setSelectedTour(preSelectedTour);
+            setBookingData((prev) => ({ ...prev, tourId: preSelectedTour.id }));
+          }
+        }
+      } catch (error) {
+        console.error('Error loading tours for booking:', error);
+        setTours([]);
+        setToursError('Unable to load tours right now. Please try again shortly.');
+      } finally {
+        setLoadingTours(false);
       }
-    }
+    };
+
+    fetchTours();
   }, []);
 
   const validateStep = (currentStep: number): boolean => {
@@ -196,12 +198,38 @@ export default function Booking() {
     if (!validateStep(3)) return;
 
     setLoading(true);
-    // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setLoading(false);
-    setConfirmed(true);
-    setStep(4);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    try {
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tourId: bookingData.tourId,
+          tourTitle: selectedTour?.title || '',
+          fullName: bookingData.fullName,
+          email: bookingData.email,
+          phone: bookingData.phone,
+          numberOfPeople: bookingData.numberOfPeople,
+          bookingDate: bookingData.startDate,
+          specialRequests: bookingData.specialRequests || ''
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to submit booking');
+      }
+
+      setLoading(false);
+      setConfirmed(true);
+      setStep(4);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (error) {
+      console.error('Booking submission error:', error);
+      setLoading(false);
+      setErrors({ submit: error instanceof Error ? error.message : 'Failed to submit booking. Please try again.' });
+    }
   };
 
   const totalPrice = selectedTour ? selectedTour.price * bookingData.numberOfPeople : 0;
@@ -273,6 +301,19 @@ export default function Booking() {
 
                 {errors.tourId && <p className="text-red-600 text-center font-medium flex items-center justify-center gap-1"><AlertCircle className="w-4 h-4" /> {errors.tourId}</p>}
 
+                {loadingTours ? (
+                  <div className="flex justify-center py-16">
+                    <Loader2 className="w-10 h-10 animate-spin text-nature" />
+                  </div>
+                ) : toursError ? (
+                  <div className="text-center py-10">
+                    <p className="text-red-600 font-semibold">{toursError}</p>
+                  </div>
+                ) : tours.length === 0 ? (
+                  <div className="text-center py-10">
+                    <p className="text-foreground/70 font-semibold">No tours available yet.</p>
+                  </div>
+                ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                   {tours.map((tour, i) => (
                     <motion.div
@@ -326,6 +367,7 @@ export default function Booking() {
                     </motion.div>
                   ))}
                 </div>
+                )}
 
                 {selectedTour && (
                   <motion.div
@@ -608,6 +650,14 @@ export default function Booking() {
                     </div>
                   </div>
                 </div>
+
+                {/* Error Display */}
+                {errors.submit && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-3">
+                    <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                    <p className="text-red-700 text-sm">{errors.submit}</p>
+                  </div>
+                )}
 
                 <div className="flex justify-between">
                   <motion.button

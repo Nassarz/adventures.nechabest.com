@@ -12,9 +12,6 @@ export async function GET(request: NextRequest) {
     if (placement === 'home') {
       filter.showOnHome = true;
     }
-    if (placement === 'eco') {
-      filter.showOnHome = { $ne: true };
-    }
 
     const tours = await db
       .collection('tours')
