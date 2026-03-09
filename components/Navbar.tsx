@@ -28,7 +28,7 @@ export default function Navbar() {
     { name: get('global.nav.ecoLabel', 'Eco-Tourism'), href: '/eco-tourism' },
     { name: get('global.nav.blogLabel', 'Blog'), href: '/blog' },
     { name: get('global.nav.contactLabel', 'Contact Us'), href: '/contact' },
-  ];
+  ].filter((link) => link.href !== '/admin' && !link.name.toLowerCase().includes('admin'));
 
   return (
     <nav className="fixed top-4 md:top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50 transition-all duration-300">
@@ -45,9 +45,10 @@ export default function Navbar() {
                 unoptimized
               />
             </div>
-            <span className="font-display font-bold text-sm sm:text-base md:text-xl tracking-tighter text-white leading-tight max-w-[140px] sm:max-w-[200px] md:max-w-none">
-              <span className="hidden sm:inline">{get('global.nav.logoText', 'Nechabest Sustainable Initiatives')}</span>
-              <span className="sm:hidden">{get('global.nav.logoTextMobile', 'Nechabest')}</span>
+            <span className="font-display font-bold text-[11px] sm:text-sm md:text-lg tracking-tight text-white leading-tight max-w-[180px] sm:max-w-[260px] md:max-w-[320px]">
+              Nechabest
+              <br />
+              Sustainable Initiatives
             </span>
           </Link>
 

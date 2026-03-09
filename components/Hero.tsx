@@ -52,8 +52,15 @@ export default function Hero() {
             transition={{ duration: 0.8, ease: 'easeOut' }}
             className="space-y-8"
           >
-            <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white font-normal leading-[1.1] tracking-tight">
-              {get('home.hero.title', 'Building a Sustainable Future for People and Nature.')}
+            <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white font-bold leading-[1.05] tracking-tight">
+              <span className="block">Building a</span>
+              <span className="block italic text-[#1f5d2c]">Sustainable</span>
+              <span className="block">
+                <span className="italic text-[#1f5d2c]">Future</span>{' '}
+                <span className="text-white">for</span>
+              </span>
+              <span className="block">People and</span>
+              <span className="block">Nature.</span>
             </h1>
             
             <p className="text-lg md:text-2xl text-white/90 font-medium leading-relaxed max-w-3xl mx-auto">

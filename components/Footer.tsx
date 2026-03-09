@@ -180,12 +180,6 @@ export default function Footer() {
             <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
             <Link href="#" className="hover:text-white transition-colors">Cookie Policy</Link>
-            <Link
-              href="/admin"
-              className="rounded-full border border-white/20 px-4 py-2 text-[10px] text-white/80 hover:text-white hover:border-white/40 transition-colors"
-            >
-              Admin Login
-            </Link>
           </div>
         </div>
       </div>
