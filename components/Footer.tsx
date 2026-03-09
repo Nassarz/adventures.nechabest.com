@@ -9,6 +9,7 @@ import { useSiteContent } from '@/hooks/useSiteContent';
 
 export default function Footer() {
   const { get } = useSiteContent('home');
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="bg-[#1A3C34] text-white pt-24 pb-8 overflow-hidden relative border-t border-white/10">
@@ -176,7 +177,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">
           <p>
-            © 2025 Nechabest Sustainable Initiatives. All Rights Reserved. |{' '}
+            © {currentYear} Nechabest Sustainable Initiatives. All Rights Reserved. |{' '}
             <a
               href="https://wa.me/789649710"
               target="_blank"
@@ -187,9 +188,9 @@ export default function Footer() {
             </a>
           </p>
           <div className="flex items-center gap-8">
-            <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
-            <Link href="#" className="hover:text-white transition-colors">Cookie Policy</Link>
+            <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link href="/cookie-policy" className="hover:text-white transition-colors">Cookie Policy</Link>
           </div>
         </div>
       </div>
