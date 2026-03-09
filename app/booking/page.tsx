@@ -453,7 +453,7 @@ export default function Booking() {
                       name="fullName"
                       value={bookingData.fullName}
                       onChange={handleChange}
-                      placeholder="John Doe"
+                      placeholder="Name here"
                       autoComplete="off"
                       className={`w-full px-6 py-4 rounded-xl border-2 font-medium transition focus:outline-none ${
                         errors.fullName ? 'border-red-300 bg-red-50' : 'border-slate-200 bg-white focus:border-primary'
@@ -470,7 +470,7 @@ export default function Booking() {
                         name="email"
                         value={bookingData.email}
                         onChange={handleChange}
-                        placeholder="john@example.com"
+                        placeholder="info@nechabest.com"
                         autoComplete="off"
                         className={`w-full px-6 py-4 rounded-xl border-2 font-medium transition focus:outline-none ${
                           errors.email ? 'border-red-300 bg-red-50' : 'border-slate-200 bg-white focus:border-primary'

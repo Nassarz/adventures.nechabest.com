@@ -104,19 +104,19 @@ export default function Contact() {
     {
       icon: Mail,
       title: 'Email',
-      value: 'hello@nechabest.com',
+      value: get('global.footer.emailPrimary', 'info@nechabest.com'),
       description: 'Send us an email and we\'ll respond within 24 hours'
     },
     {
       icon: Phone,
       title: 'Phone',
-      value: '+256 701 234 567',
+      value: get('global.footer.phone', '+256 763 860866'),
       description: 'Call us during business hours (Mon-Fri 9am-5pm UTC)'
     },
     {
       icon: MapPin,
       title: 'Location',
-      value: 'Kampala, Uganda',
+      value: 'Kasangati Town Council, Plot 616 Block 174, Kabanyolo, Kyadondo County, Wakiso District',
       description: 'Visit our office or arrange a meeting'
     },
   ];
@@ -244,7 +244,7 @@ export default function Contact() {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      placeholder="John Doe"
+                      placeholder="Name here"
                       className={`w-full px-4 md:px-6 py-3 md:py-4 rounded-xl border-2 font-medium transition focus:outline-none ${
                         errors.name
                           ? 'border-red-300 bg-red-50 focus:border-red-500'
@@ -262,7 +262,7 @@ export default function Contact() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="john@example.com"
+                      placeholder="info@nechabest.com"
                       className={`w-full px-4 md:px-6 py-3 md:py-4 rounded-xl border-2 font-medium transition focus:outline-none ${
                         errors.email
                           ? 'border-red-300 bg-red-50 focus:border-red-500'

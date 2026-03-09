@@ -175,7 +175,17 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">
-          <p>© 2025 Nechabest Sustainable Initiatives. All Rights Reserved. | Made with 🌿 for a sustainable future</p>
+          <p>
+            © 2025 Nechabest Sustainable Initiatives. All Rights Reserved. |{' '}
+            <a
+              href="https://wa.me/789649710"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition-colors"
+            >
+              Developed by IN&apos;TCODE
+            </a>
+          </p>
           <div className="flex items-center gap-8">
             <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
