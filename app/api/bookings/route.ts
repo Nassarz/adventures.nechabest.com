@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
       phone,
       numberOfPeople,
       bookingDate,
+      totalPrice,
       specialRequests,
     } = body;
 
@@ -36,6 +37,7 @@ export async function POST(request: NextRequest) {
       phone,
       numberOfPeople: parseInt(numberOfPeople),
       bookingDate: new Date(bookingDate),
+      totalPrice: Number.isFinite(Number(totalPrice)) ? Number(totalPrice) : 0,
       specialRequests: specialRequests || '',
       status: 'pending',
       createdAt: new Date(),

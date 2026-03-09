@@ -211,6 +211,7 @@ export default function Booking() {
           phone: bookingData.phone,
           numberOfPeople: bookingData.numberOfPeople,
           bookingDate: bookingData.startDate,
+          totalPrice,
           specialRequests: bookingData.specialRequests || ''
         })
       });

@@ -31,6 +31,8 @@ export default function SignInPage() {
   return (
     <main className="min-h-screen bg-black flex items-center justify-center px-4 py-16">
       <SignIn
+        forceRedirectUrl="/admin"
+        fallbackRedirectUrl="/admin"
         appearance={{
           elements: {
             card: 'bg-white/95 shadow-2xl',

@@ -13,6 +13,31 @@ export async function GET() {
     const db = await getDb();
     const bookings = await db.collection('bookings').find({}).sort({ createdAt: -1 }).toArray();
 
+    const tourTitles = Array.from(new Set(
+      bookings
+        .map((booking) => (booking.tourTitle || booking.tourName || '').toString().trim())
+        .filter(Boolean)
+    ));
+
+    const tours = tourTitles.length > 0
+      ? await db.collection('tours').find({ title: { $in: tourTitles } }).toArray()
+      : [];
+
+    const priceByTitle = new Map<string, number>();
+    for (const tour of tours) {
+      const rawPrice = tour.price;
+      let normalizedPrice = 0;
+
+      if (typeof rawPrice === 'number') {
+        normalizedPrice = rawPrice;
+      } else if (typeof rawPrice === 'string') {
+        const parsed = Number(rawPrice.replace(/[^\d.]/g, ''));
+        normalizedPrice = Number.isFinite(parsed) ? parsed : 0;
+      }
+
+      priceByTitle.set((tour.title || '').toString().trim(), normalizedPrice);
+    }
+
     return NextResponse.json(
       bookings.map((booking) => {
         const customerName = booking.customerName || booking.fullName || '';
@@ -23,6 +48,11 @@ export async function GET() {
           : Number.isFinite(booking.numberOfPeople)
             ? booking.numberOfPeople
             : 0;
+
+        const storedTotalPrice = Number.isFinite(Number(booking.totalPrice)) ? Number(booking.totalPrice) : 0;
+        const inferredTourPrice = priceByTitle.get((tourName || '').toString().trim()) || 0;
+        const totalPrice = storedTotalPrice > 0 ? storedTotalPrice : inferredTourPrice * participants;
+
         const normalizedStatus = typeof booking.status === 'string'
           ? `${booking.status.charAt(0).toUpperCase()}${booking.status.slice(1).toLowerCase()}`
           : 'Pending';
@@ -34,6 +64,7 @@ export async function GET() {
           tourName,
           date,
           participants,
+          totalPrice,
           status: normalizedStatus,
         };
       })
