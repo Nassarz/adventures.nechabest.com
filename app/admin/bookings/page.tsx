@@ -140,6 +140,12 @@ export default function AdminBookings() {
   );
 
   const incompleteCount = bookings.filter((booking) => booking.hasIncompleteFields).length;
+  const pendingCount = bookings.filter((booking) => booking.status === 'Pending').length;
+  const confirmedCount = bookings.filter((booking) => booking.status === 'Confirmed').length;
+  const cancelledCount = bookings.filter((booking) => booking.status === 'Cancelled').length;
+  const recognizedRevenue = bookings
+    .filter((booking) => booking.status !== 'Cancelled')
+    .reduce((sum, booking) => sum + (booking.totalPrice || 0), 0);
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
@@ -192,12 +198,13 @@ export default function AdminBookings() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {[
               { label: 'Total Bookings', value: bookings.length, color: 'bg-blue-500/20 text-blue-600' },
-              { label: 'Pending', value: bookings.filter(b => b.status === 'Pending').length, color: 'bg-yellow-500/20 text-yellow-600' },
-              { label: 'Confirmed', value: bookings.filter(b => b.status === 'Confirmed').length, color: 'bg-green-500/20 text-green-600' },
-              { label: 'Revenue', value: `$${bookings.reduce((sum, b) => sum + (b.totalPrice || 0), 0).toLocaleString()}`, color: 'bg-purple-500/20 text-purple-600' },
+              { label: 'Pending', value: pendingCount, color: 'bg-yellow-500/20 text-yellow-600' },
+              { label: 'Confirmed', value: confirmedCount, color: 'bg-green-500/20 text-green-600' },
+              { label: 'Cancelled', value: cancelledCount, color: 'bg-red-500/20 text-red-600' },
+              { label: 'Revenue', value: `$${recognizedRevenue.toLocaleString()}`, color: 'bg-purple-500/20 text-purple-600' },
             ].map((stat, idx) => (
               <motion.div
                 key={idx}
