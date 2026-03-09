@@ -56,6 +56,12 @@ export async function requireAdminAccess(): Promise<AdminCheckResult> {
         console.error('[AdminAuth] Clerk environment keys are missing or invalid in production');
         return { ok: false, status: 503, error: 'Authentication service not configured' };
       }
+
+      // Fail closed if production is configured with test keys.
+      if (!publishableKey.startsWith('pk_live_') || !secretKey.startsWith('sk_live_')) {
+        console.error('[AdminAuth] Production requires live Clerk keys (pk_live_/sk_live_)');
+        return { ok: false, status: 503, error: 'Authentication service not configured' };
+      }
     }
 
     const { userId, sessionClaims } = await auth();
@@ -68,7 +74,7 @@ export async function requireAdminAccess(): Promise<AdminCheckResult> {
     if (!userId) {
       const devBypass = process.env.DEV_SKIP_ADMIN_AUTH === 'true';
       if (devBypass && process.env.NODE_ENV !== 'production') {
-        console.warn('[AdminAuth] ⚠️ DEVELOPMENT MODE: Admin auth bypassed (DEV_SKIP_ADMIN_AUTH=true)');
+        console.warn('[AdminAuth] DEVELOPMENT MODE: Admin auth bypassed (DEV_SKIP_ADMIN_AUTH=true)');
         return {
           ok: true,
           status: 200,
@@ -81,9 +87,11 @@ export async function requireAdminAccess(): Promise<AdminCheckResult> {
 
     // User is authenticated. Now check the admin allowlist.
     const adminEmails = parseAdminEmails();
-    console.log('[AdminAuth] Checking against allowlist:', adminEmails);
+    console.log('[AdminAuth] Authenticated userId:', userId);
+    console.log('[AdminAuth] Admin allowlist:', adminEmails);
 
     if (adminEmails.length === 0) {
+      console.error('[AdminAuth] ❌ ADMIN_EMAILS environment variable is empty or not set');
       return {
         ok: false,
         status: 403,
@@ -94,7 +102,9 @@ export async function requireAdminAccess(): Promise<AdminCheckResult> {
     let primaryEmail = emailFromClaims;
     if (!primaryEmail) {
       try {
+        console.log('[AdminAuth] Email not in session claims, fetching from currentUser()...');
         const user = await currentUser();
+        console.log('[AdminAuth] currentUser() email addresses:', user?.emailAddresses?.map(e => e.emailAddress));
         primaryEmail = user?.emailAddresses?.[0]?.emailAddress?.toLowerCase();
       } catch (error) {
         console.error('[AdminAuth] Failed to resolve current user email:', error);
@@ -102,8 +112,16 @@ export async function requireAdminAccess(): Promise<AdminCheckResult> {
       }
     }
 
-    if (!primaryEmail || !adminEmails.includes(primaryEmail)) {
-      console.log('[AdminAuth] Access denied - email not in allowlist');
+    console.log('[AdminAuth] User email resolved to:', primaryEmail);
+
+    if (!primaryEmail) {
+      console.error('[AdminAuth] ❌ No email found for authenticated user. User must have a verified email.');
+      return { ok: false, status: 403, error: 'No email address found. Please verify your email in Clerk.' };
+    }
+
+    if (!adminEmails.includes(primaryEmail)) {
+      console.error(`[AdminAuth] ❌ Access denied - '${primaryEmail}' is not in allowlist`);
+      console.error(`[AdminAuth] To grant admin access, add '${primaryEmail}' to ADMIN_EMAILS environment variable`);
       return { ok: false, status: 403, error: 'Forbidden: Admin access required' };
     }
 
