@@ -91,7 +91,7 @@ export async function requireAdminAccess(): Promise<AdminCheckResult> {
     console.log('[AdminAuth] Admin allowlist:', adminEmails);
 
     if (adminEmails.length === 0) {
-      console.error('[AdminAuth] ❌ ADMIN_EMAILS environment variable is empty or not set');
+      console.warn('[AdminAuth] ADMIN_EMAILS environment variable is empty or not set');
       return {
         ok: false,
         status: 403,
@@ -115,13 +115,13 @@ export async function requireAdminAccess(): Promise<AdminCheckResult> {
     console.log('[AdminAuth] User email resolved to:', primaryEmail);
 
     if (!primaryEmail) {
-      console.error('[AdminAuth] ❌ No email found for authenticated user. User must have a verified email.');
+      console.warn('[AdminAuth] No email found for authenticated user. User must have a verified email.');
       return { ok: false, status: 403, error: 'No email address found. Please verify your email in Clerk.' };
     }
 
     if (!adminEmails.includes(primaryEmail)) {
-      console.error(`[AdminAuth] ❌ Access denied - '${primaryEmail}' is not in allowlist`);
-      console.error(`[AdminAuth] To grant admin access, add '${primaryEmail}' to ADMIN_EMAILS environment variable`);
+      console.warn(`[AdminAuth] Access denied - '${primaryEmail}' is not in allowlist`);
+      console.warn(`[AdminAuth] To grant admin access, add '${primaryEmail}' to ADMIN_EMAILS environment variable`);
       return { ok: false, status: 403, error: 'Forbidden: Admin access required' };
     }
 
