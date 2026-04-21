@@ -9,6 +9,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import HeroSlideshow from '@/components/HeroSlideshow';
 
 interface FormData {
   name: string;
@@ -143,20 +144,14 @@ export default function Contact() {
 
         {/* Hero Section */}
         <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-32 pb-16 md:pt-40">
-          {/* Background Image - Higher Quality */}
-          <div className="absolute inset-0 z-0">
-            <Image
-              src={get('contact.hero.image', 'https://picsum.photos/seed/contact-hero/2560/1440')}
-              alt="Contact Us Hero"
-              fill
-              className="object-cover"
-              priority
-              unoptimized
-              sizes="100vw"
-              referrerPolicy="no-referrer"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-black/75 via-primary/60 to-nature/60" />
-          </div>
+          {/* Background Slideshow */}
+          <HeroSlideshow
+            images={[
+              get('contact.hero.image', 'https://iili.io/fMclk92.jpg'),
+              get('contact.hero.image2', 'https://iili.io/fdCAigf.jpg'),
+            ]}
+            overlay="bg-gradient-to-br from-black/75 via-primary/60 to-nature/60"
+          />
 
           <div className="relative z-10 max-w-4xl mx-auto px-4 text-center space-y-8">
             <motion.div
@@ -170,7 +165,7 @@ export default function Contact() {
                 <span className="text-nature font-bold uppercase tracking-[0.2em] text-xs">Get In Touch</span>
               </div>
 
-              <h1 className="font-display text-5xl md:text-7xl font-bold text-white leading-tight tracking-tight">
+              <h1 className="font-display text-5xl md:text-6xl font-bold text-white leading-tight tracking-tight">
                 {get('contact.hero.title', "Let's Connect")}
               </h1>
 

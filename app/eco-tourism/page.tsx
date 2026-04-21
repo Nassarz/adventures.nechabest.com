@@ -10,6 +10,7 @@ import { motion, useScroll, useSpring } from 'framer-motion';
 import { MapPin, Calendar, Users, Leaf, Heart, Star, TrendingUp, Award, Droplets, Trees, Sparkles, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import HeroSlideshow from '@/components/HeroSlideshow';
 
 interface Tour {
   id: string;
@@ -103,21 +104,16 @@ export default function EcoTourismPage() {
 
         {/* Hero Section */}
         <section className="relative min-h-[75vh] flex items-center justify-center overflow-hidden pt-24">
-          {/* Background Image - Higher Quality */}
-          <div className="absolute inset-0 z-0">
-            <Image
-              src={get('eco.hero.image', 'https://picsum.photos/seed/eco-tourism-hero/2560/1440')}
-              alt="African eco-tourism landscape"
-              fill
-              className="object-cover"
-              priority
-              unoptimized
-              sizes="100vw"
-              referrerPolicy="no-referrer"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-primary/60 to-nature/70" />
+          {/* Background Slideshow */}
+          <HeroSlideshow
+            images={[
+              get('eco.hero.image', 'https://iili.io/3ovy0N9.jpg'),
+              get('eco.hero.image2', 'https://iili.io/F2JCsIf.jpg'),
+            ]}
+            overlay="bg-gradient-to-br from-black/70 via-primary/60 to-nature/70"
+          >
             <AnimatedParticles count={25} />
-          </div>
+          </HeroSlideshow>
 
           <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 text-center">
             <motion.div
@@ -142,7 +138,7 @@ export default function EcoTourismPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
-                className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white font-bold leading-[1.1] tracking-tight drop-shadow-2xl"
+                className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white font-bold leading-[1.1] tracking-tight drop-shadow-2xl"
               >
                 {get('eco.hero.title', 'Eco-Tourism Experiences')}
               </motion.h1>
@@ -222,7 +218,7 @@ export default function EcoTourismPage() {
               className="text-center mb-16 md:mb-24 space-y-4"
             >
               <span className="text-primary font-bold uppercase tracking-[0.3em] text-xs md:text-sm">Our Offerings</span>
-              <h2 className="font-display text-4xl md:text-7xl font-bold text-primary">
+              <h2 className="font-display text-4xl md:text-5xl font-bold text-primary">
                 Eco-Tourism <span className="italic font-light text-nature">Packages</span>
               </h2>
               <p className="text-lg md:text-xl text-foreground/60 max-w-3xl mx-auto">
@@ -348,7 +344,7 @@ export default function EcoTourismPage() {
               className="text-center mb-16 md:mb-24 space-y-4"
             >
               <span className="text-primary font-bold uppercase tracking-[0.3em] text-xs md:text-sm">Why Choose Us</span>
-              <h2 className="font-display text-4xl md:text-7xl font-bold text-primary">
+              <h2 className="font-display text-4xl md:text-5xl font-bold text-primary">
                 Conservation <span className="italic font-light text-nature">Impact</span>
               </h2>
               <div className="w-24 h-1.5 bg-nature mx-auto rounded-full" />
@@ -391,7 +387,7 @@ export default function EcoTourismPage() {
               className="text-center mb-16 md:mb-24 space-y-4"
             >
               <span className="text-primary font-bold uppercase tracking-[0.3em] text-xs md:text-sm">Guest Stories</span>
-              <h2 className="font-display text-4xl md:text-7xl font-bold text-primary">
+              <h2 className="font-display text-4xl md:text-5xl font-bold text-primary">
                 What Travelers <span className="italic font-light text-nature">Say</span>
               </h2>
             </motion.div>
@@ -492,7 +488,7 @@ export default function EcoTourismPage() {
               transition={{ duration: 0.8 }}
               className="space-y-8"
             >
-              <h2 className="font-display text-4xl md:text-7xl font-bold text-white leading-tight">
+              <h2 className="font-display text-4xl md:text-5xl font-bold text-white leading-tight">
                 Ready for Your <span className="italic font-light">Adventure?</span>
               </h2>
               <p className="text-xl md:text-2xl text-white/90 leading-relaxed max-w-2xl mx-auto">

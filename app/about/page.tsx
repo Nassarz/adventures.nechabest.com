@@ -11,6 +11,7 @@ import { Target, Eye, Leaf, Users, Lightbulb, Shield, ArrowRight, Heart, Mail, S
 import Image from 'next/image';
 import { useRef } from 'react';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import HeroSlideshow from '@/components/HeroSlideshow';
 
 // Animated Counter Component
 function AnimatedCounter({ value, suffix = '' }: { value: string; suffix?: string }) {
@@ -103,22 +104,16 @@ export default function AboutPage() {
 
         {/* Hero Section */}
         <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden pt-24">
-          {/* Background Image */}
-          <div className="absolute inset-0 z-0">
-            <Image
-              src={get('about.hero.image', 'https://iili.io/fdC0KF9.jpg')}
-              alt="African landscape"
-              fill
-              className="object-cover"
-              priority
-              unoptimized
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-primary/70 to-nature/80" />
-            
-            {/* Animated particles overlay */}
+          {/* Background Slideshow */}
+          <HeroSlideshow
+            images={[
+              get('about.hero.image', 'https://iili.io/fdC0KF9.jpg'),
+              get('about.hero.image2', 'https://iili.io/3oebjFS.jpg'),
+            ]}
+            overlay="bg-gradient-to-br from-black/60 via-primary/70 to-nature/80"
+          >
             <AnimatedParticles count={20} />
-          </div>
+          </HeroSlideshow>
 
           <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 text-center">
             <motion.div

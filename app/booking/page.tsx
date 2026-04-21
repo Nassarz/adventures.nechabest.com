@@ -8,6 +8,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import HeroSlideshow from '@/components/HeroSlideshow';
 
 interface Tour {
   id: string;
@@ -248,7 +249,13 @@ export default function Booking() {
 
         {/* Hero Section */}
         <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden pt-32 pb-16 md:pt-40">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-nature/10" />
+          <HeroSlideshow
+            images={[
+              get('booking.hero.image', 'https://iili.io/FvzmxwP.jpg'),
+              get('booking.hero.image2', 'https://iili.io/FCfM08X.jpg'),
+            ]}
+            overlay="bg-gradient-to-br from-black/70 via-primary/60 to-nature/60"
+          />
 
           <div className="relative z-10 max-w-4xl mx-auto px-4 text-center space-y-8">
             <motion.div
@@ -262,7 +269,7 @@ export default function Booking() {
                 <span className="text-nature font-bold uppercase tracking-[0.2em] text-xs">Secure Booking</span>
               </div>
 
-              <h1 className="font-display text-5xl md:text-7xl font-bold text-white leading-tight tracking-tight">
+              <h1 className="font-display text-5xl md:text-6xl font-bold text-white leading-tight tracking-tight">
                 {get('booking.hero.title', 'Book Your Adventure')}
               </h1>
 

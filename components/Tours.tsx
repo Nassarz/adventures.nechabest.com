@@ -65,7 +65,7 @@ export default function Tours() {
               <span className="w-12 h-[1px] bg-primary/30" />
               <span className="text-primary font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs">{get('home.tours.kicker', 'Curated Experiences')}</span>
             </div>
-            <h2 className="font-display text-4xl md:text-7xl font-bold text-primary leading-tight tracking-tighter">
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-primary leading-tight tracking-tighter">
               {get('home.tours.heading', 'Explore Uganda')}
             </h2>
           </motion.div>

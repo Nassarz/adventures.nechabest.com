@@ -52,7 +52,7 @@ export default function Hero() {
             transition={{ duration: 0.8, ease: 'easeOut' }}
             className="space-y-8"
           >
-            <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white font-bold leading-[1.05] tracking-tight">
+            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white font-bold leading-[1.05] tracking-tight">
               <span className="block">Building a</span>
               <span className="block italic text-[#1f5d2c]">Sustainable</span>
               <span className="block">

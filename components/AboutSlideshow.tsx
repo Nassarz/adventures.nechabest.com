@@ -113,7 +113,7 @@ export default function AboutSlideshow() {
                   aria-live="polite"
                   aria-atomic="true"
                 >
-                  <h2 className="font-display text-4xl md:text-7xl font-bold text-[#1A3C34] leading-tight">
+                  <h2 className="font-display text-4xl md:text-5xl font-bold text-[#1A3C34] leading-tight">
                     {dynamicSlides[currentIndex].title}
                   </h2>
                   <div className="w-12 md:w-16 h-1 bg-[#1A3C34] rounded-full" />

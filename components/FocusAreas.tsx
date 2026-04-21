@@ -68,7 +68,7 @@ export default function FocusAreas() {
     <section className="py-16 md:py-24 bg-[#F8F9FA]">
       <div className="max-w-7xl mx-auto px-4 md:px-12">
         <div className="text-center mb-12 md:mb-20 space-y-3 md:space-y-4">
-          <h2 className="font-display text-3xl md:text-6xl font-bold text-primary">{get('home.focus.heading', 'Our Core Focus Areas')}</h2>
+          <h2 className="font-display text-3xl md:text-5xl font-bold text-primary">{get('home.focus.heading', 'Our Core Focus Areas')}</h2>
           <p className="text-foreground/60 max-w-2xl mx-auto text-base md:text-lg">
             {get('home.focus.subtitle', 'Three Pillars of Sustainable Development driving our mission in Uganda.')}
           </p>

@@ -88,7 +88,7 @@ export default function Vision() {
                     <span className="w-8 h-[1px] bg-nature/30" />
                     <span className="text-nature font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs">Our Purpose</span>
                   </div>
-                  <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-tighter leading-none">
+                  <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tighter leading-none">
                     {slides[current].title.split(' ')[0]} <span className="italic font-light text-nature">{slides[current].title.split(' ')[1]}</span>
                   </h2>
                   <p className="text-base md:text-xl text-white/50 leading-relaxed max-w-lg font-medium">

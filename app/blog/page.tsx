@@ -8,6 +8,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import HeroSlideshow from '@/components/HeroSlideshow';
 
 interface BlogPost {
   id: string;
@@ -79,13 +80,12 @@ export default function Blog() {
 
         {/* Hero Section */}
         <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden pt-32 pb-20 md:pt-40">
-          <Image
-            src={get('blog.hero.image', 'https://picsum.photos/seed/blog-hero/2560/1440')}
-            alt="Blog Hero"
-            fill
-            className="object-cover absolute inset-0 brightness-50"
-            priority
-            referrerPolicy="no-referrer"
+          <HeroSlideshow
+            images={[
+              get('blog.hero.image', 'https://iili.io/fdClSYg.png'),
+              get('blog.hero.image2', 'https://iili.io/fdC0KF9.jpg'),
+            ]}
+            overlay="bg-gradient-to-b from-black/70 via-black/40 to-black/70"
           />
           
           <div className="relative z-10 max-w-4xl mx-auto px-4 text-center space-y-8">

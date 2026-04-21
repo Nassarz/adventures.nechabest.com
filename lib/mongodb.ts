@@ -1,38 +1,36 @@
 import { MongoClient, Db } from 'mongodb';
 
-if (!process.env.MONGODB_URI) {
-  throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
-}
+// Lazily initialised so the module can be imported even when MONGODB_URI is
+// not set (e.g. during static analysis or when the env file is missing).
+let clientPromise: Promise<MongoClient> | null = null;
 
-const uri = process.env.MONGODB_URI;
-const options = {};
+function getClientPromise(): Promise<MongoClient> {
+  if (clientPromise) return clientPromise;
 
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
-
-if (process.env.NODE_ENV === 'development') {
-  // In development mode, use a global variable so that the value
-  // is preserved across module reloads caused by HMR (Hot Module Replacement).
-  let globalWithMongo = global as typeof globalThis & {
-    _mongoClientPromise?: Promise<MongoClient>;
-  };
-
-  if (!globalWithMongo._mongoClientPromise) {
-    client = new MongoClient(uri, options);
-    globalWithMongo._mongoClientPromise = client.connect();
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    throw new Error('Missing environment variable: "MONGODB_URI". Add it to .env.local.');
   }
-  clientPromise = globalWithMongo._mongoClientPromise;
-} else {
-  // In production mode, it's best to not use a global variable.
-  client = new MongoClient(uri, options);
-  clientPromise = client.connect();
+
+  if (process.env.NODE_ENV === 'development') {
+    // Reuse across HMR reloads in development.
+    const g = global as typeof globalThis & {
+      _mongoClientPromise?: Promise<MongoClient>;
+    };
+    if (!g._mongoClientPromise) {
+      g._mongoClientPromise = new MongoClient(uri).connect();
+    }
+    clientPromise = g._mongoClientPromise;
+  } else {
+    clientPromise = new MongoClient(uri).connect();
+  }
+
+  return clientPromise;
 }
 
-// Export a module-scoped MongoClient promise. By doing this in a
-// separate module, the client can be shared across functions.
-export default clientPromise;
+export default { then: (...args: Parameters<Promise<MongoClient>['then']>) => getClientPromise().then(...args) };
 
 export async function getDb(): Promise<Db> {
-  const client = await clientPromise;
+  const client = await getClientPromise();
   return client.db(process.env.MONGODB_DB || 'nechabest');
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Alfa_Slab_One } from 'next/font/google';
+import { Inter, Poppins } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
 import { ChunkErrorBoundary } from '@/components/ChunkErrorBoundary';
 import { ChunkErrorHandler } from '@/components/ChunkErrorHandler';
@@ -11,13 +11,11 @@ const inter = Inter({
   variable: '--font-sans',
 });
 
-const display = Alfa_Slab_One({
-  weight: '400',
+const display = Poppins({
+  weight: ['400', '500', '600', '700', '800'],
   subsets: ['latin'],
   variable: '--font-display',
-  preload: false,
   display: 'swap',
-  fallback: ['Impact', 'Arial Black', 'sans-serif'],
 });
 
 export const metadata: Metadata = {
