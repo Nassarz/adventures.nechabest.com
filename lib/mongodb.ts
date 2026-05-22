@@ -28,7 +28,8 @@ function getClientPromise(): Promise<MongoClient> {
   return clientPromise;
 }
 
-export default { then: (...args: Parameters<Promise<MongoClient>['then']>) => getClientPromise().then(...args) };
+const clientProxy = { then: (...args: Parameters<Promise<MongoClient>['then']>) => getClientPromise().then(...args) };
+export default clientProxy;
 
 export async function getDb(): Promise<Db> {
   const client = await getClientPromise();

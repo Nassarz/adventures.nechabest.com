@@ -52,7 +52,7 @@ export default function TermsOfServicePage() {
           <section>
             <h2 className="text-2xl font-bold text-white">6. Limitation of Liability</h2>
             <p className="mt-3">
-              The website is provided on an "as is" basis. We are not liable for indirect or consequential
+              The website is provided on an &quot;as is&quot; basis. We are not liable for indirect or consequential
               losses arising from use of the platform.
             </p>
           </section>
