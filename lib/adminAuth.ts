@@ -1,4 +1,5 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
+import { cookies } from 'next/headers';
 
 export type AdminCheckResult = {
   ok: boolean;
@@ -49,47 +50,48 @@ function getEmailFromSessionClaims(sessionClaims: unknown): string | undefined {
 
 export async function requireAdminAccess(): Promise<AdminCheckResult> {
   try {
-    if (process.env.NODE_ENV === 'production') {
-      const publishableKey = extractEnvKey(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY, 'pk');
-      const secretKey = extractEnvKey(process.env.CLERK_SECRET_KEY, 'sk');
-      if (!publishableKey || !secretKey) {
-        console.error('[AdminAuth] Clerk environment keys are missing or invalid in production');
-        return { ok: false, status: 503, error: 'Authentication service not configured' };
+    // ── Development mode: use local password session ──────────────────────
+    if (process.env.NODE_ENV !== 'production') {
+      const cookieStore = await cookies();
+      const devSession = cookieStore.get('dev_admin_session');
+
+      if (devSession?.value === 'authenticated') {
+        console.log('[AdminAuth] DEV: Local admin session active');
+        return { ok: true, status: 200, userId: 'dev-local', email: 'dev@localhost' };
       }
 
-      // Fail closed if production is configured with test keys.
-      if (!publishableKey.startsWith('pk_live_') || !secretKey.startsWith('sk_live_')) {
-        console.error('[AdminAuth] Production requires live Clerk keys (pk_live_/sk_live_)');
-        return { ok: false, status: 503, error: 'Authentication service not configured' };
+      // Explicit bypass flag (legacy support)
+      if (process.env.DEV_SKIP_ADMIN_AUTH === 'true') {
+        console.warn('[AdminAuth] DEV: Admin auth bypassed via DEV_SKIP_ADMIN_AUTH=true');
+        return { ok: true, status: 200, userId: 'dev-bypass', email: 'dev@bypass' };
       }
+
+      // No valid dev session → redirect to dev login
+      return { ok: false, status: 401, error: 'Unauthorized' };
+    }
+
+    // ── Production mode: require valid Clerk live keys ────────────────────
+    const publishableKey = extractEnvKey(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY, 'pk');
+    const secretKey = extractEnvKey(process.env.CLERK_SECRET_KEY, 'sk');
+
+    if (!publishableKey || !secretKey) {
+      console.error('[AdminAuth] Clerk environment keys are missing or invalid in production');
+      return { ok: false, status: 503, error: 'Authentication service not configured' };
+    }
+
+    if (!publishableKey.startsWith('pk_live_') || !secretKey.startsWith('sk_live_')) {
+      console.error('[AdminAuth] Production requires live Clerk keys (pk_live_/sk_live_)');
+      return { ok: false, status: 503, error: 'Authentication service not configured' };
     }
 
     const { userId, sessionClaims } = await auth();
     const emailFromClaims = getEmailFromSessionClaims(sessionClaims);
 
-    console.log('[AdminAuth] Checking access for:', emailFromClaims || '(email unavailable)');
-    console.log('[AdminAuth] NODE_ENV:', process.env.NODE_ENV);
-
-    // If user not authenticated, check if development bypass is explicitly enabled
     if (!userId) {
-      const devBypass = process.env.DEV_SKIP_ADMIN_AUTH === 'true';
-      if (devBypass && process.env.NODE_ENV !== 'production') {
-        console.warn('[AdminAuth] DEVELOPMENT MODE: Admin auth bypassed (DEV_SKIP_ADMIN_AUTH=true)');
-        return {
-          ok: true,
-          status: 200,
-          userId: 'dev-bypass',
-          email: 'dev@bypass',
-        };
-      }
       return { ok: false, status: 401, error: 'Unauthorized' };
     }
 
-    // User is authenticated. Now check the admin allowlist.
     const adminEmails = parseAdminEmails();
-    console.log('[AdminAuth] Authenticated userId:', userId);
-    console.log('[AdminAuth] Admin allowlist:', adminEmails);
-
     if (adminEmails.length === 0) {
       console.warn('[AdminAuth] ADMIN_EMAILS environment variable is empty or not set');
       return {
@@ -102,9 +104,7 @@ export async function requireAdminAccess(): Promise<AdminCheckResult> {
     let primaryEmail = emailFromClaims;
     if (!primaryEmail) {
       try {
-        console.log('[AdminAuth] Email not in session claims, fetching from currentUser()...');
         const user = await currentUser();
-        console.log('[AdminAuth] currentUser() email addresses:', user?.emailAddresses?.map(e => e.emailAddress));
         primaryEmail = user?.emailAddresses?.[0]?.emailAddress?.toLowerCase();
       } catch (error) {
         console.error('[AdminAuth] Failed to resolve current user email:', error);
@@ -112,20 +112,16 @@ export async function requireAdminAccess(): Promise<AdminCheckResult> {
       }
     }
 
-    console.log('[AdminAuth] User email resolved to:', primaryEmail);
-
     if (!primaryEmail) {
-      console.warn('[AdminAuth] No email found for authenticated user. User must have a verified email.');
       return { ok: false, status: 403, error: 'No email address found. Please verify your email in Clerk.' };
     }
 
     if (!adminEmails.includes(primaryEmail)) {
       console.warn(`[AdminAuth] Access denied - '${primaryEmail}' is not in allowlist`);
-      console.warn(`[AdminAuth] To grant admin access, add '${primaryEmail}' to ADMIN_EMAILS environment variable`);
       return { ok: false, status: 403, error: 'Forbidden: Admin access required' };
     }
 
-    console.log('[AdminAuth] Access granted');
+    console.log('[AdminAuth] Access granted for:', primaryEmail);
     return { ok: true, status: 200, userId, email: primaryEmail };
   } catch (error) {
     console.error('[AdminAuth] Error while checking admin access:', error);

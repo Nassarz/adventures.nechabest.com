@@ -138,7 +138,7 @@ export default function EcoTourismPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
-                className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white font-bold leading-[1.1] tracking-tight drop-shadow-2xl"
+                className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[3rem] text-white font-bold leading-[1.1] tracking-tight drop-shadow-2xl"
               >
                 {get('eco.hero.title', 'Eco-Tourism Experiences')}
               </motion.h1>
@@ -147,7 +147,7 @@ export default function EcoTourismPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
-                className="text-lg md:text-2xl text-white/95 font-medium max-w-3xl mx-auto leading-relaxed drop-shadow-lg"
+                className="text-base md:text-lg text-white/90 font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-lg"
               >
                 {get('eco.hero.subtitle', "Explore Africa's natural wonders while supporting conservation. Every journey creates lasting impact for communities and the environment.")}
               </motion.p>
@@ -162,17 +162,17 @@ export default function EcoTourismPage() {
                   href="#tours"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-10 py-4 rounded-full bg-nature text-white font-bold text-lg shadow-2xl hover:bg-white hover:text-nature transition-all flex items-center justify-center gap-3"
+                  className="px-8 py-3.5 rounded-full bg-nature text-white font-bold text-sm shadow-2xl hover:bg-white hover:text-nature transition-all flex items-center justify-center gap-2"
                 >
-                  Explore Tours <MapPin className="w-5 h-5" />
+                  Explore Tours <MapPin className="w-4 h-4" />
                 </motion.a>
                 <motion.a
                   href="#benefits"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-10 py-4 rounded-full bg-white/10 backdrop-blur-md text-white border-2 border-white/30 font-bold text-lg hover:bg-white hover:text-primary transition-all flex items-center justify-center gap-3"
+                  className="px-8 py-3.5 rounded-full bg-white/10 backdrop-blur-md text-white border-2 border-white/30 font-bold text-sm hover:bg-white hover:text-primary transition-all flex items-center justify-center gap-2"
                 >
-                  Learn More <Leaf className="w-5 h-5" />
+                  Learn More <Leaf className="w-4 h-4" />
                 </motion.a>
               </motion.div>
             </motion.div>
@@ -488,27 +488,27 @@ export default function EcoTourismPage() {
               transition={{ duration: 0.8 }}
               className="space-y-8"
             >
-              <h2 className="font-display text-4xl md:text-5xl font-bold text-white leading-tight">
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-white leading-tight">
                 Ready for Your <span className="italic font-light">Adventure?</span>
               </h2>
-              <p className="text-xl md:text-2xl text-white/90 leading-relaxed max-w-2xl mx-auto">
+              <p className="text-base md:text-lg text-white/90 leading-relaxed max-w-2xl mx-auto">
                 Join thousands of travelers making a positive impact. Book your eco-tourism experience today and help us protect Africa&apos;s natural heritage.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                 <motion.a
                   href="#tours"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-10 py-5 rounded-full bg-white text-primary font-bold text-lg shadow-2xl hover:bg-nature hover:text-white transition-all flex items-center gap-3"
+                  className="px-8 py-3.5 rounded-full bg-white text-primary font-bold text-sm shadow-2xl hover:bg-nature hover:text-white transition-all flex items-center gap-3"
                 >
-                  Browse Tours <MapPin className="w-5 h-5" />
+                  Browse Tours <MapPin className="w-4 h-4" />
                 </motion.a>
                 <motion.a
                   href="#contact"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-10 py-5 rounded-full bg-white/10 backdrop-blur-md text-white border-2 border-white/30 font-bold text-lg hover:bg-white hover:text-primary transition-all flex items-center gap-3"
+                  className="px-8 py-3.5 rounded-full bg-white/10 backdrop-blur-md text-white border-2 border-white/30 font-bold text-sm hover:bg-white hover:text-primary transition-all flex items-center gap-3"
                 >
                   Get in Touch
                 </motion.a>

@@ -1,12 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/mongodb';
+import {
+  checkRateLimit,
+  getClientIdentifier,
+  sanitizeString,
+  secureJson,
+} from '@/lib/apiSecurity';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
+  // Rate limit: 120 requests per minute per IP
+  const ip = getClientIdentifier(request);
+  const rateLimitError = checkRateLimit(`tours:${ip}`, {
+    max: 120,
+    windowMs: 60 * 1000,
+  });
+  if (rateLimitError) return rateLimitError;
+
   try {
     const db = await getDb();
-    const placement = request.nextUrl.searchParams.get('placement');
+    const placement = sanitizeString(request.nextUrl.searchParams.get('placement'), 50);
 
     const filter: Record<string, unknown> = { published: { $ne: false } };
     if (placement === 'home') {
@@ -19,7 +33,7 @@ export async function GET(request: NextRequest) {
       .sort({ createdAt: -1 })
       .toArray();
 
-    return NextResponse.json(
+    return secureJson(
       tours.map((tour) => ({
         ...tour,
         id: tour._id.toString(),
@@ -30,12 +44,9 @@ export async function GET(request: NextRequest) {
     );
   } catch (error) {
     console.error('Error fetching tours:', error);
-    // Keep public pages operational even if the database is temporarily unavailable.
     return NextResponse.json([], {
       status: 200,
-      headers: {
-        'Cache-Control': 'no-store',
-      },
+      headers: { 'Cache-Control': 'no-store' },
     });
   }
 }

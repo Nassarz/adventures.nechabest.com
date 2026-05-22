@@ -138,7 +138,7 @@ export default function AboutPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
-                className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white font-bold leading-[1.1] tracking-tight drop-shadow-2xl"
+                className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[3rem] text-white font-bold leading-[1.1] tracking-tight drop-shadow-2xl"
               >
                 {get('about.hero.title', 'About Nechabest Sustainable Initiatives')}
               </motion.h1>
@@ -147,7 +147,7 @@ export default function AboutPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
-                className="text-lg md:text-2xl text-white/95 font-medium max-w-3xl mx-auto leading-relaxed drop-shadow-lg"
+                className="text-base md:text-lg text-white/90 font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-lg"
               >
                 {get('about.hero.subtitle', 'We combine science and social values to deliver effective solutions for the better management of water, energy, and environment across Africa.')}
               </motion.p>

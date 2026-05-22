@@ -100,11 +100,11 @@ export default function Blog() {
                 <span className="text-nature font-bold uppercase tracking-[0.2em] text-xs">Insights & Stories</span>
               </div>
 
-              <h1 className="font-display text-5xl md:text-7xl font-bold text-white leading-tight tracking-tight">
+              <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight tracking-tight">
                 {get('blog.hero.title', 'Eco-Insights')}
               </h1>
 
-              <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed">
                 {get('blog.hero.subtitle', 'Stories, research, and practical guides on sustainable travel and conservation across Africa')}
               </p>
             </motion.div>

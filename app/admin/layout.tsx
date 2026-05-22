@@ -14,6 +14,12 @@ export default async function AdminRouteLayout({ children }: AdminRouteLayoutPro
     }
 
     if (adminCheck.status === 401) {
+      // In development, redirect to local password login
+      // In production, redirect to Clerk sign-in
+      const isDev = process.env.NODE_ENV !== 'production';
+      if (isDev) {
+        redirect('/admin/dev-login');
+      }
       redirect('/sign-in?redirect_url=/admin');
     }
 

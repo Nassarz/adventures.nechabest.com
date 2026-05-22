@@ -44,35 +44,30 @@ export default function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70" />
       </div>
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 pt-20 md:pt-0">
-        <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-6 md:px-12 pt-28 md:pt-32">
+        <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="space-y-8"
+            className="space-y-6"
           >
-            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white font-bold leading-[1.05] tracking-tight">
-              <span className="block">Building a</span>
-              <span className="block italic text-[#1f5d2c]">Sustainable</span>
-              <span className="block">
-                <span className="italic text-[#1f5d2c]">Future</span>{' '}
-                <span className="text-white">for</span>
-              </span>
-              <span className="block">People and</span>
-              <span className="block">Nature.</span>
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] text-white font-bold leading-[1.1] tracking-tight">
+              Building a{' '}
+              <span className="italic text-[#3a9e4f]">Sustainable Future</span>{' '}
+              for People and Nature.
             </h1>
             
-            <p className="text-lg md:text-2xl text-white/90 font-medium leading-relaxed max-w-3xl mx-auto">
-              {get('home.hero.subtitle', 'Empowering Ugandan communities through clean water, renewable energy, climate-smart farming, and eco-tourism.')}
+            <p className="text-base md:text-lg text-white/80 font-medium leading-relaxed max-w-2xl mx-auto">
+              {get('home.hero.subtitle', 'Empowering African communities through clean water, renewable energy, climate-smart farming, and eco-tourism.')}
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
               <motion.a
                 href="#about"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto px-10 py-5 rounded-full bg-nature text-white font-bold text-lg shadow-2xl shadow-nature/40 hover:bg-white hover:text-nature transition-all text-center"
+                className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-nature text-white font-bold text-sm shadow-2xl shadow-nature/40 hover:bg-white hover:text-nature transition-all text-center"
                 aria-label="Explore our sustainable development work"
               >
                 Explore Our Work
@@ -81,7 +76,7 @@ export default function Hero() {
                 href="#tours"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto px-10 py-5 rounded-full bg-white/10 backdrop-blur-md text-white border border-white/30 font-bold text-lg hover:bg-white hover:text-primary transition-all text-center"
+                className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white/10 backdrop-blur-md text-white border border-white/30 font-bold text-sm hover:bg-white hover:text-primary transition-all text-center"
                 aria-label="Book an eco-tourism tour"
               >
                 Book a Tour

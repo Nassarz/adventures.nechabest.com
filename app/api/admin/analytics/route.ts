@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/mongodb';
 import { requireAdminAccess } from '@/lib/adminAuth';
+import { secureJson } from '@/lib/apiSecurity';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,7 +8,7 @@ export async function GET() {
   try {
     const adminCheck = await requireAdminAccess();
     if (!adminCheck.ok) {
-      return NextResponse.json({ error: adminCheck.error }, { status: adminCheck.status });
+      return secureJson({ error: adminCheck.error }, { status: adminCheck.status });
     }
 
     const db = await getDb();
@@ -148,7 +148,7 @@ export async function GET() {
       });
     }
 
-    return NextResponse.json({
+    return secureJson({
       stats: {
         totalViews,
         totalBlogViews,
@@ -165,7 +165,7 @@ export async function GET() {
     });
   } catch (error) {
     console.error('Error fetching analytics:', error);
-    return NextResponse.json({ error: 'Failed to fetch analytics' }, { status: 500 });
+    return secureJson({ error: 'Failed to fetch analytics' }, { status: 500 });
   }
 }
 

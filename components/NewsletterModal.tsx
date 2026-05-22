@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, X, Check } from 'lucide-react';
+import { submitNewsletterForm } from '@/lib/formspree';
 
 interface NewsletterModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface NewsletterModalProps {
 export default function NewsletterModal({ isOpen, onClose }: NewsletterModalProps) {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [gotcha, setGotcha] = useState(''); // Honeypot field
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -36,16 +38,15 @@ export default function NewsletterModal({ isOpen, onClose }: NewsletterModalProp
     }
 
     try {
-      const response = await fetch('/api/newsletter/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, name }),
+      // Submit to Formspree with security measures
+      const result = await submitNewsletterForm({
+        email,
+        name,
+        _gotcha: gotcha // Honeypot for bot protection
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to subscribe');
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to subscribe');
       }
 
       setSubmitted(true);
@@ -182,6 +183,25 @@ export default function NewsletterModal({ isOpen, onClose }: NewsletterModalProp
                         </motion.p>
                       )}
                     </div>
+
+                    {/* Honeypot field - hidden from users, catches bots */}
+                    <input
+                      type="text"
+                      name="_gotcha"
+                      value={gotcha}
+                      onChange={(e) => setGotcha(e.target.value)}
+                      tabIndex={-1}
+                      autoComplete="off"
+                      style={{
+                        position: 'absolute',
+                        left: '-9999px',
+                        width: '1px',
+                        height: '1px',
+                        opacity: 0,
+                        pointerEvents: 'none'
+                      }}
+                      aria-hidden="true"
+                    />
 
                     <motion.button
                       type="submit"

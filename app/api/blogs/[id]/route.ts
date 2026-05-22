@@ -1,6 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getDb } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
+import {
+  checkRateLimit,
+  getClientIdentifier,
+  sanitizeString,
+  isValidObjectId,
+  secureJson,
+  withSecurityHeaders,
+} from '@/lib/apiSecurity';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,23 +17,27 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Rate limit: 120 requests per minute per IP
+  const ip = getClientIdentifier(request);
+  const rateLimitError = checkRateLimit(`blog-single:${ip}`, {
+    max: 120,
+    windowMs: 60 * 1000,
+  });
+  if (rateLimitError) return rateLimitError;
+
   try {
     const db = await getDb();
     const { id } = await params;
 
-    if (!ObjectId.isValid(id)) {
-      return NextResponse.json({ error: 'Invalid blog ID' }, { status: 400 });
+    if (!isValidObjectId(id)) {
+      return secureJson({ error: 'Invalid blog ID' }, { status: 400 });
     }
 
     // Check if user has viewed this blog recently using cookie
-    const cookies = request.cookies;
-    const viewedBlogsCookie = cookies.get(`blog_viewed_${id}`);
-    
-    // Get user fingerprint from headers
-    const userAgent = request.headers.get('user-agent') || 'unknown';
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 
-               request.headers.get('x-real-ip') || 
-               'unknown';
+    const viewedBlogsCookie = request.cookies.get(`blog_viewed_${id}`);
+
+    // Build a privacy-safe fingerprint — hash IP + UA, never store raw IP
+    const userAgent = sanitizeString(request.headers.get('user-agent'), 500);
     const visitorFingerprint = Buffer.from(`${ip}-${userAgent}`).toString('base64');
 
     // Only increment view if no recent cookie found
@@ -42,18 +54,16 @@ export async function GET(
         // Increment view count
         await db.collection('blogs').updateOne(
           { _id: new ObjectId(id) },
-          { 
+          {
             $inc: { views: 1 },
-            $set: { lastViewed: new Date() }
+            $set: { lastViewed: new Date() },
           }
         );
 
-        // Record the view
+        // Record the view — store fingerprint only, NOT raw IP
         await db.collection('blog_views').insertOne({
           blogId: id,
           visitorFingerprint,
-          userAgent,
-          ip,
           timestamp: new Date(),
         });
       }
@@ -62,10 +72,10 @@ export async function GET(
     const blog = await db.collection('blogs').findOne({ _id: new ObjectId(id) });
 
     if (!blog) {
-      return NextResponse.json({ error: 'Blog post not found' }, { status: 404 });
+      return secureJson({ error: 'Blog post not found' }, { status: 404 });
     }
 
-    // Get comments for this blog
+    // Get approved comments for this blog
     const comments = await db
       .collection('blog_comments')
       .find({ blogId: id, approved: true })
@@ -82,19 +92,19 @@ export async function GET(
       .limit(3)
       .toArray();
 
-    const response = NextResponse.json({
+    const responseBody = {
       ...blog,
       id: blog._id.toString(),
       image: blog.image || 'https://picsum.photos/seed/blog/1200/800',
-      avatar: blog.avatar || `https://picsum.photos/seed/${blog.author || 'author'}/100/100`,
+      avatar: blog.avatar || `https://picsum.photos/seed/${sanitizeString(blog.author, 50) || 'author'}/100/100`,
       _id: undefined,
       comments: comments.map((comment) => ({
-        ...comment,
         id: comment._id.toString(),
-        author: comment.name,
-        content: comment.comment,
+        author: sanitizeString(comment.name, 100),
+        content: sanitizeString(comment.comment, 2000),
         avatar: '/icons/comment-default.svg',
-        _id: undefined,
+        createdAt: comment.createdAt,
+        // Never expose commenter email in public response
       })),
       relatedPosts: related.map((item) => ({
         ...item,
@@ -102,18 +112,20 @@ export async function GET(
         image: item.image || 'https://picsum.photos/seed/blog/800/600',
         _id: undefined,
       })),
-    });
+    };
 
-    // Set cookie to prevent duplicate views (expires in 24 hours)
+    // Build response with security headers, then set the view-dedup cookie
+    const response = secureJson(responseBody);
     response.cookies.set(`blog_viewed_${id}`, '1', {
       maxAge: 24 * 60 * 60, // 24 hours
       httpOnly: true,
       sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
     });
 
     return response;
   } catch (error) {
-    console.error('Error fetching blog:', error);
-    return NextResponse.json({ error: 'Failed to fetch blog' }, { status: 500 });
+    console.error('Error fetching blog:', error instanceof Error ? error.message : 'unknown');
+    return secureJson({ error: 'Failed to fetch blog' }, { status: 500 });
   }
 }

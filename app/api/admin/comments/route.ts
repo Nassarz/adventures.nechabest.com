@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/mongodb';
 import { requireAdminAccess } from '@/lib/adminAuth';
+import { isValidObjectId, secureJson } from '@/lib/apiSecurity';
 
 type CommentStatus = 'pending' | 'approved' | 'disapproved';
 
@@ -9,12 +10,8 @@ function getNormalizedStatus(comment: Record<string, unknown>): CommentStatus {
   const status = typeof comment.status === 'string' ? comment.status : undefined;
   const approved = comment.approved === true;
 
-  if (status === 'approved' || approved) {
-    return 'approved';
-  }
-  if (status === 'disapproved') {
-    return 'disapproved';
-  }
+  if (status === 'approved' || approved) return 'approved';
+  if (status === 'disapproved') return 'disapproved';
   return 'pending';
 }
 
@@ -22,7 +19,7 @@ export async function GET(request: NextRequest) {
   try {
     const adminCheck = await requireAdminAccess();
     if (!adminCheck.ok) {
-      return NextResponse.json({ error: adminCheck.error }, { status: adminCheck.status });
+      return secureJson({ error: adminCheck.error }, { status: adminCheck.status });
     }
 
     const { searchParams } = new URL(request.url);
@@ -67,10 +64,10 @@ export async function GET(request: NextRequest) {
       })
       .filter((comment) => (status === 'all' ? true : comment.status === status));
 
-    return NextResponse.json(normalizedComments);
+    return secureJson(normalizedComments);
   } catch (error) {
-    console.error('Error fetching blog comments:', error);
-    return NextResponse.json({ error: 'Failed to fetch comments' }, { status: 500 });
+    console.error('Error fetching blog comments:', error instanceof Error ? error.message : 'unknown');
+    return secureJson({ error: 'Failed to fetch comments' }, { status: 500 });
   }
 }
 
@@ -78,22 +75,22 @@ export async function PATCH(request: NextRequest) {
   try {
     const adminCheck = await requireAdminAccess();
     if (!adminCheck.ok) {
-      return NextResponse.json({ error: adminCheck.error }, { status: adminCheck.status });
+      return secureJson({ error: adminCheck.error }, { status: adminCheck.status });
     }
 
     const body = await request.json();
     const { id, action } = body as { id?: string; action?: CommentStatus };
 
-    if (!id || !ObjectId.isValid(id)) {
-      return NextResponse.json({ error: 'Invalid comment id' }, { status: 400 });
+    if (!id || !isValidObjectId(id)) {
+      return secureJson({ error: 'Invalid comment ID' }, { status: 400 });
     }
 
     if (!action || !['pending', 'approved', 'disapproved'].includes(action)) {
-      return NextResponse.json({ error: 'Invalid moderation action' }, { status: 400 });
+      return secureJson({ error: 'Invalid moderation action' }, { status: 400 });
     }
 
     const db = await getDb();
-    await db.collection('blog_comments').updateOne(
+    const result = await db.collection('blog_comments').updateOne(
       { _id: new ObjectId(id) },
       {
         $set: {
@@ -105,9 +102,13 @@ export async function PATCH(request: NextRequest) {
       }
     );
 
-    return NextResponse.json({ success: true });
+    if (result.matchedCount === 0) {
+      return secureJson({ error: 'Comment not found' }, { status: 404 });
+    }
+
+    return secureJson({ success: true });
   } catch (error) {
-    console.error('Error moderating blog comment:', error);
-    return NextResponse.json({ error: 'Failed to update comment status' }, { status: 500 });
+    console.error('Error moderating blog comment:', error instanceof Error ? error.message : 'unknown');
+    return secureJson({ error: 'Failed to update comment status' }, { status: 500 });
   }
 }

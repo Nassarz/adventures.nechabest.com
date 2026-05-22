@@ -10,6 +10,7 @@ import Footer from '@/components/Footer';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import HeroSlideshow from '@/components/HeroSlideshow';
+import { submitContactForm } from '@/lib/formspree';
 
 interface FormData {
   name: string;
@@ -17,6 +18,7 @@ interface FormData {
   phone: string;
   subject: string;
   message: string;
+  _gotcha?: string; // Honeypot field for bot protection
 }
 
 interface FormErrors {
@@ -41,7 +43,8 @@ export default function Contact() {
     email: '',
     phone: '',
     subject: '',
-    message: ''
+    message: '',
+    _gotcha: '' // Honeypot field (must remain empty)
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -84,21 +87,42 @@ export default function Contact() {
 
     setLoading(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setLoading(false);
-    setSubmitted(true);
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      subject: '',
-      message: ''
-    });
+    try {
+      // Submit to Formspree with security measures
+      const result = await submitContactForm({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        subject: formData.subject,
+        message: formData.message,
+        _gotcha: formData._gotcha // Honeypot for bot protection
+      });
 
-    // Reset success message after 5 seconds
-    setTimeout(() => setSubmitted(false), 5000);
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to submit form');
+      }
+
+      // Success - clear form and show success message
+      setLoading(false);
+      setSubmitted(true);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: ''
+      });
+
+      // Reset success message after 5 seconds
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (error) {
+      console.error('Contact form submission error:', error);
+      setLoading(false);
+      setErrors({ 
+        ...errors, 
+        message: error instanceof Error ? error.message : 'Failed to submit form. Please try again.' 
+      });
+    }
   };
 
   const contactMethods = [
@@ -165,11 +189,11 @@ export default function Contact() {
                 <span className="text-nature font-bold uppercase tracking-[0.2em] text-xs">Get In Touch</span>
               </div>
 
-              <h1 className="font-display text-5xl md:text-6xl font-bold text-white leading-tight tracking-tight">
+              <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight tracking-tight">
                 {get('contact.hero.title', "Let's Connect")}
               </h1>
 
-              <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed">
                 {get('contact.hero.subtitle', "Have questions about our tours or partnerships? We'd love to hear from you. Reach out to us anytime.")}
               </p>
             </motion.div>
@@ -333,6 +357,25 @@ export default function Contact() {
                     />
                     {errors.message && <p className="text-red-600 text-xs md:text-sm font-medium flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.message}</p>}
                   </div>
+
+                  {/* Honeypot field - hidden from users, catches bots */}
+                  <input
+                    type="text"
+                    name="_gotcha"
+                    value={formData._gotcha}
+                    onChange={handleChange}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    style={{
+                      position: 'absolute',
+                      left: '-9999px',
+                      width: '1px',
+                      height: '1px',
+                      opacity: 0,
+                      pointerEvents: 'none'
+                    }}
+                    aria-hidden="true"
+                  />
 
                   {/* Submit Button */}
                   <motion.button

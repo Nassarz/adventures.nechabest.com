@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
-import { Calendar, Users, Mail, Phone, CreditCard, CheckCircle, AlertCircle, Sparkles, MapPin, Clock, DollarSign, Loader2 } from 'lucide-react';
+import { Users, CreditCard, CheckCircle, AlertCircle, Sparkles, MapPin, Clock, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import HeroSlideshow from '@/components/HeroSlideshow';
+import { submitBookingForm } from '@/lib/formspree';
 
 interface Tour {
   id: string;
@@ -43,6 +44,7 @@ interface BookingData {
   cardNumber: string;
   expiryDate: string;
   cvv: string;
+  _gotcha?: string; // Honeypot field for bot protection
 }
 
 interface FormErrors {
@@ -99,7 +101,8 @@ export default function Booking() {
     cardName: '',
     cardNumber: '',
     expiryDate: '',
-    cvv: ''
+    cvv: '',
+    _gotcha: '' // Honeypot field (must remain empty)
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
@@ -201,32 +204,53 @@ export default function Booking() {
     setLoading(true);
     
     try {
-      const response = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tourId: bookingData.tourId,
-          tourTitle: selectedTour?.title || '',
-          fullName: bookingData.fullName,
-          email: bookingData.email,
-          phone: bookingData.phone,
-          numberOfPeople: bookingData.numberOfPeople,
-          bookingDate: bookingData.startDate,
-          totalPrice,
-          specialRequests: bookingData.specialRequests || ''
-        })
-      });
+      // Prepare booking data
+      const bookingPayload = {
+        tourId: bookingData.tourId,
+        tourTitle: selectedTour?.title || '',
+        fullName: bookingData.fullName,
+        email: bookingData.email,
+        phone: bookingData.phone,
+        numberOfPeople: bookingData.numberOfPeople,
+        bookingDate: bookingData.startDate,
+        totalPrice,
+        specialRequests: bookingData.specialRequests || '',
+        _gotcha: bookingData._gotcha // Honeypot for bot protection
+      };
 
-      const result = await response.json();
+      // Dual submission: Formspree (email notification) + MongoDB (database storage)
+      const [formspreeResult, mongoResult] = await Promise.allSettled([
+        submitBookingForm(bookingPayload),
+        fetch('/api/bookings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(bookingPayload)
+        }).then(res => res.json())
+      ]);
 
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to submit booking');
+      // Check results
+      const formspreeSuccess = formspreeResult.status === 'fulfilled' && formspreeResult.value.success;
+      const mongoSuccess = mongoResult.status === 'fulfilled' && mongoResult.value.success;
+
+      if (formspreeSuccess && mongoSuccess) {
+        // Both succeeded - full success
+        setLoading(false);
+        setConfirmed(true);
+        setStep(4);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (!formspreeSuccess && mongoSuccess) {
+        // MongoDB succeeded, Formspree failed - partial success (booking is saved, show success)
+        setLoading(false);
+        setConfirmed(true);
+        setStep(4);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (formspreeSuccess && !mongoSuccess) {
+        // Formspree succeeded, MongoDB failed
+        throw new Error('Your request was received but could not be fully saved. Please contact us directly to confirm.');
+      } else {
+        // Both failed
+        throw new Error('Failed to submit booking. Please try again or contact us directly.');
       }
-
-      setLoading(false);
-      setConfirmed(true);
-      setStep(4);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error('Booking submission error:', error);
       setLoading(false);
@@ -514,6 +538,25 @@ export default function Booking() {
                       className="w-full px-6 py-4 rounded-xl border-2 border-slate-200 bg-white font-medium transition focus:outline-none focus:border-primary resize-none"
                     />
                   </div>
+
+                  {/* Honeypot field - hidden from users, catches bots */}
+                  <input
+                    type="text"
+                    name="_gotcha"
+                    value={bookingData._gotcha}
+                    onChange={handleChange}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    style={{
+                      position: 'absolute',
+                      left: '-9999px',
+                      width: '1px',
+                      height: '1px',
+                      opacity: 0,
+                      pointerEvents: 'none'
+                    }}
+                    aria-hidden="true"
+                  />
                 </div>
 
                 <div className="flex justify-between">

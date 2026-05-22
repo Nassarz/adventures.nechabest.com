@@ -1,13 +1,22 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getDb } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { requireAdminAccess } from '@/lib/adminAuth';
+import {
+  isValidObjectId,
+  secureJson,
+  sanitizeString,
+  sanitizeEnum,
+  checkAdminRateLimit,
+} from '@/lib/apiSecurity';
+
+const BOOKING_STATUSES = ['pending', 'confirmed', 'cancelled'] as const;
 
 export async function GET() {
   try {
     const adminCheck = await requireAdminAccess();
     if (!adminCheck.ok) {
-      return NextResponse.json({ error: adminCheck.error }, { status: adminCheck.status });
+      return secureJson({ error: adminCheck.error }, { status: adminCheck.status });
     }
 
     const db = await getDb();
@@ -38,7 +47,7 @@ export async function GET() {
       priceByTitle.set((tour.title || '').toString().trim(), normalizedPrice);
     }
 
-    return NextResponse.json(
+    return secureJson(
       bookings.map((booking) => {
         const customerName = booking.customerName || booking.fullName || '';
         const tourName = booking.tourName || booking.tourTitle || '';
@@ -71,7 +80,7 @@ export async function GET() {
     );
   } catch (error) {
     console.error('Error fetching bookings:', error);
-    return NextResponse.json({ error: 'Failed to fetch bookings' }, { status: 500 });
+    return secureJson({ error: 'Failed to fetch bookings' }, { status: 500 });
   }
 }
 
@@ -79,26 +88,58 @@ export async function PATCH(request: NextRequest) {
   try {
     const adminCheck = await requireAdminAccess();
     if (!adminCheck.ok) {
-      return NextResponse.json({ error: adminCheck.error }, { status: adminCheck.status });
+      return secureJson({ error: adminCheck.error }, { status: adminCheck.status });
     }
+
+    // Rate limit admin actions
+    const rl = checkAdminRateLimit(adminCheck.userId ?? 'unknown', request);
+    if (rl) return rl;
 
     const body = await request.json();
     const { id, ...updateData } = body;
 
-    if (!id) {
-      return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+    if (!id || !isValidObjectId(id)) {
+      return secureJson({ error: 'Invalid or missing booking ID' }, { status: 400 });
+    }
+
+    // Whitelist allowed update fields to prevent mass-assignment
+    const safeUpdate: Record<string, unknown> = {};
+
+    if ('status' in updateData) {
+      const status = sanitizeEnum(updateData.status, BOOKING_STATUSES);
+      if (!status) {
+        return secureJson({ error: 'Invalid status value. Must be pending, confirmed, or cancelled.' }, { status: 400 });
+      }
+      safeUpdate.status = status;
+    }
+
+    if ('read' in updateData) {
+      safeUpdate.read = Boolean(updateData.read);
+    }
+
+    if ('notes' in updateData) {
+      // Sanitize notes to prevent injection
+      safeUpdate.notes = sanitizeString(updateData.notes, 2000);
+    }
+
+    if (Object.keys(safeUpdate).length === 0) {
+      return secureJson({ error: 'No valid fields to update' }, { status: 400 });
     }
 
     const db = await getDb();
-    await db.collection('bookings').updateOne(
+    const result = await db.collection('bookings').updateOne(
       { _id: new ObjectId(id) },
-      { $set: { ...updateData, updatedAt: new Date(), updatedBy: adminCheck.userId } }
+      { $set: { ...safeUpdate, updatedAt: new Date(), updatedBy: adminCheck.userId } }
     );
 
-    return NextResponse.json({ success: true });
+    if (result.matchedCount === 0) {
+      return secureJson({ error: 'Booking not found' }, { status: 404 });
+    }
+
+    return secureJson({ success: true });
   } catch (error) {
     console.error('Error updating booking:', error);
-    return NextResponse.json({ error: 'Failed to update booking' }, { status: 500 });
+    return secureJson({ error: 'Failed to update booking' }, { status: 500 });
   }
 }
 
@@ -106,22 +147,30 @@ export async function DELETE(request: NextRequest) {
   try {
     const adminCheck = await requireAdminAccess();
     if (!adminCheck.ok) {
-      return NextResponse.json({ error: adminCheck.error }, { status: adminCheck.status });
+      return secureJson({ error: adminCheck.error }, { status: adminCheck.status });
     }
+
+    // Rate limit admin actions
+    const rl = checkAdminRateLimit(adminCheck.userId ?? 'unknown', request);
+    if (rl) return rl;
 
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
-    if (!id) {
-      return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+    if (!id || !isValidObjectId(id)) {
+      return secureJson({ error: 'Invalid or missing booking ID' }, { status: 400 });
     }
 
     const db = await getDb();
-    await db.collection('bookings').deleteOne({ _id: new ObjectId(id) });
+    const result = await db.collection('bookings').deleteOne({ _id: new ObjectId(id) });
 
-    return NextResponse.json({ success: true });
+    if (result.deletedCount === 0) {
+      return secureJson({ error: 'Booking not found' }, { status: 404 });
+    }
+
+    return secureJson({ success: true });
   } catch (error) {
     console.error('Error deleting booking:', error);
-    return NextResponse.json({ error: 'Failed to delete booking' }, { status: 500 });
+    return secureJson({ error: 'Failed to delete booking' }, { status: 500 });
   }
 }

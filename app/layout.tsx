@@ -75,15 +75,28 @@ export default function RootLayout({
   const publishableKeyRaw = (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '').replace(/\$/g, '').trim();
   const publishableKey = publishableKeyRaw.match(/(pk_(?:test|live)_[A-Za-z0-9._-]+)/)?.[1] || '';
 
+  // Only use ClerkProvider when a valid key is present AND we're in production.
+  // The live key (pk_live_) requires clerk.nechabest.com which is unreachable on localhost.
+  // On localhost, admin auth uses a local password session instead (see /admin/dev-login).
+  const isProduction = process.env.NODE_ENV === 'production';
+  const useClerk = isProduction && publishableKey.startsWith('pk_live_');
+
   return (
     <html lang="en" className={`${inter.variable} ${display.variable}`}>
       <body suppressHydrationWarning className="font-sans antialiased">
         <ChunkErrorHandler />
         <ChunkErrorBoundary>
-          <ClerkProvider {...(publishableKey ? { publishableKey } : {})}>
-            <ViewTracker />
-            {children}
-          </ClerkProvider>
+          {useClerk ? (
+            <ClerkProvider publishableKey={publishableKey}>
+              <ViewTracker />
+              {children}
+            </ClerkProvider>
+          ) : (
+            <>
+              <ViewTracker />
+              {children}
+            </>
+          )}
         </ChunkErrorBoundary>
       </body>
     </html>
