@@ -398,19 +398,19 @@ export default function EcoTourismPage() {
                   name: 'Sarah Johnson',
                   role: 'Conservation Volunteer',
                   text: 'An incredible experience! The guides were knowledgeable, the camps sustainable, and knowing my contribution supports conservation made it truly meaningful.',
-                  image: 'https://picsum.photos/seed/traveler-1/200/200'
+                  image: 'https://iili.io/fdC0KF9.jpg'
                 },
                 {
                   name: 'Michael Chen',
                   role: 'Adventure Photographer',
                   text: 'Best eco-tourism experience I\'ve had. The balance between comfort and sustainability was perfect, and the wildlife photography opportunities were amazing.',
-                  image: 'https://picsum.photos/seed/traveler-2/200/200'
+                  image: 'https://iili.io/3ovy0N9.jpg'
                 },
                 {
                   name: 'Emma Thompson',
                   role: 'Environmental Educator',
                   text: 'The framework we learned here was revolutionary. It showed me how tourism can genuinely benefit communities and ecosystems simultaneously.',
-                  image: 'https://picsum.photos/seed/traveler-3/200/200'
+                  image: 'https://iili.io/F2JCsIf.jpg'
                 }
               ].map((testimonial, i) => (
                 <motion.div

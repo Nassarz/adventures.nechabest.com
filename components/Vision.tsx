@@ -9,17 +9,17 @@ const slides = [
   {
     title: 'Our Vision',
     desc: 'Bridging the gap between environmental conservation and community development through smart, solar-powered initiatives and local action.',
-    image: 'https://picsum.photos/seed/vision-1/1200/800'
+    image: 'https://iili.io/fdC0KF9.jpg'
   },
   {
     title: 'Our Mission',
     desc: 'To empower local communities with sustainable tools and knowledge to protect their natural heritage while improving their quality of life.',
-    image: 'https://picsum.photos/seed/vision-2/1200/800'
+    image: 'https://iili.io/fdClSYg.png'
   },
   {
     title: 'Our Impact',
     desc: 'Creating measurable change through reforestation, clean energy access, and climate-smart agricultural practices across Uganda.',
-    image: 'https://picsum.photos/seed/vision-3/1200/800'
+    image: 'https://iili.io/3oebjFS.jpg'
   }
 ];
 

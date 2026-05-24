@@ -95,8 +95,8 @@ export async function GET(
     const responseBody = {
       ...blog,
       id: blog._id.toString(),
-      image: blog.image || 'https://picsum.photos/seed/blog/1200/800',
-      avatar: blog.avatar || `https://picsum.photos/seed/${sanitizeString(blog.author, 50) || 'author'}/100/100`,
+      image: blog.image || 'https://iili.io/fdClSYg.png',
+      avatar: blog.avatar || `https://iili.io/ffrDkkN.png`,
       _id: undefined,
       comments: comments.map((comment) => ({
         id: comment._id.toString(),
@@ -109,7 +109,7 @@ export async function GET(
       relatedPosts: related.map((item) => ({
         ...item,
         id: item._id.toString(),
-        image: item.image || 'https://picsum.photos/seed/blog/800/600',
+        image: item.image || 'https://iili.io/fdClSYg.png',
         _id: undefined,
       })),
     };

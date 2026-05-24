@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     siteName: 'Nechabest',
     images: [
       {
-        url: 'https://picsum.photos/1200/630?random=200',
+        url: 'https://iili.io/fMclk92.jpg',
         width: 1200,
         height: 630,
         alt: 'Contact Nechabest',
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Contact Us | Nechabest',
     description: 'Get in touch with our team. We respond within 24 hours.',
-    images: ['https://picsum.photos/1200/630?random=200'],
+    images: ['https://iili.io/fMclk92.jpg'],
   },
 };
 

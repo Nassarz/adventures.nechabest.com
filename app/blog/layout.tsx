@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     siteName: 'Nechabest',
     images: [
       {
-        url: 'https://picsum.photos/1200/630?random=100',
+        url: 'https://iili.io/fdClSYg.png',
         width: 1200,
         height: 630,
         alt: 'Eco-Insights Blog',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     title: 'Eco-Insights Blog | Sustainable Travel & Conservation Stories',
     description:
       'Discover articles on sustainable tourism, wildlife conservation, eco-lodges, and responsible travel tips.',
-    images: ['https://picsum.photos/1200/630?random=100'],
+    images: ['https://iili.io/fdClSYg.png'],
   },
 };
 

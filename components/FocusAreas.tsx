@@ -12,25 +12,25 @@ const areas = [
     title: 'Water-Energy-Food (WEF) Nexus',
     desc: 'Clean water access, renewable energy solutions, and climate-smart agriculture for sustainable livelihoods.',
     icon: Droplets,
-    image: 'https://picsum.photos/seed/water/600/400'
+    image: 'https://iili.io/3ovy0N9.jpg'
   },
   {
     title: 'Environmental Conservation',
     desc: 'Tree planting initiatives, watershed protection, and ecosystem restoration for a resilient future.',
     icon: Zap,
-    image: 'https://picsum.photos/seed/energy/600/400'
+    image: 'https://iili.io/F2JCsIf.jpg'
   },
   {
     title: 'Green Livelihoods & Innovation',
     desc: 'Consultancy services, youth empowerment programs, and sustainable enterprise development.',
     icon: Sprout,
-    image: 'https://picsum.photos/seed/farming/600/400'
+    image: 'https://iili.io/fMclk92.jpg'
   },
   {
     title: 'Community Health & Well-being',
     desc: 'Improving health outcomes through clean energy and sustainable food systems.',
     icon: Heart,
-    image: 'https://picsum.photos/seed/health/600/400'
+    image: 'https://iili.io/fdCAigf.jpg'
   }
 ];
 

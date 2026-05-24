@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       tours.map((tour) => ({
         ...tour,
         id: tour._id.toString(),
-        image: tour.image || 'https://picsum.photos/seed/tour/800/600',
+        image: tour.image || 'https://iili.io/3ovy0N9.jpg',
         showOnHome: Boolean(tour.showOnHome),
         _id: undefined,
       }))

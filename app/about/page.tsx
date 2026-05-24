@@ -218,7 +218,7 @@ export default function AboutPage() {
                   {/* Background Image on Hover */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500">
                     <Image
-                      src="https://picsum.photos/seed/mission-bg/600/800"
+                      src="https://iili.io/fdC0KF9.jpg"
                       alt=""
                       fill
                       className="object-cover"
@@ -265,7 +265,7 @@ export default function AboutPage() {
                   {/* Background Image on Hover */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500">
                     <Image
-                      src="https://picsum.photos/seed/vision-bg/600/800"
+                      src="https://iili.io/3ovy0N9.jpg"
                       alt=""
                       fill
                       className="object-cover"
@@ -423,7 +423,7 @@ export default function AboutPage() {
               >
                 <div className="relative w-full h-[500px] md:h-[600px] rounded-[3rem] overflow-hidden shadow-2xl">
                   <Image
-                    src="https://picsum.photos/seed/about-nechabest/800/1000"
+                    src="https://iili.io/3oebjFS.jpg"
                     alt="Nechabest team in the field"
                     fill
                     className="object-cover"
@@ -487,7 +487,7 @@ export default function AboutPage() {
                 className="md:col-span-2 md:row-span-2 group relative overflow-hidden rounded-[2.5rem] h-[400px] md:h-full min-h-[500px]"
               >
                 <Image
-                  src="https://picsum.photos/seed/community-impact/1200/800"
+                  src="https://iili.io/fdC0KF9.jpg"
                   alt="Community initiatives"
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
@@ -517,7 +517,7 @@ export default function AboutPage() {
                 className="group relative overflow-hidden rounded-[2rem] h-[300px] md:h-[240px]"
               >
                 <Image
-                  src="https://picsum.photos/seed/renewable-energy/600/400"
+                  src="https://iili.io/f0xoXA7.png"
                   alt="Renewable energy projects"
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
@@ -539,7 +539,7 @@ export default function AboutPage() {
                 className="group relative overflow-hidden rounded-[2rem] h-[300px] md:h-[240px]"
               >
                 <Image
-                  src="https://picsum.photos/seed/agriculture/600/400"
+                  src="https://iili.io/fMclk92.jpg"
                   alt="Sustainable agriculture"
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
@@ -615,7 +615,7 @@ export default function AboutPage() {
               >
                 <div className="relative h-[350px] rounded-[2.5rem] overflow-hidden">
                   <Image
-                    src="https://picsum.photos/seed/partnerships/700/450"
+                    src="https://iili.io/fdCAigf.jpg"
                     alt="Partnership programs"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -648,7 +648,7 @@ export default function AboutPage() {
               >
                 <div className="relative h-[350px] rounded-[2.5rem] overflow-hidden">
                   <Image
-                    src="https://picsum.photos/seed/global-network/700/450"
+                    src="https://iili.io/F2JCsIf.jpg"
                     alt="Global network"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-700"

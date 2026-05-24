@@ -30,8 +30,8 @@ export async function GET(request: NextRequest) {
       blogs.map((blog) => ({
         ...blog,
         id: blog._id.toString(),
-        image: blog.image || 'https://picsum.photos/seed/blog/800/600',
-        avatar: blog.avatar || `https://picsum.photos/seed/${sanitizeString(blog.author, 50) || 'author'}/100/100`,
+        image: blog.image || 'https://iili.io/fdClSYg.png',
+        avatar: blog.avatar || `https://iili.io/ffrDkkN.png`,
         _id: undefined,
       }))
     );
