@@ -63,7 +63,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  output: 'standalone',
   transpilePackages: ['motion', '@clerk/nextjs', '@clerk/ui'],
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,
