@@ -84,6 +84,21 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${display.variable}`}>
       <body suppressHydrationWarning className="font-sans antialiased">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                  if (registrations.length > 0) {
+                    Promise.all(registrations.map(function(r) { return r.unregister(); })).then(function() {
+                      window.location.reload();
+                    });
+                  }
+                });
+              }
+            `,
+          }}
+        />
         <ChunkErrorHandler />
         <ChunkErrorBoundary>
           {useClerk ? (
