@@ -43,6 +43,10 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const host = request.headers.get('host') || 'nechabest.com';
+    const protocol = request.headers.get('x-forwarded-proto') || 'https';
+    const baseUrl = `${protocol}://${host}`;
+
     const adminCheck = await requireAdminAccess();
     if (!adminCheck.ok) {
       return secureJson({ error: adminCheck.error }, { status: adminCheck.status });
@@ -85,7 +89,7 @@ export async function POST(request: NextRequest) {
     db.collection('subscribers').find({ status: 'active' }).toArray().then((subscribers) => {
       if (!subscribers || subscribers.length === 0) return;
 
-      const blogUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://nechabest.com'}/blog`;
+      const blogUrl = `${baseUrl}/blog`;
 
       subscribers.forEach((sub) => {
         if (!sub.email) return;

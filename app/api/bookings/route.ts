@@ -17,6 +17,10 @@ import {
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
+  const host = request.headers.get('host') || 'nechabest.com';
+  const protocol = request.headers.get('x-forwarded-proto') || 'https';
+  const baseUrl = `${protocol}://${host}`;
+
   // CORS – only accept requests from our own origin
   const originError = checkOrigin(request, true);
   if (originError) return originError;
@@ -204,7 +208,7 @@ export async function POST(request: NextRequest) {
           ` : ''}
         </table>
         <div style="text-align: center; margin-top: 24px;">
-          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://nechabest.com'}/admin/bookings" style="background-color: #1a3c34; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Manage Bookings</a>
+          <a href="${baseUrl}/admin/bookings" style="background-color: #1a3c34; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Manage Bookings</a>
         </div>
       </div>
     `;

@@ -11,7 +11,7 @@ import {
   checkAdminRateLimit,
 } from '@/lib/apiSecurity';
 
-const BOOKING_STATUSES = ['pending', 'confirmed', 'cancelled'] as const;
+const BOOKING_STATUSES = ['pending', 'confirmed', 'completed', 'cancelled'] as const;
 
 export async function GET() {
   try {
@@ -109,7 +109,7 @@ export async function PATCH(request: NextRequest) {
     if ('status' in updateData) {
       const status = sanitizeEnum(updateData.status, BOOKING_STATUSES);
       if (!status) {
-        return secureJson({ error: 'Invalid status value. Must be pending, confirmed, or cancelled.' }, { status: 400 });
+        return secureJson({ error: 'Invalid status value. Must be pending, confirmed, completed, or cancelled.' }, { status: 400 });
       }
       safeUpdate.status = status;
     }
