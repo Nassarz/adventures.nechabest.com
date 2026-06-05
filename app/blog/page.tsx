@@ -216,22 +216,11 @@ export default function Blog() {
                         {/* Metadata */}
                         <div className="space-y-4 py-4 md:py-6 border-y border-black/10">
                           {post.author && (
-                            <div className="flex items-center gap-3">
-                              <Image
-                                src={post.avatar || `https://picsum.photos/seed/${post.author}/100/100`}
-                                alt={post.author}
-                                width={32}
-                                height={32}
-                                className="w-8 h-8 rounded-full object-cover"
-                                referrerPolicy="no-referrer"
-                                unoptimized
-                              />
-                              <div>
-                                <p className="font-bold text-primary text-sm">{post.author}</p>
-                                <div className="flex items-center gap-2 text-foreground/60 text-xs font-bold uppercase tracking-widest">
-                                  <Calendar className="w-3 h-3" />
-                                  {displayDate}
-                                </div>
+                            <div>
+                              <p className="font-bold text-primary text-sm mb-1">{post.author}</p>
+                              <div className="flex items-center gap-2 text-foreground/60 text-xs font-bold uppercase tracking-widest">
+                                <Calendar className="w-3 h-3" />
+                                {displayDate}
                               </div>
                             </div>
                           )}

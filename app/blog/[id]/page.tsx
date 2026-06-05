@@ -204,15 +204,6 @@ export default function BlogDetail() {
                 <div className="flex flex-wrap items-center gap-4 md:gap-6 text-white/80 text-sm">
                   {post.author && (
                     <div className="flex items-center gap-2">
-                      <Image
-                        src={displayAvatar}
-                        alt={post.author}
-                        width={40}
-                        height={40}
-                        className="rounded-full"
-                        referrerPolicy="no-referrer"
-                        unoptimized
-                      />
                       <span className="font-bold">{post.author}</span>
                     </div>
                   )}
@@ -307,15 +298,6 @@ export default function BlogDetail() {
                 className="mt-16 p-8 bg-slate-50 rounded-2xl"
               >
                 <div className="flex items-start gap-4">
-                  <Image
-                    src={displayAvatar}
-                    alt={post.author}
-                    width={80}
-                    height={80}
-                    className="rounded-full"
-                    referrerPolicy="no-referrer"
-                    unoptimized
-                  />
                   <div>
                     <h3 className="font-bold text-xl text-primary mb-2">{post.author}</h3>
                     <p className="text-foreground/60 leading-relaxed">

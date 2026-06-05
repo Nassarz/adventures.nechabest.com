@@ -187,22 +187,11 @@ export default function AdminBlogs() {
                       <tr key={blog.id} className="border-b border-black/5 hover:bg-black/2 transition-all">
                         <td className="px-6 py-4 text-black font-medium">{blog.title}</td>
                         <td className="px-6 py-4 text-black/60">
-                          <div className="flex items-center gap-2">
-                            <Image
-                              src={blog.avatar || `https://picsum.photos/seed/${blog.author || 'author'}/100/100`}
-                              alt={blog.author || 'Author'}
-                              width={28}
-                              height={28}
-                              className="rounded-full object-cover"
-                              referrerPolicy="no-referrer"
-                              unoptimized
-                            />
-                            <div className="leading-tight">
-                              <p>{blog.author}</p>
-                              {blog.createdByEmail && (
-                                <p className="text-[11px] text-black/40">{blog.createdByEmail}</p>
-                              )}
-                            </div>
+                          <div className="leading-tight">
+                            <p className="font-semibold text-black">{blog.author}</p>
+                            {blog.createdByEmail && (
+                              <p className="text-[11px] text-black/40">{blog.createdByEmail}</p>
+                            )}
                           </div>
                         </td>
                         <td className="px-6 py-4">
