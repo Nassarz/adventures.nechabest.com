@@ -13,6 +13,9 @@ const bookingsTransporter = nodemailer.createTransport({
     user: process.env.SMTP_USER_BOOKINGS || 'bookings@nechabest.com',
     pass: process.env.SMTP_PASS_BOOKINGS || '@Nechabest256256',
   },
+  tls: {
+    rejectUnauthorized: false
+  },
   connectionTimeout: 10000,
   greetingTimeout: 10000,
   socketTimeout: 15000,
@@ -26,6 +29,9 @@ const infoTransporter = nodemailer.createTransport({
   auth: {
     user: process.env.SMTP_USER_INFO || 'info@nechabest.com',
     pass: process.env.SMTP_PASS_INFO || '@Nechabest256256',
+  },
+  tls: {
+    rejectUnauthorized: false
   },
   connectionTimeout: 10000,
   greetingTimeout: 10000,
