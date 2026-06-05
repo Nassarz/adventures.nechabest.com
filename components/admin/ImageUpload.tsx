@@ -35,27 +35,25 @@ export default function ImageUpload({
       const formData = new FormData();
       formData.append('image', file);
 
-      // Using the user's active ImgBB API key
-      const response = await fetch(
-        `https://api.imgbb.com/1/upload?key=b400337dee97dbf5b40fb009d19259f6`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      );
+      // Using the local secure upload proxy API
+      const response = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to upload image to ImgBB');
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to upload image');
       }
 
       const resData = await response.json();
-      if (resData.success && resData.data?.url) {
-        onChange(resData.data.url);
+      if (resData.success && resData.url) {
+        onChange(resData.url);
       } else {
-        throw new Error(resData.error?.message || 'Upload failed');
+        throw new Error(resData.error || 'Upload failed');
       }
     } catch (err) {
-      console.error('ImgBB upload error:', err);
+      console.error('Upload error:', err);
       setError(err instanceof Error ? err.message : 'Something went wrong during upload');
     } finally {
       setLoading(false);
