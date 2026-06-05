@@ -6,6 +6,7 @@ import { Plus, Edit, Trash2, Search, X } from 'lucide-react';
 import Image from 'next/image';
 import AdminLayout from '@/components/admin/AdminLayout';
 import AdminHeader from '@/components/admin/AdminHeader';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 interface Blog {
   id?: string;
@@ -330,14 +331,12 @@ export default function AdminBlogs() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-black font-bold mb-2">Image URL</label>
-                    <input
-                      type="url"
+                  <div className="flex flex-col justify-end">
+                    <ImageUpload
+                      label="Cover Image"
                       value={formData.image}
-                      onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                      placeholder="Image URL"
-                      className="w-full px-4 py-2 border border-black/10 rounded-lg focus:outline-none focus:border-nature"
+                      onChange={(url) => setFormData({ ...formData, image: url })}
+                      placeholder="Upload blog cover image to ImgBB"
                     />
                   </div>
                   <div>

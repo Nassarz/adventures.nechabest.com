@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Send, Lock, Bell, Eye, RefreshCw } from 'lucide-react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import AdminHeader from '@/components/admin/AdminHeader';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 interface SiteContent {
   id: string;
@@ -227,27 +228,48 @@ export default function AdminSettings() {
             <div className="space-y-4 max-h-96 overflow-y-auto">
               {siteContent
                 .filter(item => !['global.nav.logoText', 'global.nav.ctaLabel', 'global.footer.tagline', 'global.footer.emailPrimary', 'global.footer.phone'].includes(item.key))
-                .map((item) => (
-                <div key={item.id} className="p-4 bg-black/2 rounded-lg">
-                  <label className="block text-black font-medium mb-2">{item.label}</label>
-                  <p className="text-black/50 text-xs mb-2">{item.section} • {item.key}</p>
-                  {item.type === 'textarea' ? (
-                    <textarea
-                      value={editedValues[item.id] !== undefined ? editedValues[item.id] : item.value}
-                      onChange={(e) => handleChange(item.id, e.target.value)}
-                      rows={3}
-                      className="w-full px-3 py-2 border border-black/10 rounded-lg focus:outline-none focus:border-nature text-sm"
-                    />
-                  ) : (
-                    <input
-                      type={item.type === 'url' ? 'url' : 'text'}
-                      value={editedValues[item.id] !== undefined ? editedValues[item.id] : item.value}
-                      onChange={(e) => handleChange(item.id, e.target.value)}
-                      className="w-full px-3 py-2 border border-black/10 rounded-lg focus:outline-none focus:border-nature text-sm"
-                    />
-                  )}
-                </div>
-              ))}
+                .map((item) => {
+                  const isImage = item.key.toLowerCase().includes('image') ||
+                                  item.key.toLowerCase().includes('logo') ||
+                                  item.key.toLowerCase().includes('banner') ||
+                                  item.label.toLowerCase().includes('image') ||
+                                  item.label.toLowerCase().includes('logo') ||
+                                  item.label.toLowerCase().includes('banner') ||
+                                  item.type === 'image' ||
+                                  (item.type === 'url' && (
+                                    item.value.match(/\.(jpeg|jpg|gif|png|webp|svg)/i) ||
+                                    item.key.toLowerCase().includes('img') ||
+                                    item.key.toLowerCase().includes('photo')
+                                  ));
+
+                  return (
+                    <div key={item.id} className="p-4 bg-black/2 rounded-lg">
+                      <label className="block text-black font-medium mb-2">{item.label}</label>
+                      <p className="text-black/50 text-xs mb-2">{item.section} • {item.key}</p>
+                      {isImage ? (
+                        <ImageUpload
+                          value={editedValues[item.id] !== undefined ? editedValues[item.id] : item.value}
+                          onChange={(url) => handleChange(item.id, url)}
+                          placeholder={`Upload image for ${item.label}`}
+                        />
+                      ) : item.type === 'textarea' ? (
+                        <textarea
+                          value={editedValues[item.id] !== undefined ? editedValues[item.id] : item.value}
+                          onChange={(e) => handleChange(item.id, e.target.value)}
+                          rows={3}
+                          className="w-full px-3 py-2 border border-black/10 rounded-lg focus:outline-none focus:border-nature text-sm"
+                        />
+                      ) : (
+                        <input
+                          type={item.type === 'url' ? 'url' : 'text'}
+                          value={editedValues[item.id] !== undefined ? editedValues[item.id] : item.value}
+                          onChange={(e) => handleChange(item.id, e.target.value)}
+                          className="w-full px-3 py-2 border border-black/10 rounded-lg focus:outline-none focus:border-nature text-sm"
+                        />
+                      )}
+                    </div>
+                  );
+                })}
             </div>
           </motion.div>
 

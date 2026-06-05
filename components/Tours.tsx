@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Heart, Star, MapPin, Navigation, Wind, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import { useRouter } from 'next/navigation';
 
 interface Tour {
   id: string;
@@ -22,6 +23,7 @@ interface Tour {
 }
 
 export default function Tours() {
+  const router = useRouter();
   const { get } = useSiteContent('home');
   const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(true);
@@ -109,10 +111,11 @@ export default function Tours() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                  className="group bg-white rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-black/10 will-change-transform"
+                  onClick={() => router.push(`/eco-tourism/${tour.id}`)}
+                  className="group bg-white rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-black/10 cursor-pointer will-change-transform"
                 >
                   {/* Image Header */}
-                  <div className="aspect-[1.1/1] relative overflow-hidden">
+                  <div className="block aspect-[1.1/1] relative overflow-hidden">
                     <Image
                       src={tour.image || 'https://picsum.photos/seed/tour/800/600'}
                       alt={tour.title}
@@ -131,7 +134,10 @@ export default function Tours() {
                       </div>
                     )}
                     
-                    <button className="absolute top-6 right-6 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/20 backdrop-blur-xl flex items-center justify-center text-white hover:bg-nature hover:text-white transition-all border border-white/30">
+                    <button 
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute top-6 right-6 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/20 backdrop-blur-xl flex items-center justify-center text-white hover:bg-nature hover:text-white transition-all border border-white/30"
+                    >
                       <Heart className="w-4 h-4 md:w-5 md:h-5" />
                     </button>
                   </div>
@@ -140,9 +146,11 @@ export default function Tours() {
                   <div className="p-8 md:p-10 space-y-6 md:space-y-8">
                     <div className="space-y-3 md:space-y-4">
                       <div className="flex justify-between items-start">
-                        <h3 className="font-display text-2xl md:text-3xl font-bold text-primary leading-tight group-hover:text-nature transition-colors tracking-tight">
-                          {tour.title}
-                        </h3>
+                        <div className="block">
+                          <h3 className="font-display text-2xl md:text-3xl font-bold text-primary leading-tight group-hover:text-nature transition-colors tracking-tight">
+                            {tour.title}
+                          </h3>
+                        </div>
                         {tour.rating && (
                           <div className="flex items-center gap-1 pt-1">
                             <Star className="w-3 h-3 md:w-4 md:h-4 text-nature fill-nature" />
@@ -174,21 +182,24 @@ export default function Tours() {
                       ))}
                     </div>
 
-                    <div className="flex items-center justify-between pt-2 md:pt-4">
+                    <div className="flex items-center justify-between pt-2 md:pt-4 gap-2">
                       <div className="flex flex-col">
                         <span className="text-[9px] md:text-[10px] text-foreground/40 font-bold uppercase tracking-widest">Starting from</span>
-                            <span className="text-2xl md:text-3xl font-bold text-primary">
-                              {typeof tour.price === 'number' ? `$${tour.price}` : tour.price}
-                            </span>
+                        <span className="text-2xl md:text-3xl font-bold text-primary">
+                          {typeof tour.price === 'number' ? `$${tour.price}` : tour.price}
+                        </span>
                       </div>
-                      <motion.a
-                        href={`/booking?tour=${tour.id}`}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-6 py-3 md:px-8 md:py-4 rounded-full bg-nature text-white font-bold text-xs md:text-sm shadow-lg hover:bg-primary transition-all flex items-center gap-2"
-                      >
-                        Book Now <Navigation className="w-3 h-3 md:w-4 md:h-4 rotate-45" />
-                      </motion.a>
+                      <div className="flex gap-2">
+                        <motion.a
+                          href={`/booking?tour=${tour.id}`}
+                          onClick={(e) => e.stopPropagation()}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="px-4 py-2.5 md:px-6 md:py-3.5 rounded-full bg-nature text-white font-bold text-xs md:text-sm shadow-lg hover:bg-primary transition-all flex items-center justify-center gap-1"
+                        >
+                          Book Now <Navigation className="w-3.5 h-3.5 rotate-45" />
+                        </motion.a>
+                      </div>
                     </div>
                   </div>
                 </motion.div>

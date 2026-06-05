@@ -11,6 +11,7 @@ import { MapPin, Calendar, Users, Leaf, Heart, Star, TrendingUp, Award, Droplets
 import Image from 'next/image';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import HeroSlideshow from '@/components/HeroSlideshow';
+import { useRouter } from 'next/navigation';
 
 interface Tour {
   id: string;
@@ -59,6 +60,7 @@ const benefits = [
 ];
 
 export default function EcoTourismPage() {
+  const router = useRouter();
   const [tours, setTours] = useState<Tour[]>([]);
   const [loadingTours, setLoadingTours] = useState(true);
   const [toursError, setToursError] = useState('');
@@ -247,9 +249,12 @@ export default function EcoTourismPage() {
                     whileHover={{ y: -10 }}
                     className="group"
                   >
-                  <div className="relative h-full rounded-[2.5rem] overflow-hidden bg-white border border-black/5 shadow-lg hover:shadow-2xl transition-all duration-500">
+                  <div 
+                    onClick={() => router.push(`/eco-tourism/${tour.id}`)}
+                    className="relative h-full rounded-[2.5rem] overflow-hidden bg-white border border-black/5 shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer"
+                  >
                     {/* Image */}
-                    <div className="relative h-48 md:h-56 overflow-hidden">
+                    <div className="block relative h-48 md:h-56 overflow-hidden">
                       <Image
                         src={tour.image}
                         alt={tour.title}
@@ -273,9 +278,11 @@ export default function EcoTourismPage() {
                     {/* Content */}
                     <div className="p-6 md:p-8 space-y-4">
                       <div>
-                        <h3 className="font-display text-2xl font-bold text-primary mb-2 group-hover:text-nature transition-colors">
-                          {tour.title}
-                        </h3>
+                        <div className="block">
+                          <h3 className="font-display text-2xl font-bold text-primary mb-2 group-hover:text-nature transition-colors">
+                            {tour.title}
+                          </h3>
+                        </div>
                         <div className="flex items-center gap-2 text-foreground/70 mb-4">
                           <MapPin className="w-4 h-4 text-nature" />
                           <span className="font-semibold">{tour.location}</span>
@@ -308,21 +315,24 @@ export default function EcoTourismPage() {
                       </div>
 
                       {/* Price & CTA */}
-                      <div className="flex items-center justify-between pt-4 border-t border-black/5">
+                      <div className="flex items-center justify-between pt-4 border-t border-black/5 gap-2">
                         <div>
                           <div className="text-xs text-foreground/60 font-semibold">Starting from</div>
                           <div className="text-3xl font-bold text-primary">
                             {typeof tour.price === 'number' ? `$${tour.price}` : tour.price}
                           </div>
                         </div>
-                        <motion.a
-                          href={`/booking?tour=${tour.id}`}
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="px-6 py-3 rounded-full bg-nature text-white font-bold hover:bg-primary transition-all shadow-lg"
-                        >
-                          Book Now
-                        </motion.a>
+                        <div className="flex gap-2">
+                          <motion.a
+                            href={`/booking?tour=${tour.id}`}
+                            onClick={(e) => e.stopPropagation()}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="px-4 py-2.5 rounded-full bg-nature text-white font-bold text-xs hover:bg-primary transition-all shadow-md flex items-center justify-center"
+                          >
+                            Book Now
+                          </motion.a>
+                        </div>
                       </div>
                     </div>
                   </div>

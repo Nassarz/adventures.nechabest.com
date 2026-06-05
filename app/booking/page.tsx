@@ -107,6 +107,7 @@ export default function Booking() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
+  const [confirmedCheckbox, setConfirmedCheckbox] = useState(false);
 
   useEffect(() => {
     const fetchTours = async () => {
@@ -149,9 +150,6 @@ export default function Booking() {
       if (!bookingData.tourId) newErrors.tourId = 'Please select a tour';
       if (!bookingData.startDate) newErrors.startDate = 'Please select a start date';
       if (bookingData.numberOfPeople < 1) newErrors.numberOfPeople = 'At least 1 person required';
-      if (selectedTour && bookingData.numberOfPeople > selectedTour.maxPeople) {
-        newErrors.numberOfPeople = `Maximum ${selectedTour.maxPeople} people allowed`;
-      }
     }
 
     if (currentStep === 2) {
@@ -160,6 +158,12 @@ export default function Booking() {
       else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bookingData.email)) newErrors.email = 'Invalid email format';
       if (!bookingData.phone.trim()) newErrors.phone = 'Phone number is required';
       else if (!/^[\d\s\-\+\(\)]+$/.test(bookingData.phone)) newErrors.phone = 'Invalid phone format';
+    }
+
+    if (currentStep === 3) {
+      if (!confirmedCheckbox) {
+        newErrors.submit = 'You must confirm the details and contact terms to proceed with your booking.';
+      }
     }
 
     setErrors(newErrors);
@@ -318,7 +322,7 @@ export default function Booking() {
         {/* Booking Form */}
         <section className="py-16 md:py-24 bg-white">
           <div className="max-w-6xl mx-auto px-4 md:px-12">
-            {/* Step 1: Tour Selection */}
+            {/* Step 1: Tour Selection / Booking Details */}
             {step === 1 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -326,140 +330,188 @@ export default function Booking() {
                 transition={{ duration: 0.6 }}
                 className="space-y-8"
               >
-                <div className="text-center space-y-2">
-                  <h2 className="font-display text-3xl md:text-5xl font-bold text-primary">Select Your Tour</h2>
-                  <p className="text-foreground/60 text-lg">Choose the adventure that speaks to you</p>
-                </div>
+                {selectedTour ? (
+                  <div className="space-y-8">
+                    <div className="flex items-center justify-between border-b border-black/10 pb-4">
+                      <div className="space-y-1">
+                        <h2 className="font-display text-2xl md:text-4xl font-bold text-primary">Tour Details & Booking</h2>
+                        <p className="text-foreground/60 text-sm md:text-base">Provide your preferred dates and group size to proceed</p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setSelectedTour(null);
+                          setBookingData((prev) => ({ ...prev, tourId: '' }));
+                        }}
+                        className="text-nature font-bold text-sm hover:underline flex items-center gap-1"
+                      >
+                        Change Tour
+                      </button>
+                    </div>
 
-                {errors.tourId && <p className="text-red-600 text-center font-medium flex items-center justify-center gap-1"><AlertCircle className="w-4 h-4" /> {errors.tourId}</p>}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-start">
+                      {/* Left: Selected Tour Info */}
+                      <div className="lg:col-span-5 bg-slate-50 border border-black/5 rounded-3xl overflow-hidden shadow-md">
+                        <div className="aspect-[4/3] relative">
+                          <Image
+                            src={selectedTour.image}
+                            alt={selectedTour.title}
+                            fill
+                            className="object-cover"
+                            unoptimized
+                            referrerPolicy="no-referrer"
+                          />
+                        </div>
+                        <div className="p-6 md:p-8 space-y-4">
+                          <h3 className="font-display text-xl md:text-2xl font-bold text-primary leading-tight">{selectedTour.title}</h3>
+                          <div className="space-y-3 text-sm font-semibold">
+                            <div className="flex items-center gap-2 text-foreground/60">
+                              <MapPin className="w-4 h-4 text-nature" />
+                              {selectedTour.location}
+                            </div>
+                            <div className="flex items-center gap-2 text-foreground/60">
+                              <Clock className="w-4 h-4 text-nature" />
+                              {selectedTour.duration}
+                            </div>
+                            <div className="flex items-center gap-2 text-foreground/60">
+                              <Users className="w-4 h-4 text-nature" />
+                              Group size: Flexible
+                            </div>
+                          </div>
+                          <div className="pt-4 border-t border-black/10 flex justify-between items-center">
+                            <span className="text-foreground/60 text-xs font-bold uppercase tracking-widest">Price per person</span>
+                            <span className="text-xl font-bold text-primary">${selectedTour.price}</span>
+                          </div>
+                        </div>
+                      </div>
 
-                {loadingTours ? (
-                  <div className="flex justify-center py-16">
-                    <Loader2 className="w-10 h-10 animate-spin text-nature" />
-                  </div>
-                ) : toursError ? (
-                  <div className="text-center py-10">
-                    <p className="text-red-600 font-semibold">{toursError}</p>
-                  </div>
-                ) : tours.length === 0 ? (
-                  <div className="text-center py-10">
-                    <p className="text-foreground/70 font-semibold">No tours available yet.</p>
+                      {/* Right: Date & Number of People */}
+                      <div className="lg:col-span-7 space-y-6 bg-slate-50/50 border border-black/5 rounded-3xl p-6 md:p-8 shadow-sm">
+                        <h4 className="font-bold text-lg text-primary">Booking Configuration</h4>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-2">
+                            <label className="block font-bold text-foreground text-sm">Preferred Start Date *</label>
+                            <input
+                              type="date"
+                              name="startDate"
+                              value={bookingData.startDate}
+                              onChange={handleChange}
+                              min={new Date().toISOString().split('T')[0]}
+                              autoComplete="off"
+                              className={`w-full px-4 py-3 rounded-xl border-2 font-medium transition focus:outline-none bg-white ${
+                                errors.startDate ? 'border-red-300 bg-red-50' : 'border-slate-200 focus:border-primary'
+                              }`}
+                            />
+                            {errors.startDate && <p className="text-red-600 text-xs font-medium flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.startDate}</p>}
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="block font-bold text-foreground text-sm">Number of People *</label>
+                            <input
+                              type="number"
+                              name="numberOfPeople"
+                              value={bookingData.numberOfPeople}
+                              onChange={handleChange}
+                              min={1}
+                              autoComplete="off"
+                              className={`w-full px-4 py-3 rounded-xl border-2 font-medium transition focus:outline-none bg-white ${
+                                errors.numberOfPeople ? 'border-red-300 bg-red-50' : 'border-slate-200 focus:border-primary'
+                              }`}
+                            />
+                            {errors.numberOfPeople && <p className="text-red-600 text-xs font-medium flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.numberOfPeople}</p>}
+                          </div>
+                        </div>
+
+                        <div className="pt-6 border-t border-black/10 flex justify-between items-center">
+                          <span className="text-lg font-bold text-foreground/60">Total Estimated Price:</span>
+                          <span className="text-3xl md:text-4xl font-extrabold text-nature">${totalPrice}</span>
+                        </div>
+
+                        <div className="flex justify-end pt-4">
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={nextStep}
+                            className="bg-gradient-to-r from-primary to-nature text-white font-bold py-4 px-12 rounded-xl hover:shadow-xl transition-all"
+                          >
+                            Continue to Personal Details →
+                          </motion.button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                  {tours.map((tour, i) => (
-                    <motion.div
-                      key={tour.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.1, duration: 0.5 }}
-                      onClick={() => handleTourSelect(tour)}
-                      className={`group cursor-pointer rounded-2xl md:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border-2 ${
-                        selectedTour?.id === tour.id ? 'border-nature ring-4 ring-nature/20' : 'border-black/10 hover:border-nature/50'
-                      }`}
-                    >
-                      <div className="aspect-[4/3] relative">
-                        <Image
-                          src={tour.image}
-                          alt={tour.title}
-                          fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-1000"
-                          referrerPolicy="no-referrer"
-                        />
-                        {selectedTour?.id === tour.id && (
-                          <div className="absolute top-4 right-4 w-8 h-8 md:w-10 md:h-10 bg-nature rounded-full flex items-center justify-center">
-                            <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-white" />
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="p-6 md:p-8 space-y-4">
-                        <h3 className="font-display text-xl md:text-2xl font-bold text-primary">{tour.title}</h3>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex items-center gap-2 text-foreground/60">
-                            <MapPin className="w-4 h-4 text-nature" />
-                            {tour.location}
-                          </div>
-                          <div className="flex items-center gap-2 text-foreground/60">
-                            <Clock className="w-4 h-4 text-nature" />
-                            {tour.duration}
-                          </div>
-                          <div className="flex items-center gap-2 text-foreground/60">
-                            <Users className="w-4 h-4 text-nature" />
-                            Max {tour.maxPeople} people
-                          </div>
-                        </div>
-                        <div className="pt-4 border-t border-black/10">
-                          <div className="flex items-center justify-between">
-                            <span className="text-foreground/60 text-sm font-bold uppercase tracking-widest">Price</span>
-                            <span className="text-2xl font-bold text-primary">${tour.price}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-                )}
-
-                {selectedTour && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="bg-slate-50 rounded-2xl p-6 md:p-8 space-y-6"
-                  >
-                    <h3 className="font-bold text-xl text-primary">Tour Details</h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label className="block font-bold text-foreground text-sm">Start Date *</label>
-                        <input
-                          type="date"
-                          name="startDate"
-                          value={bookingData.startDate}
-                          onChange={handleChange}
-                          min={new Date().toISOString().split('T')[0]}                        autoComplete="off"                          className={`w-full px-4 py-3 rounded-xl border-2 font-medium transition focus:outline-none ${
-                            errors.startDate ? 'border-red-300 bg-red-50' : 'border-slate-200 focus:border-primary'
-                          }`}
-                        />
-                        {errors.startDate && <p className="text-red-600 text-xs font-medium flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.startDate}</p>}
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="block font-bold text-foreground text-sm">Number of People *</label>
-                        <input
-                          type="number"
-                          name="numberOfPeople"
-                          value={bookingData.numberOfPeople}
-                          onChange={handleChange}
-                          min={1}
-                          max={selectedTour.maxPeople}
-                          autoComplete="off"
-                          className={`w-full px-4 py-3 rounded-xl border-2 font-medium transition focus:outline-none ${
-                            errors.numberOfPeople ? 'border-red-300 bg-red-50' : 'border-slate-200 focus:border-primary'
-                          }`}
-                        />
-                        {errors.numberOfPeople && <p className="text-red-600 text-xs font-medium flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.numberOfPeople}</p>}
-                      </div>
+                  <div className="space-y-8">
+                    <div className="text-center space-y-2">
+                      <h2 className="font-display text-3xl md:text-5xl font-bold text-primary">Select Your Tour</h2>
+                      <p className="text-foreground/60 text-lg">Choose the adventure that speaks to you</p>
                     </div>
 
-                    <div className="flex items-center justify-between pt-6 border-t border-black/10">
-                      <span className="text-lg font-bold text-foreground/60">Total Price:</span>
-                      <span className="text-3xl md:text-4xl font-bold text-primary">${totalPrice}</span>
-                    </div>
-                  </motion.div>
-                )}
+                    {errors.tourId && <p className="text-red-600 text-center font-medium flex items-center justify-center gap-1"><AlertCircle className="w-4 h-4" /> {errors.tourId}</p>}
 
-                <div className="flex justify-end">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={nextStep}
-                    className="bg-gradient-to-r from-primary to-nature text-white font-bold py-4 px-12 rounded-xl hover:shadow-xl transition-all"
-                  >
-                    Continue to Personal Details →
-                  </motion.button>
-                </div>
+                    {loadingTours ? (
+                      <div className="flex justify-center py-16">
+                        <Loader2 className="w-10 h-10 animate-spin text-nature" />
+                      </div>
+                    ) : toursError ? (
+                      <div className="text-center py-10">
+                        <p className="text-red-600 font-semibold">{toursError}</p>
+                      </div>
+                    ) : tours.length === 0 ? (
+                      <div className="text-center py-10">
+                        <p className="text-foreground/70 font-semibold">No tours available yet.</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                        {tours.map((tour, i) => (
+                          <motion.div
+                            key={tour.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.1, duration: 0.5 }}
+                            onClick={() => handleTourSelect(tour)}
+                            className="group cursor-pointer rounded-2xl md:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border-2 border-black/10 hover:border-nature/50 bg-white"
+                          >
+                            <div className="aspect-[4/3] relative">
+                              <Image
+                                src={tour.image}
+                                alt={tour.title}
+                                fill
+                                className="object-cover group-hover:scale-110 transition-transform duration-1000"
+                                unoptimized
+                                referrerPolicy="no-referrer"
+                              />
+                            </div>
+
+                            <div className="p-6 md:p-8 space-y-4">
+                              <h3 className="font-display text-xl md:text-2xl font-bold text-primary leading-tight">{tour.title}</h3>
+                              <div className="space-y-2 text-sm font-semibold">
+                                <div className="flex items-center gap-2 text-foreground/60">
+                                  <MapPin className="w-4 h-4 text-nature" />
+                                  {tour.location}
+                                </div>
+                                <div className="flex items-center gap-2 text-foreground/60">
+                                  <Clock className="w-4 h-4 text-nature" />
+                                  {tour.duration}
+                                </div>
+                                <div className="flex items-center gap-2 text-foreground/60">
+                                  <Users className="w-4 h-4 text-nature" />
+                                  Group size: Flexible
+                                </div>
+                              </div>
+                              <div className="pt-4 border-t border-black/10">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-foreground/60 text-sm font-bold uppercase tracking-widest">Price</span>
+                                  <span className="text-2xl font-bold text-primary">${tour.price}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </motion.div>
             )}
 
@@ -657,14 +709,22 @@ export default function Booking() {
                     </div>
 
                     {/* Confirmation Checkbox */}
-                    <div className="bg-white rounded-lg p-6">
+                    <div className={`bg-white rounded-lg p-6 transition-colors duration-300 ${errors.submit && !confirmedCheckbox ? 'border-2 border-red-300 bg-red-50/20' : ''}`}>
                       <label className="flex items-start gap-3 cursor-pointer">
                         <input
                           type="checkbox"
-                          required
-                          className="w-5 h-5 mt-1 cursor-pointer"
+                          checked={confirmedCheckbox}
+                          onChange={(e) => {
+                            setConfirmedCheckbox(e.target.checked);
+                            if (errors.submit) {
+                              const newErrors = { ...errors };
+                              delete newErrors.submit;
+                              setErrors(newErrors);
+                            }
+                          }}
+                          className="w-5 h-5 mt-1 cursor-pointer accent-nature"
                         />
-                        <span className="text-sm text-foreground/70">
+                        <span className="text-sm text-foreground/70 select-none">
                           I confirm that all the information above is correct and I understand that our team will contact me to finalize the booking and arrange payment.
                         </span>
                       </label>

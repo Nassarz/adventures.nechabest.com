@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     const phone = sanitizePhone(body.phone);
     const tourId = sanitizeString(body.tourId, 100);
     const tourTitle = sanitizeString(body.tourTitle, 200);
-    const numberOfPeople = sanitizePositiveInt(body.numberOfPeople, 1, 100);
+    const numberOfPeople = sanitizePositiveInt(body.numberOfPeople, 1, 10000);
     const totalPrice = sanitizeNumber(body.totalPrice);
     const specialRequests = sanitizeString(body.specialRequests, 1000);
     const bookingDate = sanitizeString(body.bookingDate, 50);

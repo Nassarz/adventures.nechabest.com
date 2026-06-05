@@ -16,6 +16,7 @@ const TOUR_UPDATABLE_FIELDS = [
   'title', 'description', 'location', 'price', 'duration',
   'image', 'maxPeople', 'group', 'published', 'showOnHome',
   'highlights', 'includes', 'excludes', 'itinerary', 'category',
+  'gallery',
 ] as const;
 
 export async function GET() {
@@ -62,14 +63,21 @@ export async function POST(request: NextRequest) {
       price: sanitizeNumber(body.price),
       duration: sanitizeString(body.duration, 100),
       image: sanitizeString(body.image, 2048),
-      maxPeople: sanitizePositiveInt(body.maxPeople, 1, 500),
+      maxPeople: sanitizePositiveInt(body.maxPeople, 1, 10000) || 1000,
       group: sanitizeString(body.group, 100),
       published: body.published ?? true,
       showOnHome: Boolean(body.showOnHome),
       highlights: Array.isArray(body.highlights) ? body.highlights.map((h: unknown) => sanitizeString(h, 500)) : [],
       includes: Array.isArray(body.includes) ? body.includes.map((i: unknown) => sanitizeString(i, 500)) : [],
       excludes: Array.isArray(body.excludes) ? body.excludes.map((e: unknown) => sanitizeString(e, 500)) : [],
-      itinerary: sanitizeString(body.itinerary, 10000),
+      itinerary: Array.isArray(body.itinerary)
+        ? body.itinerary.map((item: any) => ({
+            day: sanitizePositiveInt(item.day, 1, 100) || 1,
+            title: sanitizeString(item.title, 500) || '',
+            description: sanitizeString(item.description, 2000) || '',
+          }))
+        : [],
+      gallery: Array.isArray(body.gallery) ? body.gallery.map((g: unknown) => sanitizeString(g, 2048)) : [],
       category: sanitizeString(body.category, 100),
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -118,13 +126,25 @@ export async function PATCH(request: NextRequest) {
       } else if (field === 'price') {
         safeUpdate[field] = sanitizeNumber(updateData[field]);
       } else if (field === 'maxPeople') {
-        safeUpdate[field] = sanitizePositiveInt(updateData[field], 1, 500);
+        safeUpdate[field] = sanitizePositiveInt(updateData[field], 1, 10000);
       } else if (field === 'highlights' || field === 'includes' || field === 'excludes') {
         safeUpdate[field] = Array.isArray(updateData[field])
           ? (updateData[field] as unknown[]).map((v) => sanitizeString(v, 500))
           : [];
+      } else if (field === 'gallery') {
+        safeUpdate[field] = Array.isArray(updateData[field])
+          ? (updateData[field] as unknown[]).map((v) => sanitizeString(v, 2048))
+          : [];
+      } else if (field === 'itinerary') {
+        safeUpdate[field] = Array.isArray(updateData[field])
+          ? (updateData[field] as any[]).map((item) => ({
+              day: sanitizePositiveInt(item.day, 1, 100) || 1,
+              title: sanitizeString(item.title, 500) || '',
+              description: sanitizeString(item.description, 2000) || '',
+            }))
+          : [];
       } else {
-        safeUpdate[field] = sanitizeString(updateData[field], field === 'description' || field === 'itinerary' ? 10000 : 2048);
+        safeUpdate[field] = sanitizeString(updateData[field], field === 'description' ? 5000 : 2048);
       }
     }
 
