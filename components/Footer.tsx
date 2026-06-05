@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Facebook, Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin, ArrowRight, Calendar } from 'lucide-react';
 import Link from 'next/link';
@@ -10,6 +10,52 @@ import { useSiteContent } from '@/hooks/useSiteContent';
 export default function Footer() {
   const { get } = useSiteContent('home');
   const currentYear = new Date().getFullYear();
+
+  const [email, setEmail] = useState('');
+  const [gotcha, setGotcha] = useState(''); // Honeypot
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setSuccess(false);
+    setLoading(true);
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          _gotcha: gotcha,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || data.message || 'Failed to subscribe.');
+      }
+
+      setSuccess(true);
+      setEmail('');
+    } catch (err: any) {
+      setError(err.message || 'Failed to subscribe. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <footer className="bg-[#1A3C34] text-white pt-24 pb-8 overflow-hidden relative border-t border-white/10">
@@ -161,16 +207,56 @@ export default function Footer() {
             </div>
           </div>
           <div className="relative">
-            <div className="flex flex-col sm:flex-row gap-3">
+            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3">
               <input 
                 type="email" 
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setError('');
+                  setSuccess(false);
+                }}
                 placeholder="Enter your email" 
-                className="flex-1 bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white placeholder:text-white/20 focus:outline-none focus:border-nature/50 transition-all font-medium"
+                required
+                disabled={loading}
+                className="flex-1 bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white placeholder:text-white/20 focus:outline-none focus:border-nature/50 transition-all font-medium disabled:opacity-50"
               />
-              <button className="px-8 py-4 rounded-2xl bg-nature text-black font-bold hover:bg-white transition-all flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(0,255,0,0.1)]">
-                Subscribe <ArrowRight className="w-4 h-4" />
+              <input
+                type="text"
+                name="_gotcha"
+                value={gotcha}
+                onChange={(e) => setGotcha(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                style={{
+                  position: 'absolute',
+                  left: '-9999px',
+                  width: '1px',
+                  height: '1px',
+                  opacity: 0,
+                  pointerEvents: 'none'
+                }}
+                aria-hidden="true"
+              />
+              <button 
+                type="submit"
+                disabled={loading}
+                className="px-8 py-4 rounded-2xl bg-nature text-black font-bold hover:bg-white transition-all flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(0,255,0,0.1)] disabled:opacity-50"
+              >
+                {loading ? 'Subscribing...' : 'Subscribe'} <ArrowRight className="w-4 h-4" />
               </button>
-            </div>
+            </form>
+            
+            {success && (
+              <p className="text-nature text-xs font-bold mt-2">
+                Thank you for subscribing!
+              </p>
+            )}
+            {error && (
+              <p className="text-red-400 text-xs font-bold mt-2">
+                {error}
+              </p>
+            )}
           </div>
         </div>
 

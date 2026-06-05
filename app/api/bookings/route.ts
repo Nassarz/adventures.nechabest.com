@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { getDb } from '@/lib/mongodb';
+import { sendEmail } from '@/lib/email';
 import {
   checkRateLimit,
   getClientIdentifier,
@@ -108,18 +109,113 @@ export async function POST(request: NextRequest) {
 
     const result = await db.collection('bookings').insertOne(booking);
 
-    // Send customer confirmation email via Formspree (fire-and-forget, non-blocking)
-    sendCustomerConfirmationEmail({
-      fullName,
-      email,
-      tourTitle,
-      bookingDate,
-      numberOfPeople,
-      totalPrice,
-      bookingId: result.insertedId.toString(),
+    // Send customer confirmation receipt email (bookings@nechabest.com -> customer)
+    const clientEmailHtml = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <h2 style="color: #1a3c34; margin: 0;">Nechabest Sustainable Initiatives</h2>
+          <p style="color: #58b05c; font-size: 14px; font-weight: bold; margin: 5px 0 0 0;">Together for a Greener Future</p>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+        <p>Dear <strong>${fullName}</strong>,</p>
+        <p>Thank you for booking your adventure with Nechabest! We have received your booking request.</p>
+        <p><strong>Booking Summary:</strong></p>
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Tour Adventure:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${tourTitle}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Date:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${parsedDate.toLocaleDateString()}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Number of People:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${numberOfPeople}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Estimated Total:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">$${totalPrice}</td>
+          </tr>
+          ${specialRequests ? `
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Special Requests:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${specialRequests}</td>
+          </tr>
+          ` : ''}
+        </table>
+        <p>Our team will contact you within 24 hours to confirm your booking and coordinate payment and logistics.</p>
+        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
+        <p style="font-size: 11px; color: #718096; text-align: center; margin: 0;">
+          This is an automated booking confirmation receipt from Nechabest.<br />
+          Kasangati Town Council, Wakiso District, Uganda
+        </p>
+      </div>
+    `;
+
+    sendEmail({
+      type: 'bookings',
+      to: email,
+      subject: `Booking Request Received: ${tourTitle} - Nechabest`,
+      html: clientEmailHtml,
     }).catch((err) => {
-      // Log error but don't fail the booking
-      console.error('[Bookings] Customer confirmation email failed:', err instanceof Error ? err.message : 'unknown');
+      console.error('[Bookings] Client confirmation email failed:', err);
+    });
+
+    // Send admin notification email (bookings@nechabest.com -> info@nechabest.com)
+    const adminNotificationHtml = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
+        <h2 style="color: #1a3c34; border-bottom: 2px solid #58b05c; padding-bottom: 8px; margin-top: 0;">New Booking Request Received</h2>
+        <p>A new booking request has been submitted. Details below:</p>
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Client Name:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${fullName}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Client Email:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${email}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Client Phone:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${phone || 'Not provided'}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Tour Adventure:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${tourTitle}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Date:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${parsedDate.toLocaleDateString()}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Number of People:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${numberOfPeople}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Estimated Total:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">$${totalPrice}</td>
+          </tr>
+          ${specialRequests ? `
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Special Requests:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${specialRequests}</td>
+          </tr>
+          ` : ''}
+        </table>
+        <div style="text-align: center; margin-top: 24px;">
+          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://nechabest.com'}/admin/bookings" style="background-color: #1a3c34; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Manage Bookings</a>
+        </div>
+      </div>
+    `;
+
+    sendEmail({
+      type: 'bookings',
+      to: 'info@nechabest.com',
+      subject: `[Admin Alert] New Booking for ${tourTitle} from ${fullName}`,
+      html: adminNotificationHtml,
+    }).catch((err) => {
+      console.error('[Bookings] Admin notification email failed:', err);
     });
 
     return secureJson({
@@ -133,81 +229,4 @@ export async function POST(request: NextRequest) {
   }
 }
 
-/**
- * Send a booking confirmation email to the customer via Formspree.
- * Uses the contact endpoint with a structured subject so Formspree
- * routes it to the configured email address.
- */
-async function sendCustomerConfirmationEmail(data: {
-  fullName: string;
-  email: string;
-  tourTitle: string;
-  bookingDate: string;
-  numberOfPeople: number;
-  totalPrice: number;
-  bookingId: string;
-}): Promise<void> {
-  const endpoint = process.env.NEXT_PUBLIC_FORMSPREE_BOOKING_ENDPOINT;
-  if (!endpoint || !endpoint.startsWith('https://formspree.io')) return;
 
-  const formattedDate = (() => {
-    try {
-      return new Date(data.bookingDate).toLocaleDateString('en-UG', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
-    } catch {
-      return data.bookingDate;
-    }
-  })();
-
-  const payload = {
-    _subject: `Booking Confirmation – ${data.tourTitle}`,
-    _replyto: 'info@nechabest.com',
-    // Formspree sends this to the form's configured email AND to _replyto
-    // We include the customer email in the body so admin can reply to them
-    type: 'booking_confirmation',
-    bookingId: data.bookingId,
-    customerName: data.fullName,
-    customerEmail: data.email,
-    tour: data.tourTitle,
-    date: formattedDate,
-    numberOfPeople: data.numberOfPeople,
-    estimatedTotal: `$${data.totalPrice}`,
-    message: [
-      `Dear ${data.fullName},`,
-      '',
-      `Thank you for booking the "${data.tourTitle}" tour with Nechabest Sustainable Initiatives!`,
-      '',
-      `Booking Details:`,
-      `  Tour: ${data.tourTitle}`,
-      `  Date: ${formattedDate}`,
-      `  Number of People: ${data.numberOfPeople}`,
-      `  Estimated Total: $${data.totalPrice}`,
-      `  Booking Reference: ${data.bookingId}`,
-      '',
-      `Our team will contact you within 24 hours at ${data.email} to confirm your booking and arrange payment.`,
-      '',
-      `If you have any questions, please reply to this email or contact us at info@nechabest.com`,
-      '',
-      `Best regards,`,
-      `Nechabest Sustainable Initiatives Team`,
-    ].join('\n'),
-  };
-
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    },
-    body: JSON.stringify(payload),
-    credentials: 'omit',
-  });
-
-  if (!response.ok) {
-    throw new Error(`Formspree responded with ${response.status}`);
-  }
-}

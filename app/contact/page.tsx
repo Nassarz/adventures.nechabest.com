@@ -10,7 +10,6 @@ import Footer from '@/components/Footer';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import HeroSlideshow from '@/components/HeroSlideshow';
-import { submitContactForm } from '@/lib/formspree';
 
 interface FormData {
   name: string;
@@ -88,18 +87,26 @@ export default function Contact() {
     setLoading(true);
     
     try {
-      // Submit to Formspree with security measures
-      const result = await submitContactForm({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        subject: formData.subject,
-        message: formData.message,
-        _gotcha: formData._gotcha // Honeypot for bot protection
+      // Submit to internal API endpoint which handles emails via SMTP info@nechabest.com
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          subject: formData.subject,
+          message: formData.message,
+          _gotcha: formData._gotcha // Honeypot for bot protection
+        }),
       });
 
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to submit form');
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || data.message || 'Failed to submit form');
       }
 
       // Success - clear form and show success message

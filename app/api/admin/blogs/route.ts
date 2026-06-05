@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { getDb } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { requireAdminAccess } from '@/lib/adminAuth';
+import { sendEmail } from '@/lib/email';
 import {
   isValidObjectId,
   secureJson,
@@ -79,6 +80,52 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await db.collection('blogs').insertOne(blog);
+
+    // Notify all active newsletter subscribers (asynchronous / non-blocking)
+    db.collection('subscribers').find({ status: 'active' }).toArray().then((subscribers) => {
+      if (!subscribers || subscribers.length === 0) return;
+
+      const blogUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://nechabest.com'}/blog`;
+
+      subscribers.forEach((sub) => {
+        if (!sub.email) return;
+
+        const subName = sub.name || 'Friend';
+        const emailHtml = `
+          <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <h2 style="color: #1a3c34; margin: 0;">Nechabest Sustainable Initiatives</h2>
+              <p style="color: #58b05c; font-size: 14px; font-weight: bold; margin: 5px 0 0 0;">Together for a Greener Future</p>
+            </div>
+            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+            <p>Hello <strong>${subName}</strong>,</p>
+            <p>We have just published a new article on our blog: <strong>"${blog.title}"</strong>.</p>
+            <p style="font-style: italic; color: #4a5568; margin: 16px 0; padding-left: 12px; border-left: 3px solid #58b05c;">
+              "${blog.excerpt || 'Read our latest update on environmental sustainability and capacity building...'}"
+            </p>
+            <div style="text-align: center; margin-top: 24px;">
+              <a href="${blogUrl}" style="background-color: #58b05c; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Read the Full Post</a>
+            </div>
+            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
+            <p style="font-size: 11px; color: #718096; text-align: center; margin: 0;">
+              You received this because you subscribed to Nechabest updates.<br />
+              If you wish to unsubscribe, please contact us at info@nechabest.com.
+            </p>
+          </div>
+        `;
+
+        sendEmail({
+          type: 'info',
+          to: sub.email,
+          subject: `New Blog Post: ${blog.title} - Nechabest`,
+          html: emailHtml,
+        }).catch((err) => {
+          console.error(`[Email Notification] Failed sending newsletter email to ${sub.email}:`, err);
+        });
+      });
+    }).catch((err) => {
+      console.error('[Email Notification] Failed retrieving subscribers list:', err);
+    });
 
     return secureJson({ id: result.insertedId.toString(), ...blog });
   } catch (error) {

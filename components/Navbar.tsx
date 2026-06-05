@@ -67,17 +67,15 @@ export default function Navbar() {
           </div>
 
           <div className="hidden lg:flex items-center space-x-4">
-            <motion.button
-              onClick={() => {
-                setNewsletterOpen(true);
-                setIsOpen(false);
-              }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-nature text-black px-8 py-2.5 rounded-full text-sm font-bold hover:bg-white transition-all shadow-[0_0_30px_rgba(0,255,0,0.2)]"
-            >
-              {get('global.nav.ctaLabel', 'Book a Tour')}
-            </motion.button>
+            <Link href="/booking" onClick={() => setIsOpen(false)}>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-nature text-black px-8 py-2.5 rounded-full text-sm font-bold hover:bg-white transition-all shadow-[0_0_30px_rgba(0,255,0,0.2)]"
+              >
+                {get('global.nav.ctaLabel', 'Book a Tour')}
+              </motion.button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -117,17 +115,15 @@ export default function Navbar() {
                     {link.name}
                   </Link>
                 ))}
-                <motion.button
-                  onClick={() => {
-                    setNewsletterOpen(true);
-                    setIsOpen(false);
-                  }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full text-center bg-nature text-black px-6 py-4 rounded-2xl font-bold mt-6 shadow-[0_0_30px_rgba(0,255,0,0.2)]"
-                >
-                  {get('global.nav.ctaLabel', 'Book a Tour')}
-                </motion.button>
+                <Link href="/booking" onClick={() => setIsOpen(false)} className="w-full">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full text-center bg-nature text-black px-6 py-4 rounded-2xl font-bold mt-6 shadow-[0_0_30px_rgba(0,255,0,0.2)]"
+                  >
+                    {get('global.nav.ctaLabel', 'Book a Tour')}
+                  </motion.button>
+                </Link>
               </div>
               
             </div>

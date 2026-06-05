@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { getDb } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { requireAdminAccess } from '@/lib/adminAuth';
+import { sendEmail } from '@/lib/email';
 import {
   isValidObjectId,
   secureJson,
@@ -134,6 +135,51 @@ export async function PATCH(request: NextRequest) {
 
     if (result.matchedCount === 0) {
       return secureJson({ error: 'Booking not found' }, { status: 404 });
+    }
+
+    // Send email notification on status change (asynchronous / non-blocking)
+    if ('status' in safeUpdate && typeof safeUpdate.status === 'string') {
+      db.collection('bookings').findOne({ _id: new ObjectId(id) }).then((booking) => {
+        if (!booking || !booking.email) return;
+
+        const clientEmail = booking.email;
+        const clientName = booking.fullName || booking.customerName || 'Valued Client';
+        const tourTitle = booking.tourTitle || booking.tourName || 'your booked adventure';
+        const updatedStatus = safeUpdate.status as string;
+
+        const emailHtml = `
+          <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <h2 style="color: #1a3c34; margin: 0;">Nechabest Sustainable Initiatives</h2>
+              <p style="color: #58b05c; font-size: 14px; font-weight: bold; margin: 5px 0 0 0;">Together for a Greener Future</p>
+            </div>
+            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+            <p>Dear <strong>${clientName}</strong>,</p>
+            <p>We are writing to inform you that your booking status for <strong>"${tourTitle}"</strong> has been updated.</p>
+            <p>Your booking status is now:</p>
+            <div style="background-color: #f7fafc; border-left: 4px solid #58b05c; padding: 16px; margin: 20px 0; font-size: 18px; font-weight: bold; text-transform: uppercase; color: #1a3c34; border-radius: 0 8px 8px 0;">
+              ${updatedStatus}
+            </div>
+            <p>Our team will contact you soon with additional details. If you have any immediate questions, feel free to reply to this email.</p>
+            <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
+            <p style="font-size: 11px; color: #718096; text-align: center; margin: 0;">
+              This is an automated notification from Nechabest.<br />
+              Kasangati Town Council, Wakiso District, Uganda
+            </p>
+          </div>
+        `;
+
+        sendEmail({
+          type: 'bookings',
+          to: clientEmail,
+          subject: `Booking Status Update: ${updatedStatus.toUpperCase()} - Nechabest`,
+          html: emailHtml,
+        }).catch((err) => {
+          console.error('[Email Notification] Failed to send booking status email:', err);
+        });
+      }).catch((err) => {
+        console.error('[Email Notification] Failed to find booking for email:', err);
+      });
     }
 
     return secureJson({ success: true });

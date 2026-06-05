@@ -81,7 +81,7 @@ export default function AdminNewsletter() {
     sub.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const activeCount = subscribers.filter(s => s.status === 'Active').length;
+  const activeCount = subscribers.filter(s => s.status?.toLowerCase() === 'active').length;
 
   return (
     <AdminLayout>
@@ -188,14 +188,14 @@ export default function AdminNewsletter() {
                     {filteredSubscribers.map((subscriber) => (
                       <tr key={subscriber.id} className="border-b border-black/5 hover:bg-black/2 transition-all">
                         <td className="px-6 py-4 text-black font-medium">{subscriber.email}</td>
-                        <td className="px-6 py-4 text-black/60">{subscriber.subscribedAt}</td>
+                        <td className="px-6 py-4 text-black/60">{new Date(subscriber.subscribedAt).toLocaleDateString()}</td>
                         <td className="px-6 py-4">
                           <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                            subscriber.status === 'Active'
+                            subscriber.status?.toLowerCase() === 'active'
                               ? 'bg-green-500/20 text-green-700'
                               : 'bg-red-500/20 text-red-700'
                           }`}>
-                            {subscriber.status}
+                            {subscriber.status ? subscriber.status.charAt(0).toUpperCase() + subscriber.status.slice(1) : 'Active'}
                           </span>
                         </td>
                         <td className="px-6 py-4">

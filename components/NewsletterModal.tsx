@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, X, Check } from 'lucide-react';
-import { submitNewsletterForm } from '@/lib/formspree';
 
 interface NewsletterModalProps {
   isOpen: boolean;
@@ -38,15 +37,23 @@ export default function NewsletterModal({ isOpen, onClose }: NewsletterModalProp
     }
 
     try {
-      // Submit to Formspree with security measures
-      const result = await submitNewsletterForm({
-        email,
-        name,
-        _gotcha: gotcha // Honeypot for bot protection
+      // Submit to internal API endpoint which handles DB saving & Formspree notification
+      const response = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          name,
+          _gotcha: gotcha, // Honeypot for bot protection
+        }),
       });
 
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to subscribe');
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || data.message || 'Failed to subscribe');
       }
 
       setSubmitted(true);
