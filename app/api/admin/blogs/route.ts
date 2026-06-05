@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
     db.collection('subscribers').find({ status: 'active' }).toArray().then((subscribers) => {
       if (!subscribers || subscribers.length === 0) return;
 
-      const blogUrl = `${baseUrl}/blog`;
+      const blogUrl = `${baseUrl}/blog/${result.insertedId.toString()}`;
 
       subscribers.forEach((sub) => {
         if (!sub.email) return;
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
             <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
             <p style="font-size: 11px; color: #718096; text-align: center; margin: 0;">
               You received this because you subscribed to Nechabest updates.<br />
-              If you wish to unsubscribe, please contact us at info@nechabest.com.
+              If you wish to unsubscribe, please <a href="${baseUrl}/newsletter/unsubscribe?email=${encodeURIComponent(sub.email)}" style="color: #58b05c; text-decoration: underline;">click here to unsubscribe</a>.
             </p>
           </div>
         `;
