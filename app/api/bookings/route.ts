@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { getDb } from '@/lib/mongodb';
-import { sendEmail } from '@/lib/email';
+import { sendEmail, escapeHtml } from '@/lib/email';
 import {
   checkRateLimit,
   getClientIdentifier,
@@ -113,6 +113,11 @@ export async function POST(request: NextRequest) {
 
     const result = await db.collection('bookings').insertOne(booking);
 
+    // Escape all user-supplied data before injecting into HTML to prevent XSS
+    const safeFullName = escapeHtml(fullName);
+    const safeTourTitle = escapeHtml(tourTitle);
+    const safeSpecialRequests = specialRequests ? escapeHtml(specialRequests) : '';
+
     // Send customer confirmation receipt email (bookings@nechabest.com -> customer)
     const clientEmailHtml = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
@@ -121,13 +126,13 @@ export async function POST(request: NextRequest) {
           <p style="color: #58b05c; font-size: 14px; font-weight: bold; margin: 5px 0 0 0;">Together for a Greener Future</p>
         </div>
         <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
-        <p>Dear <strong>${fullName}</strong>,</p>
+        <p>Dear <strong>${safeFullName}</strong>,</p>
         <p>Thank you for booking your adventure with Nechabest! We have received your booking request.</p>
         <p><strong>Booking Summary:</strong></p>
         <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Tour Adventure:</td>
-            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${tourTitle}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${safeTourTitle}</td>
           </tr>
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Date:</td>
@@ -141,10 +146,10 @@ export async function POST(request: NextRequest) {
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Estimated Total:</td>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">$${totalPrice}</td>
           </tr>
-          ${specialRequests ? `
+          ${safeSpecialRequests ? `
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Special Requests:</td>
-            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${specialRequests}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${safeSpecialRequests}</td>
           </tr>
           ` : ''}
         </table>
@@ -166,6 +171,9 @@ export async function POST(request: NextRequest) {
       console.error('[Bookings] Client confirmation email failed:', err);
     });
 
+    const safePhone = phone ? escapeHtml(phone) : 'Not provided';
+    const safeEmail = escapeHtml(email);
+
     // Send admin notification email (bookings@nechabest.com -> info@nechabest.com)
     const adminNotificationHtml = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
@@ -174,19 +182,19 @@ export async function POST(request: NextRequest) {
         <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Client Name:</td>
-            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${fullName}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${safeFullName}</td>
           </tr>
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Client Email:</td>
-            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${email}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${safeEmail}</td>
           </tr>
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Client Phone:</td>
-            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${phone || 'Not provided'}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${safePhone}</td>
           </tr>
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Tour Adventure:</td>
-            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${tourTitle}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${safeTourTitle}</td>
           </tr>
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Date:</td>
@@ -200,10 +208,10 @@ export async function POST(request: NextRequest) {
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Estimated Total:</td>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">$${totalPrice}</td>
           </tr>
-          ${specialRequests ? `
+          ${safeSpecialRequests ? `
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Special Requests:</td>
-            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${specialRequests}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${safeSpecialRequests}</td>
           </tr>
           ` : ''}
         </table>

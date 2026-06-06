@@ -2,6 +2,11 @@ import { NextRequest } from 'next/server';
 import { requireAdminAccess } from '@/lib/adminAuth';
 import { secureJson } from '@/lib/apiSecurity';
 
+// Allowed MIME types for image uploads — strict whitelist
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+// Maximum upload size: 10 MB
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+
 export async function POST(request: NextRequest) {
   try {
     // 1. Verify admin access securely using Clerk session
@@ -18,14 +23,30 @@ export async function POST(request: NextRequest) {
       return secureJson({ error: 'No image file uploaded' }, { status: 400 });
     }
 
-    // 3. Read the API key securely from environment variables
+    // 3. Validate file MIME type (whitelist — images only)
+    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+      return secureJson(
+        { error: 'Invalid file type. Only JPEG, PNG, GIF, and WebP images are allowed.' },
+        { status: 400 }
+      );
+    }
+
+    // 4. Validate file size (max 10 MB)
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      return secureJson(
+        { error: 'File is too large. Maximum allowed size is 10 MB.' },
+        { status: 400 }
+      );
+    }
+
+    // 5. Read the API key securely from environment variables
     const apiKey = process.env.IMGBB_API_KEY;
     if (!apiKey) {
       console.error('IMGBB_API_KEY is not defined in environment variables');
       return secureJson({ error: 'Image upload server is not properly configured' }, { status: 500 });
     }
 
-    // 4. Forward the upload to ImgBB securely on the server side
+    // 6. Forward the upload to ImgBB securely on the server side
     const imgbbFormData = new FormData();
     imgbbFormData.append('image', file);
 

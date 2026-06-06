@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { getDb } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { requireAdminAccess } from '@/lib/adminAuth';
-import { sendEmail } from '@/lib/email';
+import { sendEmail, escapeHtml } from '@/lib/email';
 import {
   isValidObjectId,
   secureJson,
@@ -143,9 +143,9 @@ export async function PATCH(request: NextRequest) {
         if (!booking || !booking.email) return;
 
         const clientEmail = booking.email;
-        const clientName = booking.fullName || booking.customerName || 'Valued Client';
-        const tourTitle = booking.tourTitle || booking.tourName || 'your booked adventure';
-        const updatedStatus = safeUpdate.status as string;
+        const clientName = escapeHtml(booking.fullName || booking.customerName || 'Valued Client');
+        const tourTitle = escapeHtml(booking.tourTitle || booking.tourName || 'your booked adventure');
+        const updatedStatus = escapeHtml(safeUpdate.status as string);
 
         const emailHtml = `
           <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">

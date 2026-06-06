@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { sendEmail } from '@/lib/email';
+import { sendEmail, escapeHtml } from '@/lib/email';
 import {
   checkRateLimit,
   getClientIdentifier,
@@ -56,6 +56,13 @@ export async function POST(request: NextRequest) {
       return secureJson({ error: 'Message must be at least 10 characters long' }, { status: 400 });
     }
 
+    // Escape all user-supplied values before injecting into HTML templates
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safePhone = phone ? escapeHtml(phone) : 'Not provided';
+    const safeSubject = escapeHtml(subject);
+    const safeMessage = escapeHtml(message);
+
     // 1. Email notification to the admin (info@nechabest.com -> info@nechabest.com)
     const adminEmailHtml = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
@@ -64,23 +71,23 @@ export async function POST(request: NextRequest) {
         <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568; width: 120px;">Name:</td>
-            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${name}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${safeName}</td>
           </tr>
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Email:</td>
-            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;"><a href="mailto:${email}">${email}</a></td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;"><a href="mailto:${safeEmail}">${safeEmail}</a></td>
           </tr>
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Phone:</td>
-            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${phone || 'Not provided'}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${safePhone}</td>
           </tr>
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Subject:</td>
-            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${subject}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${safeSubject}</td>
           </tr>
         </table>
         <p><strong>Message:</strong></p>
-        <div style="background-color: #f7fafc; border: 1px solid #edf2f7; border-radius: 8px; padding: 16px; font-style: italic; color: #2d3748; white-space: pre-wrap;">${message}</div>
+        <div style="background-color: #f7fafc; border: 1px solid #edf2f7; border-radius: 8px; padding: 16px; font-style: italic; color: #2d3748; white-space: pre-wrap;">${safeMessage}</div>
       </div>
     `;
 
@@ -101,11 +108,11 @@ export async function POST(request: NextRequest) {
           <p style="color: #58b05c; font-size: 14px; font-weight: bold; margin: 5px 0 0 0;">Together for a Greener Future</p>
         </div>
         <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
-        <p>Hello <strong>${name}</strong>,</p>
-        <p>Thank you for contacting Nechabest! We have received your inquiry regarding <strong>"${subject}"</strong>.</p>
+        <p>Hello <strong>${safeName}</strong>,</p>
+        <p>Thank you for contacting Nechabest! We have received your inquiry regarding <strong>&ldquo;${safeSubject}&rdquo;</strong>.</p>
         <p>A member of our team will review your message and get back to you within 24 hours.</p>
         <p><strong>Copy of your message:</strong></p>
-        <div style="background-color: #f7fafc; border: 1px solid #edf2f7; border-radius: 8px; padding: 16px; font-style: italic; color: #718096; white-space: pre-wrap;">${message}</div>
+        <div style="background-color: #f7fafc; border: 1px solid #edf2f7; border-radius: 8px; padding: 16px; font-style: italic; color: #718096; white-space: pre-wrap;">${safeMessage}</div>
         <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
         <p style="font-size: 11px; color: #718096; text-align: center; margin: 0;">
           This is an automated notification from Nechabest.<br />
@@ -117,7 +124,7 @@ export async function POST(request: NextRequest) {
     sendEmail({
       type: 'info',
       to: email,
-      subject: `We've received your inquiry: ${subject} - Nechabest`,
+      subject: `We've received your inquiry: ${safeSubject} - Nechabest`,
       html: clientEmailHtml,
     }).catch((err) => {
       console.error('[Contact Route] Client receipt email failed:', err);

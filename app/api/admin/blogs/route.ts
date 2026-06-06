@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { getDb } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { requireAdminAccess } from '@/lib/adminAuth';
-import { sendEmail } from '@/lib/email';
+import { sendEmail, escapeHtml } from '@/lib/email';
 import {
   isValidObjectId,
   secureJson,
@@ -90,11 +90,16 @@ export async function POST(request: NextRequest) {
       if (!subscribers || subscribers.length === 0) return;
 
       const blogUrl = `${baseUrl}/blog/${result.insertedId.toString()}`;
+      // Escape blog content to prevent XSS in email body
+      const safeBlogTitle = escapeHtml(blog.title);
+      const safeBlogExcerpt = escapeHtml(
+        blog.excerpt || 'Read our latest update on environmental sustainability and capacity building...'
+      );
 
       subscribers.forEach((sub) => {
         if (!sub.email) return;
 
-        const subName = sub.name || 'Friend';
+        const subName = escapeHtml(sub.name || 'Friend');
         const emailHtml = `
           <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
             <div style="text-align: center; margin-bottom: 20px;">
@@ -103,9 +108,9 @@ export async function POST(request: NextRequest) {
             </div>
             <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
             <p>Hello <strong>${subName}</strong>,</p>
-            <p>We have just published a new article on our blog: <strong>"${blog.title}"</strong>.</p>
+            <p>We have just published a new article on our blog: <strong>&ldquo;${safeBlogTitle}&rdquo;</strong>.</p>
             <p style="font-style: italic; color: #4a5568; margin: 16px 0; padding-left: 12px; border-left: 3px solid #58b05c;">
-              "${blog.excerpt || 'Read our latest update on environmental sustainability and capacity building...'}"
+              &ldquo;${safeBlogExcerpt}&rdquo;
             </p>
             <div style="text-align: center; margin-top: 24px;">
               <a href="${blogUrl}" style="background-color: #58b05c; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Read the Full Post</a>

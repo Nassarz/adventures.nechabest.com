@@ -49,10 +49,12 @@ export async function GET(request: NextRequest) {
     }
 
     if (query) {
+      // Escape special regex chars to prevent ReDoS (regex injection) attacks
+      const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       filter.$or = [
-        { key: { $regex: query, $options: 'i' } },
-        { label: { $regex: query, $options: 'i' } },
-        { section: { $regex: query, $options: 'i' } },
+        { key: { $regex: escapedQuery, $options: 'i' } },
+        { label: { $regex: escapedQuery, $options: 'i' } },
+        { section: { $regex: escapedQuery, $options: 'i' } },
       ];
     }
 

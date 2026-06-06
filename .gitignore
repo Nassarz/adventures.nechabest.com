@@ -8,3 +8,10 @@ coverage/
 
 # clerk configuration (can include secrets)
 /.clerk/
+
+# Firebase config files contain API keys — do not commit
+firebase-applet-config.json
+firebase-blueprint.json
+
+# Postman workspace files — not needed in repo
+.postman.json
