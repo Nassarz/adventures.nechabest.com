@@ -44,7 +44,8 @@ export interface BookingFormData {
   email: string;
   phone: string;
   numberOfPeople: number;
-  bookingDate: string;
+  startDate: string;
+  endDate: string;
   totalPrice: number;
   specialRequests?: string;
   _gotcha?: string; // Honeypot field
@@ -324,8 +325,16 @@ function validateBookingData(data: BookingFormData): void {
     throw new Error('At least 1 person is required');
   }
 
-  if (!data.bookingDate) {
-    throw new Error('Booking date is required');
+  if (!data.startDate) {
+    throw new Error('Booking start date is required');
+  }
+
+  if (!data.endDate) {
+    throw new Error('Booking end date is required');
+  }
+
+  if (data.endDate < data.startDate) {
+    throw new Error('End date cannot be before the start date');
   }
 
   // Security: Prevent excessively long inputs
@@ -541,7 +550,8 @@ export async function submitBookingForm(
       email: sanitizedEmail,
       'Phone': sanitizePhone(data.phone),
       'Number of People': data.numberOfPeople,
-      'Booking Date': data.bookingDate,
+      'Start Date': data.startDate,
+      'End Date': data.endDate,
       'Total Price (USD)': `$${data.totalPrice}`,
       'Special Requests': data.specialRequests ? sanitizeInput(data.specialRequests) : 'None',
       // Internal reference fields (not shown prominently in email)

@@ -43,6 +43,19 @@ export async function POST(request: NextRequest) {
 
     const db = await getDb();
 
+    // Per-email rate limit: 5 subscriptions per email per day (prevents bot abuse via rotating IPs)
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const recentSubscriptions = await db.collection('subscribers').countDocuments({
+      email,
+      subscribedAt: { $gte: oneDayAgo },
+    });
+    if (recentSubscriptions >= 5) {
+      return secureJson(
+        { error: 'Too many subscription attempts. Please try again later.' },
+        { status: 429 }
+      );
+    }
+
     // Check if already subscribed — return 409 so clients can distinguish from success
     const existing = await db.collection('subscribers').findOne({ email });
     if (existing) {

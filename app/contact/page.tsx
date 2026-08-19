@@ -10,6 +10,8 @@ import Footer from '@/components/Footer';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import HeroSlideshow from '@/components/HeroSlideshow';
+import { WhatsAppLogoIcon } from '@/components/FloatingWhatsApp';
+import { buildWhatsAppLink } from '@/lib/whatsapp';
 
 interface FormData {
   name: string;
@@ -134,6 +136,13 @@ export default function Contact() {
 
   const contactMethods = [
     {
+      icon: WhatsAppLogoIcon,
+      title: 'WhatsApp',
+      value: '+256 756 310 029',
+      description: 'Fastest response — chat with our team instantly',
+      href: buildWhatsAppLink('Hello Nechabest Sustainable Initiatives! I have an inquiry.'),
+    },
+    {
       icon: Mail,
       title: 'Email',
       value: get('global.footer.emailPrimary', 'info@nechabest.com'),
@@ -210,7 +219,7 @@ export default function Contact() {
         {/* Contact Methods */}
         <section className="py-16 md:py-24 bg-white">
           <div className="max-w-7xl mx-auto px-4 md:px-12">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 mb-16 md:mb-24">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 mb-16 md:mb-24">
               {contactMethods.map((method, i) => {
                 const Icon = method.icon;
                 return (
@@ -228,7 +237,18 @@ export default function Contact() {
                       </div>
                     </div>
                     <h3 className="font-bold text-lg md:text-xl text-primary">{method.title}</h3>
-                    <p className="text-2xl md:text-3xl font-bold text-foreground">{method.value}</p>
+                    {method.href ? (
+                      <a
+                        href={method.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-2xl md:text-3xl font-bold text-foreground hover:text-nature transition-colors"
+                      >
+                        {method.value}
+                      </a>
+                    ) : (
+                      <p className="text-2xl md:text-3xl font-bold text-foreground">{method.value}</p>
+                    )}
                     <p className="text-foreground/60 text-sm md:text-base">{method.description}</p>
                   </motion.div>
                 );
@@ -408,6 +428,23 @@ export default function Contact() {
                       </>
                     )}
                   </motion.button>
+
+                  {/* WhatsApp Alternative */}
+                  <motion.a
+                    href={buildWhatsAppLink(
+                      formData.message.trim()
+                        ? `Hello Nechabest Sustainable Initiatives! My name is ${formData.name || '—'}. Subject: ${formData.subject || 'General Inquiry'}. ${formData.message}`
+                        : 'Hello Nechabest Sustainable Initiatives! I have an inquiry.'
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1fb959] text-white font-bold py-3 md:py-4 px-6 rounded-xl shadow-[0_10px_25px_rgba(37,211,102,0.3)] transition-all duration-300"
+                  >
+                    <WhatsAppLogoIcon className="w-5 h-5" />
+                    Chat on WhatsApp Instead
+                  </motion.a>
                 </form>
               </motion.div>
 

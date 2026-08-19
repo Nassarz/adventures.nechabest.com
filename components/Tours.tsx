@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { useRouter } from 'next/navigation';
 
+
 interface Tour {
   id: string;
   title: string;

@@ -2,10 +2,13 @@
 User-agent: *
 Allow: /
 
+# Allow search engines to crawl both brand pages (home = organisation + tourism, /eco-tourism = adventures)
+Allow: /eco-tourism
+
 # Disallow private paths
 Disallow: /api/
 Disallow: /_next/
 Disallow: /admin/
 
 # Sitemap location
-Sitemap: https://nechabest.org/sitemap.xml
+Sitemap: https://nechabest.com/sitemap.xml

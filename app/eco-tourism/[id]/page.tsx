@@ -25,6 +25,8 @@ import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { WhatsAppLogoIcon } from '@/components/FloatingWhatsApp';
+import { buildWhatsAppLink } from '@/lib/whatsapp';
 
 interface ItineraryItem {
   day: number;
@@ -515,6 +517,20 @@ export default function TourDetailsPage() {
                     <Compass className="w-5 h-5" />
                     Book This Adventure
                   </motion.button>
+
+                  <motion.a
+                    href={buildWhatsAppLink(
+                      `Hello Nechabest Adventures! I would like to book the "${tour.title}" tour (${tour.duration}, ${tour.location}). Please share availability and payment details.`
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="w-full py-4 bg-[#25D366] hover:bg-[#1fb959] text-white text-sm md:text-base font-bold rounded-2xl transition-all shadow-[0_10px_25px_rgba(37,211,102,0.35)] flex items-center justify-center gap-2"
+                  >
+                    <WhatsAppLogoIcon className="w-5 h-5" />
+                    Book via WhatsApp
+                  </motion.a>
 
                   <p className="text-[10px] text-center text-foreground/50 leading-relaxed font-medium">
                     * Booking takes 2 minutes. Confirmation details and safe payment options will be coordinated within 24 hours.

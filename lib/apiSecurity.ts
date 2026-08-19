@@ -171,13 +171,28 @@ export function secureJson(
 // ─────────────────────────────────────────────
 
 const ALLOWED_ORIGINS = [
-  process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
   'https://nechabest.com',
   'https://www.nechabest.com',
   'https://nechabest.org',
   'https://www.nechabest.org',
   'https://nechabest.vercel.app',
 ];
+
+function isAllowedOrigin(origin: string): boolean {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (appUrl && origin === appUrl) return true;
+  if (process.env.NODE_ENV === 'production') {
+    return ALLOWED_ORIGINS.includes(origin);
+  }
+  // Development: allow any localhost/127.0.0.1 origin regardless of port
+  // (the dev server may run on any port, e.g. 3000, 3001).
+  try {
+    const { hostname } = new URL(origin);
+    return hostname === 'localhost' || hostname === '127.0.0.1';
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Validate the request Origin header.
@@ -194,7 +209,7 @@ export function checkOrigin(
   // Same-origin requests (e.g. SSR) have no Origin header — allow them.
   if (!origin) return null;
 
-  if (!ALLOWED_ORIGINS.includes(origin)) {
+  if (!isAllowedOrigin(origin)) {
     return secureJson({ error: 'Forbidden' }, { status: 403 });
   }
   return null;

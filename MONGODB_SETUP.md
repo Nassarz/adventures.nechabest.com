@@ -10,8 +10,11 @@ Your MongoDB connection string is getting a **TLS/SSL authentication error**, wh
 - But the **credentials (username/password) are invalid**
 
 ## Current Connection String
+> ⚠️ **SECURITY NOTE**: A real credential was previously listed here and committed to git.
+> It has been replaced with a placeholder. **Rotate the MongoDB password in Atlas**
+> if this document ever contained a valid password, and never paste real credentials into docs.
 ```
-mongodb+srv://NechaBest:Intcode-ug%40Necha256@cluster0.l0ne8zk.mongodb.net/nechabest
+mongodb+srv://<username>:<PASSWORD>@cluster0.l0ne8zk.mongodb.net/nechabest
 ```
 
 ## How to Fix

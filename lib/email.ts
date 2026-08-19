@@ -5,6 +5,10 @@ const portRaw = process.env.SMTP_PORT;
 const port = portRaw ? parseInt(portRaw, 10) : 465;
 const secure = process.env.SMTP_SECURE === 'true' || port === 465;
 
+// SMTP TLS certificate verification. Defaults to secure (certificates validated).
+// Set SMTP_TLS_INSECURE=true ONLY if the mail server uses a self-signed cert.
+const rejectUnauthorized = process.env.SMTP_TLS_INSECURE !== 'true';
+
 // Guard: fail loudly at startup if required email env vars are missing
 function requireEnv(name: string): string {
   const value = process.env[name];
@@ -24,7 +28,7 @@ const bookingsTransporter = nodemailer.createTransport({
     pass: process.env.SMTP_PASS_BOOKINGS,
   },
   tls: {
-    rejectUnauthorized: false,
+    rejectUnauthorized,
   },
   connectionTimeout: 10000,
   greetingTimeout: 10000,
@@ -41,7 +45,7 @@ const infoTransporter = nodemailer.createTransport({
     pass: process.env.SMTP_PASS_INFO,
   },
   tls: {
-    rejectUnauthorized: false,
+    rejectUnauthorized,
   },
   connectionTimeout: 10000,
   greetingTimeout: 10000,

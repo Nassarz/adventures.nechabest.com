@@ -95,3 +95,21 @@ export interface SiteContent {
   updatedAt: Date;
   updatedBy?: string;
 }
+
+export interface Banner {
+  _id?: ObjectId;
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string;
+  ctaLabel: string;
+  ctaType: 'link' | 'whatsapp';
+  ctaLink: string;
+  whatsappMessage: string;
+  showOnOpen: boolean;
+  active: boolean;
+  order: number;
+  createdAt: Date;
+  updatedAt: Date;
+  updatedBy?: string;
+}

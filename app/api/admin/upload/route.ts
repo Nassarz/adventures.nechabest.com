@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { requireAdminAccess } from '@/lib/adminAuth';
-import { secureJson } from '@/lib/apiSecurity';
+import { secureJson, checkAdminRateLimit } from '@/lib/apiSecurity';
 
 // Allowed MIME types for image uploads — strict whitelist
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -14,6 +14,10 @@ export async function POST(request: NextRequest) {
     if (!adminCheck.ok) {
       return secureJson({ error: adminCheck.error }, { status: adminCheck.status });
     }
+
+    // Rate limit admin actions
+    const rl = checkAdminRateLimit(adminCheck.userId ?? 'unknown', request);
+    if (rl) return rl;
 
     // 2. Extract uploaded image from FormData
     const formData = await request.formData();

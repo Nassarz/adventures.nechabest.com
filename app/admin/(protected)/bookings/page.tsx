@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { Search, Trash2, Eye, X } from 'lucide-react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import AdminHeader from '@/components/admin/AdminHeader';
+import { WhatsAppLogoIcon } from '@/components/FloatingWhatsApp';
+import { buildWhatsAppLink } from '@/lib/whatsapp';
 
 interface Booking {
   id?: string;
@@ -16,6 +18,8 @@ interface Booking {
   phone?: string;
   date?: string;
   bookingDate?: string;
+  startDate?: string;
+  endDate?: string;
   specialRequests?: string;
   participants: number;
   numberOfPeople?: number;
@@ -45,7 +49,9 @@ const normalizeBooking = (booking: Booking): Booking => ({
   tourName: asText(booking.tourName || booking.tourTitle),
   email: asText(booking.email),
   phone: asText(booking.phone),
-  date: asText(booking.date || booking.bookingDate),
+  date: asText(booking.date || booking.bookingDate || booking.startDate),
+  startDate: asText(booking.startDate || booking.date || booking.bookingDate),
+  endDate: asText(booking.endDate),
   specialRequests: asText(booking.specialRequests),
   participants: Number.isFinite(booking.participants)
     ? booking.participants
@@ -266,7 +272,18 @@ export default function AdminBookings() {
                             {booking.tourName || 'Untitled tour'}
                           </button>
                         </td>
-                        <td className="px-6 py-4 text-black/60">{booking.date ? new Date(booking.date).toLocaleDateString() : '-'}</td>
+                        <td className="px-6 py-4 text-black/60">
+                          {booking.startDate ? (
+                            <div>
+                              <div>{new Date(booking.startDate).toLocaleDateString()}</div>
+                              {booking.endDate && (
+                                <div className="text-black/40 text-xs">→ {new Date(booking.endDate).toLocaleDateString()}</div>
+                              )}
+                            </div>
+                          ) : booking.date ? (
+                            new Date(booking.date).toLocaleDateString()
+                          ) : '-'}
+                        </td>
                         <td className="px-6 py-4 text-black">{booking.participants}</td>
                         <td className="px-6 py-4 text-black font-bold">${booking.totalPrice}</td>
                         <td className="px-6 py-4">
@@ -335,7 +352,7 @@ export default function AdminBookings() {
               <div><span className="font-semibold">Customer:</span> {selectedBooking.customerName || 'Unknown customer'}</div>
               <div><span className="font-semibold">Email:</span> {selectedBooking.email || '-'}</div>
               <div><span className="font-semibold">Phone:</span> {selectedBooking.phone || '-'}</div>
-              <div><span className="font-semibold">Booking Date:</span> {selectedBooking.date ? new Date(selectedBooking.date).toLocaleDateString() : '-'}</div>
+              <div><span className="font-semibold">Booking Dates:</span> {selectedBooking.startDate ? `${new Date(selectedBooking.startDate).toLocaleDateString()}${selectedBooking.endDate ? ` → ${new Date(selectedBooking.endDate).toLocaleDateString()}` : ''}` : (selectedBooking.date ? new Date(selectedBooking.date).toLocaleDateString() : '-')}</div>
               <div><span className="font-semibold">Participants:</span> {selectedBooking.participants}</div>
               <div><span className="font-semibold">Total Price:</span> ${selectedBooking.totalPrice || 0}</div>
               <div><span className="font-semibold">Status:</span> {selectedBooking.status}</div>
@@ -347,7 +364,21 @@ export default function AdminBookings() {
               <p className="text-sm text-black">{selectedBooking.specialRequests || 'No special requests'}</p>
             </div>
 
-            <div className="mt-6 flex justify-end">
+            <div className="mt-6 flex justify-end gap-3">
+              {selectedBooking.phone && (
+                <a
+                  href={buildWhatsAppLink(
+                    `Hello ${selectedBooking.customerName || 'there'}! This is Nechabest Sustainable Initiatives regarding your "${selectedBooking.tourName || 'tour'}" booking (${selectedBooking.date || 'date TBC'}). Please reply to confirm your payment details.`,
+                    selectedBooking.phone
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-lg bg-[#25D366] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1fb959]"
+                >
+                  <WhatsAppLogoIcon className="w-4 h-4" />
+                  WhatsApp Client
+                </a>
+              )}
               <button
                 type="button"
                 onClick={() => setSelectedBooking(null)}

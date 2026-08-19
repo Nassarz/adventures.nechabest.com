@@ -3,7 +3,7 @@ import { getDb } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { requireAdminAccess } from '@/lib/adminAuth';
 import { SITE_CONTENT_DEFAULTS } from '@/lib/siteContentDefaults';
-import { isValidObjectId, secureJson, sanitizeString } from '@/lib/apiSecurity';
+import { isValidObjectId, secureJson, sanitizeString, checkAdminRateLimit } from '@/lib/apiSecurity';
 
 async function ensureSiteContentDefaults() {
   const db = await getDb();
@@ -77,6 +77,10 @@ export async function PATCH(request: NextRequest) {
     if (!adminCheck.ok) {
       return secureJson({ error: adminCheck.error }, { status: adminCheck.status });
     }
+
+    // Rate limit admin actions
+    const rl = checkAdminRateLimit(adminCheck.userId ?? 'unknown', request);
+    if (rl) return rl;
 
     const body = await request.json();
     const { id, value } = body;

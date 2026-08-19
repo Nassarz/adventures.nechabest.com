@@ -13,6 +13,7 @@ function UnsubscribeContent() {
   const router = useRouter();
   
   const [email, setEmail] = useState('');
+  const [gotcha, setGotcha] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -44,7 +45,7 @@ function UnsubscribeContent() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, _gotcha: gotcha }),
       });
 
       const data = await response.json();
@@ -125,6 +126,24 @@ function UnsubscribeContent() {
                 <span>{error}</span>
               </motion.div>
             )}
+
+            {/* Honeypot field - hidden from users, catches bots */}
+            <input
+              type="text"
+              value={gotcha}
+              onChange={(e) => setGotcha(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                left: '-9999px',
+                width: '1px',
+                height: '1px',
+                opacity: 0,
+                pointerEvents: 'none',
+              }}
+            />
 
             <motion.button
               type="submit"

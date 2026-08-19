@@ -13,6 +13,7 @@ import { useSiteContent } from '@/hooks/useSiteContent';
 import HeroSlideshow from '@/components/HeroSlideshow';
 import { useRouter } from 'next/navigation';
 
+
 interface Tour {
   id: string;
   title: string;

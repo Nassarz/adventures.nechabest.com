@@ -10,6 +10,8 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import HeroSlideshow from '@/components/HeroSlideshow';
 import { submitBookingForm } from '@/lib/formspree';
+import { buildBookingWhatsAppMessage, buildWhatsAppLink } from '@/lib/whatsapp';
+import { WhatsAppLogoIcon } from '@/components/FloatingWhatsApp';
 
 interface Tour {
   id: string;
@@ -38,6 +40,7 @@ interface BookingData {
   email: string;
   phone: string;
   startDate: string;
+  endDate: string;
   numberOfPeople: number;
   specialRequests: string;
   cardName: string;
@@ -96,6 +99,7 @@ export default function Booking() {
     email: '',
     phone: '',
     startDate: '',
+    endDate: '',
     numberOfPeople: 1,
     specialRequests: '',
     cardName: '',
@@ -149,7 +153,13 @@ export default function Booking() {
     if (currentStep === 1) {
       if (!bookingData.tourId) newErrors.tourId = 'Please select a tour';
       if (!bookingData.startDate) newErrors.startDate = 'Please select a start date';
+      if (!bookingData.endDate) {
+        newErrors.endDate = 'Please select an end date';
+      } else if (bookingData.startDate && bookingData.endDate < bookingData.startDate) {
+        newErrors.endDate = 'End date cannot be before the start date';
+      }
       if (bookingData.numberOfPeople < 1) newErrors.numberOfPeople = 'At least 1 person required';
+      if (bookingData.numberOfPeople > 10000) newErrors.numberOfPeople = 'Maximum 10,000 people allowed';
     }
 
     if (currentStep === 2) {
@@ -216,7 +226,8 @@ export default function Booking() {
         email: bookingData.email,
         phone: bookingData.phone,
         numberOfPeople: bookingData.numberOfPeople,
-        bookingDate: bookingData.startDate,
+        startDate: bookingData.startDate,
+        endDate: bookingData.endDate,
         totalPrice,
         specialRequests: bookingData.specialRequests || '',
         _gotcha: bookingData._gotcha // Honeypot for bot protection
@@ -334,8 +345,8 @@ export default function Booking() {
                   <div className="space-y-8">
                     <div className="flex items-center justify-between border-b border-black/10 pb-4">
                       <div className="space-y-1">
-                        <h2 className="font-display text-2xl md:text-4xl font-bold text-primary">Tour Details & Booking</h2>
-                        <p className="text-foreground/60 text-sm md:text-base">Provide your preferred dates and group size to proceed</p>
+                        <h2 className="font-display text-2xl md:text-4xl font-bold text-primary">Plan Your Trip</h2>
+                        <p className="text-foreground/60 text-sm md:text-base">Lock in your dates in seconds — no payment needed now, we&apos;ll confirm availability instantly.</p>
                       </div>
                       <button
                         onClick={() => {
@@ -387,10 +398,11 @@ export default function Booking() {
                       {/* Right: Date & Number of People */}
                       <div className="lg:col-span-7 space-y-6 bg-slate-50/50 border border-black/5 rounded-3xl p-6 md:p-8 shadow-sm">
                         <h4 className="font-bold text-lg text-primary">Booking Configuration</h4>
-                        
+                        <p className="text-sm text-foreground/60">Pick your travel dates and group size — we&apos;ll handle everything else.</p>
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="space-y-2">
-                            <label className="block font-bold text-foreground text-sm">Preferred Start Date *</label>
+                            <label className="block font-bold text-foreground text-sm">Start Date *</label>
                             <input
                               type="date"
                               name="startDate"
@@ -406,6 +418,22 @@ export default function Booking() {
                           </div>
 
                           <div className="space-y-2">
+                            <label className="block font-bold text-foreground text-sm">End Date *</label>
+                            <input
+                              type="date"
+                              name="endDate"
+                              value={bookingData.endDate}
+                              onChange={handleChange}
+                              min={bookingData.startDate || new Date().toISOString().split('T')[0]}
+                              autoComplete="off"
+                              className={`w-full px-4 py-3 rounded-xl border-2 font-medium transition focus:outline-none bg-white ${
+                                errors.endDate ? 'border-red-300 bg-red-50' : 'border-slate-200 focus:border-primary'
+                              }`}
+                            />
+                            {errors.endDate && <p className="text-red-600 text-xs font-medium flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.endDate}</p>}
+                          </div>
+
+                          <div className="space-y-2">
                             <label className="block font-bold text-foreground text-sm">Number of People *</label>
                             <input
                               type="number"
@@ -413,6 +441,7 @@ export default function Booking() {
                               value={bookingData.numberOfPeople}
                               onChange={handleChange}
                               min={1}
+                              max={10000}
                               autoComplete="off"
                               className={`w-full px-4 py-3 rounded-xl border-2 font-medium transition focus:outline-none bg-white ${
                                 errors.numberOfPeople ? 'border-red-300 bg-red-50' : 'border-slate-200 focus:border-primary'
@@ -427,7 +456,30 @@ export default function Booking() {
                           <span className="text-3xl md:text-4xl font-extrabold text-nature">${totalPrice}</span>
                         </div>
 
-                        <div className="flex justify-end pt-4">
+                        <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                          <motion.a
+                            href={buildWhatsAppLink(
+                              buildBookingWhatsAppMessage({
+                                tourTitle: selectedTour.title,
+                                fullName: '—',
+                                email: '—',
+                                phone: '—',
+                                numberOfPeople: bookingData.numberOfPeople,
+                                startDate: bookingData.startDate,
+                                endDate: bookingData.endDate,
+                                totalPrice,
+                                specialRequests: '',
+                              })
+                            )}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1fb959] text-white font-bold py-4 rounded-xl shadow-[0_10px_25px_rgba(37,211,102,0.35)] transition-all"
+                          >
+                            <WhatsAppLogoIcon className="w-5 h-5" />
+                            Book Instantly on WhatsApp
+                          </motion.a>
                           <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
@@ -443,8 +495,8 @@ export default function Booking() {
                 ) : (
                   <div className="space-y-8">
                     <div className="text-center space-y-2">
-                      <h2 className="font-display text-3xl md:text-5xl font-bold text-primary">Select Your Tour</h2>
-                      <p className="text-foreground/60 text-lg">Choose the adventure that speaks to you</p>
+                      <h2 className="font-display text-3xl md:text-5xl font-bold text-primary">Choose Your Adventure</h2>
+                      <p className="text-foreground/60 text-lg">Every trip supports nature and local communities in Uganda</p>
                     </div>
 
                     {errors.tourId && <p className="text-red-600 text-center font-medium flex items-center justify-center gap-1"><AlertCircle className="w-4 h-4" /> {errors.tourId}</p>}
@@ -524,8 +576,8 @@ export default function Booking() {
                 className="max-w-3xl mx-auto space-y-8"
               >
                 <div className="text-center space-y-2">
-                  <h2 className="font-display text-3xl md:text-5xl font-bold text-primary">Your Details</h2>
-                  <p className="text-foreground/60 text-lg">We need some information to complete your booking</p>
+                  <h2 className="font-display text-3xl md:text-5xl font-bold text-primary">Who&apos;s Coming?</h2>
+                  <p className="text-foreground/60 text-lg">Tell us who to reach with your confirmation — we respond within 24 hours</p>
                 </div>
 
                 <div className="bg-slate-50 rounded-2xl p-8 md:p-10 space-y-6">
@@ -641,8 +693,8 @@ export default function Booking() {
                 className="max-w-3xl mx-auto space-y-8"
               >
                 <div className="text-center space-y-2">
-                  <h2 className="font-display text-3xl md:text-5xl font-bold text-primary">Review Your Booking</h2>
-                  <p className="text-foreground/60 text-lg">Please review your details before submitting</p>
+                  <h2 className="font-display text-3xl md:text-5xl font-bold text-primary">Review & Confirm</h2>
+                  <p className="text-foreground/60 text-lg">One last look — then we&apos;ll reserve your adventure</p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -676,6 +728,10 @@ export default function Booking() {
                           <div className="flex justify-between">
                             <span className="text-foreground/60">Start Date:</span>
                             <span className="font-bold text-foreground">{bookingData.startDate}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-foreground/60">End Date:</span>
+                            <span className="font-bold text-foreground">{bookingData.endDate}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-foreground/60">Number of People:</span>
@@ -725,7 +781,7 @@ export default function Booking() {
                           className="w-5 h-5 mt-1 cursor-pointer accent-nature"
                         />
                         <span className="text-sm text-foreground/70 select-none">
-                          I confirm that all the information above is correct and I understand that our team will contact me to finalize the booking and arrange payment.
+                          I confirm the details above are correct. Our team will contact me within 24 hours to confirm availability, arrange payment securely, and share my trip plan.
                         </span>
                       </label>
                     </div>
@@ -739,7 +795,7 @@ export default function Booking() {
                         <>
                           <div className="space-y-2 text-sm">
                             <p className="font-bold text-foreground">{selectedTour.title}</p>
-                            <p className="text-foreground/60">{bookingData.startDate}</p>
+                            <p className="text-foreground/60">{bookingData.startDate} → {bookingData.endDate}</p>
                             <p className="text-foreground/60">{bookingData.numberOfPeople} {bookingData.numberOfPeople === 1 ? 'person' : 'people'}</p>
                           </div>
                           <div className="pt-4 border-t border-primary/20 space-y-2">
@@ -770,7 +826,7 @@ export default function Booking() {
                   </div>
                 )}
 
-                <div className="flex justify-between">
+                <div className="flex flex-col sm:flex-row justify-between gap-4">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -779,29 +835,54 @@ export default function Booking() {
                   >
                     ← Back
                   </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleSubmit}
-                    disabled={loading}
-                    className="bg-gradient-to-r from-primary to-nature text-white font-bold py-4 px-12 rounded-xl hover:shadow-xl transition-all disabled:opacity-70 flex items-center gap-2"
-                  >
-                    {loading ? (
-                      <>
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                          className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
-                        />
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <CreditCard className="w-5 h-5" />
-                        Complete Booking
-                      </>
-                    )}
-                  </motion.button>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <motion.a
+                      href={buildWhatsAppLink(
+                        buildBookingWhatsAppMessage({
+                          tourTitle: selectedTour?.title || 'Nechabest Tour',
+                          fullName: bookingData.fullName || '—',
+                          email: bookingData.email || '—',
+                          phone: bookingData.phone || '—',
+                          numberOfPeople: bookingData.numberOfPeople,
+                          startDate: bookingData.startDate,
+                          endDate: bookingData.endDate,
+                          totalPrice,
+                          specialRequests: bookingData.specialRequests,
+                        })
+                      )}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1fb959] text-white font-bold py-4 px-6 rounded-xl shadow-[0_10px_25px_rgba(37,211,102,0.35)] transition-all"
+                    >
+                      <WhatsAppLogoIcon className="w-5 h-5" />
+                      Confirm via WhatsApp
+                    </motion.a>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={handleSubmit}
+                      disabled={loading}
+                      className="bg-gradient-to-r from-primary to-nature text-white font-bold py-4 px-12 rounded-xl hover:shadow-xl transition-all disabled:opacity-70 flex items-center gap-2"
+                    >
+                      {loading ? (
+                        <>
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                            className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+                          />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          <CreditCard className="w-5 h-5" />
+                          Reserve My Adventure
+                        </>
+                      )}
+                    </motion.button>
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -840,8 +921,12 @@ export default function Booking() {
                           <span className="font-bold text-foreground">{selectedTour.title}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-foreground/60">Date:</span>
+                          <span className="text-foreground/60">Start Date:</span>
                           <span className="font-bold text-foreground">{bookingData.startDate}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-foreground/60">End Date:</span>
+                          <span className="font-bold text-foreground">{bookingData.endDate}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-foreground/60">People:</span>

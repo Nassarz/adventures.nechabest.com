@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { getDb } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { requireAdminAccess } from '@/lib/adminAuth';
-import { isValidObjectId, secureJson } from '@/lib/apiSecurity';
+import { isValidObjectId, secureJson, checkAdminRateLimit } from '@/lib/apiSecurity';
 
 export async function GET() {
   try {
@@ -29,6 +29,10 @@ export async function DELETE(request: NextRequest) {
     if (!adminCheck.ok) {
       return secureJson({ error: adminCheck.error }, { status: adminCheck.status });
     }
+
+    // Rate limit admin actions
+    const rl = checkAdminRateLimit(adminCheck.userId ?? 'unknown', request);
+    if (rl) return rl;
 
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');

@@ -51,7 +51,8 @@ export async function POST(request: NextRequest) {
     const numberOfPeople = sanitizePositiveInt(body.numberOfPeople, 1, 10000);
     const totalPrice = sanitizeNumber(body.totalPrice);
     const specialRequests = sanitizeString(body.specialRequests, 1000);
-    const bookingDate = sanitizeString(body.bookingDate, 50);
+    const startDate = sanitizeString(body.startDate, 50);
+    const endDate = sanitizeString(body.endDate, 50);
 
     // Required field validation
     if (!fullName) {
@@ -60,25 +61,43 @@ export async function POST(request: NextRequest) {
     if (!email) {
       return secureJson({ error: 'A valid email address is required' }, { status: 400 });
     }
-    if (!bookingDate) {
-      return secureJson({ error: 'Booking date is required' }, { status: 400 });
+    if (!startDate) {
+      return secureJson({ error: 'Booking start date is required' }, { status: 400 });
     }
 
-    // Validate booking date is not in the past and not too far in the future
-    const parsedDate = new Date(bookingDate);
-    if (isNaN(parsedDate.getTime())) {
-      return secureJson({ error: 'Invalid booking date' }, { status: 400 });
+    // Validate booking start date is not in the past and not too far in the future
+    const parsedStart = new Date(startDate);
+    if (isNaN(parsedStart.getTime())) {
+      return secureJson({ error: 'Invalid booking start date' }, { status: 400 });
     }
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    if (parsedDate < today) {
-      return secureJson({ error: 'Booking date cannot be in the past' }, { status: 400 });
+    if (parsedStart < today) {
+      return secureJson({ error: 'Booking start date cannot be in the past' }, { status: 400 });
     }
     // Maximum booking window: 3 years in the future
     const maxDate = new Date();
     maxDate.setFullYear(maxDate.getFullYear() + 3);
-    if (parsedDate > maxDate) {
-      return secureJson({ error: 'Booking date cannot be more than 3 years in the future' }, { status: 400 });
+    if (parsedStart > maxDate) {
+      return secureJson({ error: 'Booking start date cannot be more than 3 years in the future' }, { status: 400 });
+    }
+
+    // Validate end date if provided: must be valid and not before the start date
+    let parsedEnd: Date | null = null;
+    if (endDate) {
+      parsedEnd = new Date(endDate);
+      if (isNaN(parsedEnd.getTime())) {
+        return secureJson({ error: 'Invalid booking end date' }, { status: 400 });
+      }
+      parsedEnd.setHours(0, 0, 0, 0);
+      const startAtMidnight = new Date(parsedStart);
+      startAtMidnight.setHours(0, 0, 0, 0);
+      if (parsedEnd < startAtMidnight) {
+        return secureJson({ error: 'Booking end date cannot be before the start date' }, { status: 400 });
+      }
+      if (parsedEnd > maxDate) {
+        return secureJson({ error: 'Booking end date cannot be more than 3 years in the future' }, { status: 400 });
+      }
     }
 
     const db = await getDb();
@@ -103,7 +122,9 @@ export async function POST(request: NextRequest) {
       email,
       phone,
       numberOfPeople,
-      bookingDate: parsedDate,
+      startDate: parsedStart,
+      endDate: parsedEnd,
+      bookingDate: parsedStart,
       totalPrice,
       specialRequests,
       status: 'pending',
@@ -135,8 +156,12 @@ export async function POST(request: NextRequest) {
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${safeTourTitle}</td>
           </tr>
           <tr>
-            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Date:</td>
-            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${parsedDate.toLocaleDateString()}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Start Date:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${parsedStart.toLocaleDateString()}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">End Date:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${parsedEnd ? parsedEnd.toLocaleDateString() : 'Same day'}</td>
           </tr>
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Number of People:</td>
@@ -197,8 +222,12 @@ export async function POST(request: NextRequest) {
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${safeTourTitle}</td>
           </tr>
           <tr>
-            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Date:</td>
-            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${parsedDate.toLocaleDateString()}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Start Date:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${parsedStart.toLocaleDateString()}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">End Date:</td>
+            <td style="padding: 8px; border-bottom: 1px solid #edf2f7; color: #2d3748;">${parsedEnd ? parsedEnd.toLocaleDateString() : 'Same day'}</td>
           </tr>
           <tr>
             <td style="padding: 8px; border-bottom: 1px solid #edf2f7; font-weight: bold; color: #4a5568;">Number of People:</td>

@@ -4,6 +4,8 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { ChunkErrorBoundary } from '@/components/ChunkErrorBoundary';
 import { ChunkErrorHandler } from '@/components/ChunkErrorHandler';
 import ViewTracker from '@/components/ViewTracker';
+import FloatingWhatsApp from '@/components/FloatingWhatsApp';
+import CampaignBanner from '@/components/CampaignBanner';
 import './globals.css';
 
 const inter = Inter({
@@ -19,12 +21,34 @@ const display = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'Nechabest Sustainable Initiatives | Building a Greener Uganda',
-  description: 'Empowering Ugandan communities through clean water, renewable energy, climate-smart farming, and eco-tourism. Join us in building a sustainable future for people and nature.',
-  keywords: ['sustainable development', 'Uganda', 'clean water', 'renewable energy', 'eco-tourism', 'climate-smart farming', 'environmental conservation'],
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://nechabest.com'),
+  title: {
+    default: 'Nechabest Sustainable Initiatives | Building a Greener Uganda',
+    template: '%s | Nechabest Sustainable Initiatives',
+  },
+  description: 'Nechabest is a Ugandan sustainable development organization powering clean water, renewable energy, climate-smart farming, conservation, and eco-tourism adventures. Explore our projects and book a Nechabest adventure today.',
+  keywords: [
+    'nechabest',
+    'nechabest adventures',
+    'nechabest sustainable initiatives',
+    'sustainable development',
+    'Uganda',
+    'Uganda tourism',
+    'clean water',
+    'renewable energy',
+    'eco-tourism',
+    'eco-tourism Uganda',
+    'climate-smart farming',
+    'environmental conservation',
+    'Uganda safaris',
+    'Nechabest eco tours',
+  ],
   authors: [{ name: 'Nechabest Sustainable Initiatives' }],
   creator: 'Nechabest Sustainable Initiatives',
   publisher: 'Nechabest Sustainable Initiatives',
+  alternates: {
+    canonical: '/',
+  },
   icons: {
     icon: 'https://iili.io/ffrDkkN.png',
     apple: 'https://iili.io/ffrDckN.png',
@@ -32,10 +56,10 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_UG',
-    url: 'https://nechabest.org',
+    url: 'https://nechabest.com',
     siteName: 'Nechabest Sustainable Initiatives',
     title: 'Nechabest Sustainable Initiatives | Building a Greener Uganda',
-    description: 'Empowering Ugandan communities through clean water, renewable energy, climate-smart farming, and eco-tourism.',
+    description: 'Empowering Ugandan communities through clean water, renewable energy, climate-smart farming, and eco-tourism adventures.',
     images: [
       {
         url: 'https://iili.io/fdC0KF9.jpg',
@@ -63,7 +87,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'your-google-verification-code',
+    google: 'googledd014c296caf2c43',
   },
 };
 
@@ -112,6 +136,8 @@ export default function RootLayout({
               {children}
             </>
           )}
+          <CampaignBanner />
+          <FloatingWhatsApp />
         </ChunkErrorBoundary>
       </body>
     </html>

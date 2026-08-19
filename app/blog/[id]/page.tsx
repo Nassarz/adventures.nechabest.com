@@ -57,6 +57,7 @@ export default function BlogDetail() {
   const [formName, setFormName] = useState('');
   const [formEmail, setFormEmail] = useState('');
   const [newComment, setNewComment] = useState('');
+  const [commentGotcha, setCommentGotcha] = useState('');
   const [submittingComment, setSubmittingComment] = useState(false);
   const [commentMessage, setCommentMessage] = useState('');
 
@@ -113,6 +114,7 @@ export default function BlogDetail() {
           name: formName,
           email: formEmail,
           comment: newComment,
+          _gotcha: commentGotcha,
         }),
       });
 
@@ -343,6 +345,23 @@ export default function BlogDetail() {
                   rows={4}
                   className="w-full px-6 py-4 rounded-xl border-2 border-slate-200 bg-white font-medium focus:outline-none focus:border-primary resize-none"
                   required
+                />
+                {/* Honeypot field - hidden from users, catches bots */}
+                <input
+                  type="text"
+                  value={commentGotcha}
+                  onChange={(e) => setCommentGotcha(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  style={{
+                    position: 'absolute',
+                    left: '-9999px',
+                    width: '1px',
+                    height: '1px',
+                    opacity: 0,
+                    pointerEvents: 'none',
+                  }}
                 />
                 <motion.button
                   whileHover={{ scale: 1.02 }}

@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/mongodb';
 import { requireAdminAccess } from '@/lib/adminAuth';
-import { isValidObjectId, secureJson } from '@/lib/apiSecurity';
+import { isValidObjectId, secureJson, checkAdminRateLimit } from '@/lib/apiSecurity';
 
 type CommentStatus = 'pending' | 'approved' | 'disapproved';
 
@@ -77,6 +77,10 @@ export async function PATCH(request: NextRequest) {
     if (!adminCheck.ok) {
       return secureJson({ error: adminCheck.error }, { status: adminCheck.status });
     }
+
+    // Rate limit admin actions
+    const rl = checkAdminRateLimit(adminCheck.userId ?? 'unknown', request);
+    if (rl) return rl;
 
     const body = await request.json();
     const { id, action } = body as { id?: string; action?: CommentStatus };
