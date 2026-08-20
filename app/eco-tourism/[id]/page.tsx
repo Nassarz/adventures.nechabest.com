@@ -32,6 +32,9 @@ interface ItineraryItem {
   day: number;
   title: string;
   description: string;
+  location?: string;
+  accommodation?: string;
+  meals?: string;
 }
 
 interface Tour {
@@ -410,8 +413,41 @@ export default function TourDetailsPage() {
                                         exit={{ height: 0, opacity: 0 }}
                                         transition={{ duration: 0.3 }}
                                       >
-                                        <div className="px-5 pb-5 pt-1 border-t border-slate-100 text-foreground/75 leading-relaxed text-sm md:text-base font-medium whitespace-pre-line">
-                                          {dayPlan.description}
+                                        <div className="px-5 pb-5 pt-1 border-t border-slate-100">
+                                          {(dayPlan.location || dayPlan.accommodation || dayPlan.meals) && (
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 my-4">
+                                              {dayPlan.location && (
+                                                <div className="flex items-start gap-2 bg-primary/5 border border-primary/10 rounded-xl px-3 py-2.5">
+                                                  <MapPin className="w-4 h-4 text-nature flex-shrink-0 mt-0.5" />
+                                                  <div>
+                                                    <p className="text-[10px] font-bold uppercase tracking-wider text-foreground/50">Location</p>
+                                                    <p className="text-sm font-semibold text-primary">{dayPlan.location}</p>
+                                                  </div>
+                                                </div>
+                                              )}
+                                              {dayPlan.accommodation && (
+                                                <div className="flex items-start gap-2 bg-nature/5 border border-nature/15 rounded-xl px-3 py-2.5">
+                                                  <div className="text-nature mt-0.5 flex-shrink-0"><span className="text-sm">🏨</span></div>
+                                                  <div>
+                                                    <p className="text-[10px] font-bold uppercase tracking-wider text-foreground/50">Accommodation</p>
+                                                    <p className="text-sm font-semibold text-primary whitespace-pre-line">{dayPlan.accommodation}</p>
+                                                  </div>
+                                                </div>
+                                              )}
+                                              {dayPlan.meals && (
+                                                <div className="flex items-start gap-2 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2.5">
+                                                  <div className="text-nature mt-0.5 flex-shrink-0"><span className="text-sm">🍽️</span></div>
+                                                  <div>
+                                                    <p className="text-[10px] font-bold uppercase tracking-wider text-foreground/50">Meals</p>
+                                                    <p className="text-sm font-semibold text-primary">{dayPlan.meals}</p>
+                                                  </div>
+                                                </div>
+                                              )}
+                                            </div>
+                                          )}
+                                          <div className="text-foreground/75 leading-relaxed text-sm md:text-base font-medium whitespace-pre-line">
+                                            {dayPlan.description}
+                                          </div>
                                         </div>
                                       </motion.div>
                                     )}

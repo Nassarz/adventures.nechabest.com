@@ -11,6 +11,9 @@ interface ItineraryDay {
   day: number;
   title: string;
   description: string;
+  location?: string;
+  accommodation?: string;
+  meals?: string;
 }
 
 interface Tour {
@@ -195,7 +198,7 @@ export default function AdminTours() {
     setFormData({ ...formData, itinerary: updatedItinerary });
   };
 
-  const handleItineraryChange = (index: number, field: 'title' | 'description', value: string) => {
+  const handleItineraryChange = (index: number, field: 'title' | 'description' | 'location' | 'accommodation' | 'meals', value: string) => {
     if (!formData.itinerary) return;
     const itinerary = [...formData.itinerary];
     itinerary[index] = { ...itinerary[index], [field]: value };
@@ -554,13 +557,34 @@ export default function AdminTours() {
                                 className="w-full px-3 py-2 border border-black/10 bg-white rounded-lg focus:outline-none focus:border-nature text-sm text-black/80"
                                 required
                               />
+                              <input
+                                type="text"
+                                value={item.location || ''}
+                                onChange={(e) => handleItineraryChange(index, 'location', e.target.value)}
+                                placeholder="Location (e.g. Masai Mara National Reserve)"
+                                className="w-full px-3 py-2 border border-black/10 bg-white rounded-lg focus:outline-none focus:border-nature text-sm text-black/80"
+                              />
+                              <input
+                                type="text"
+                                value={item.accommodation || ''}
+                                onChange={(e) => handleItineraryChange(index, 'accommodation', e.target.value)}
+                                placeholder="Accommodation (e.g. Mara Simba Lodge)"
+                                className="w-full px-3 py-2 border border-black/10 bg-white rounded-lg focus:outline-none focus:border-nature text-sm text-black/80"
+                              />
+                              <input
+                                type="text"
+                                value={item.meals || ''}
+                                onChange={(e) => handleItineraryChange(index, 'meals', e.target.value)}
+                                placeholder="Meals (e.g. Full board • Drinking water throughout)"
+                                className="w-full px-3 py-2 border border-black/10 bg-white rounded-lg focus:outline-none focus:border-nature text-sm text-black/80"
+                              />
                             </div>
                           </div>
                         ))}
                       </div>
                     ) : (
                       <div className="p-8 text-center text-black/40 border border-dashed rounded-xl">
-                        No itinerary days configured yet. Click "Add Day" to start.
+                        No itinerary days configured yet. Click &quot;Add Day&quot; to start.
                       </div>
                     )}
                   </div>

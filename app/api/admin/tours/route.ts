@@ -73,7 +73,10 @@ export async function POST(request: NextRequest) {
         ? body.itinerary.map((item: any) => ({
             day: sanitizePositiveInt(item.day, 1, 100) || 1,
             title: sanitizeString(item.title, 500) || '',
-            description: sanitizeString(item.description, 2000) || '',
+            description: sanitizeString(item.description, 5000) || '',
+            location: sanitizeString(item.location, 500),
+            accommodation: sanitizeString(item.accommodation, 1000),
+            meals: sanitizeString(item.meals, 500),
           }))
         : [],
       gallery: Array.isArray(body.gallery) ? body.gallery.map((g: unknown) => sanitizeString(g, 2048)) : [],
@@ -139,7 +142,10 @@ export async function PATCH(request: NextRequest) {
           ? (updateData[field] as any[]).map((item) => ({
               day: sanitizePositiveInt(item.day, 1, 100) || 1,
               title: sanitizeString(item.title, 500) || '',
-              description: sanitizeString(item.description, 2000) || '',
+              description: sanitizeString(item.description, 5000) || '',
+              location: sanitizeString(item.location, 500),
+              accommodation: sanitizeString(item.accommodation, 1000),
+              meals: sanitizeString(item.meals, 500),
             }))
           : [];
       } else {
