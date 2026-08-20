@@ -143,7 +143,7 @@ export default function EcoTourismPage() {
                 transition={{ delay: 0.3, duration: 0.8 }}
                 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[3rem] text-white font-bold leading-[1.1] tracking-tight drop-shadow-2xl"
               >
-                {get('eco.hero.title', 'Eco-Tourism Experiences')}
+                {get('eco.hero.title', 'Nechabest Sustainable Adventures')}
               </motion.h1>
 
               <motion.p

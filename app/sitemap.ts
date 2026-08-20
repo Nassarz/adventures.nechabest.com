@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://nechabest.com';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.nechabest.com';
   const now = new Date();
 
   return [

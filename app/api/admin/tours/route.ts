@@ -6,7 +6,6 @@ import {
   isValidObjectId,
   secureJson,
   sanitizeString,
-  sanitizeNumber,
   sanitizePositiveInt,
   checkAdminRateLimit,
 } from '@/lib/apiSecurity';
@@ -60,7 +59,7 @@ export async function POST(request: NextRequest) {
       title: sanitizeString(body.title, 200),
       description: sanitizeString(body.description, 5000),
       location: sanitizeString(body.location, 200),
-      price: sanitizeNumber(body.price),
+      price: sanitizeString(body.price, 200),
       duration: sanitizeString(body.duration, 100),
       image: sanitizeString(body.image, 2048),
       maxPeople: sanitizePositiveInt(body.maxPeople, 1, 10000) || 1000,
@@ -124,7 +123,7 @@ export async function PATCH(request: NextRequest) {
       if (field === 'showOnHome' || field === 'published') {
         safeUpdate[field] = Boolean(updateData[field]);
       } else if (field === 'price') {
-        safeUpdate[field] = sanitizeNumber(updateData[field]);
+        safeUpdate[field] = sanitizeString(updateData[field], 200);
       } else if (field === 'maxPeople') {
         safeUpdate[field] = sanitizePositiveInt(updateData[field], 1, 10000);
       } else if (field === 'highlights' || field === 'includes' || field === 'excludes') {

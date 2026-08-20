@@ -21,27 +21,21 @@ const display = Poppins({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://nechabest.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://www.nechabest.com'),
   title: {
     default: 'Nechabest Sustainable Initiatives | Building a Greener Uganda',
     template: '%s | Nechabest Sustainable Initiatives',
   },
-  description: 'Nechabest is a Ugandan sustainable development organization powering clean water, renewable energy, climate-smart farming, conservation, and eco-tourism adventures. Explore our projects and book a Nechabest adventure today.',
+  description: 'Nechabest Sustainable Initiatives is a Ugandan non-profit organization powering clean water, renewable energy, climate-smart farming, and environmental conservation for communities across Uganda. Explore our projects and impact today.',
   keywords: [
     'nechabest',
-    'nechabest adventures',
     'nechabest sustainable initiatives',
     'sustainable development',
     'Uganda',
-    'Uganda tourism',
     'clean water',
     'renewable energy',
-    'eco-tourism',
-    'eco-tourism Uganda',
     'climate-smart farming',
     'environmental conservation',
-    'Uganda safaris',
-    'Nechabest eco tours',
   ],
   authors: [{ name: 'Nechabest Sustainable Initiatives' }],
   creator: 'Nechabest Sustainable Initiatives',
@@ -56,10 +50,10 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_UG',
-    url: 'https://nechabest.com',
+    url: 'https://www.nechabest.com',
     siteName: 'Nechabest Sustainable Initiatives',
     title: 'Nechabest Sustainable Initiatives | Building a Greener Uganda',
-    description: 'Empowering Ugandan communities through clean water, renewable energy, climate-smart farming, and eco-tourism adventures.',
+    description: 'Empowering Ugandan communities through clean water, renewable energy, climate-smart farming, and environmental conservation.',
     images: [
       {
         url: 'https://iili.io/fdC0KF9.jpg',
@@ -108,6 +102,24 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${display.variable}`}>
       <body suppressHydrationWarning className="font-sans antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'Nechabest Sustainable Initiatives',
+              url: 'https://www.nechabest.com',
+              logo: 'https://iili.io/ffrDkkN.png',
+              sameAs: [
+                'https://www.instagram.com/nechabest/',
+                'https://www.facebook.com/people/Nechabest-Sustainable-Initiatives/61576490034369/',
+                'https://x.com/nechabest',
+                'https://www.tiktok.com/@nechabest',
+              ],
+            }),
+          }}
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `

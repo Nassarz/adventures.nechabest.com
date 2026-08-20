@@ -11,4 +11,4 @@ Disallow: /_next/
 Disallow: /admin/
 
 # Sitemap location
-Sitemap: https://nechabest.com/sitemap.xml
+Sitemap: https://www.nechabest.com/sitemap.xml

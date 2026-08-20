@@ -15,3 +15,7 @@ firebase-blueprint.json
 
 # Postman workspace files — not needed in repo
 .postman.json
+
+# TypeScript incremental build cache
+tsconfig.tsbuildinfo
+*.tsbuildinfo
