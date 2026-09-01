@@ -154,16 +154,16 @@ export default function Footer() {
               {[
                 { label: 'Home', href: '/' },
                 { label: 'About Us', href: '/about' },
-                { label: 'Eco-Tourism', href: '/eco-tourism' },
-                { label: 'Book a Tour', href: '/booking' },
+                { label: 'Eco-Tourism', href: 'https://adventures.nechabest.com' },
+                { label: 'Book a Tour', href: 'https://adventures.nechabest.com/booking' },
                 { label: 'Blog', href: '/blog' },
                 { label: 'Contact', href: '/contact' },
               ].map((item) => (
                 <li key={item.label}>
-                  <Link href={item.href} className="text-white/30 hover:text-nature transition-all flex items-center gap-2 group text-sm font-bold">
+                  <a href={item.href} className="text-white/30 hover:text-nature transition-all flex items-center gap-2 group text-sm font-bold">
                     <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all -ml-5 group-hover:ml-0" />
                     {item.label}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>

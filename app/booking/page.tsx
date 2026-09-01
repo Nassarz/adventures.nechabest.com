@@ -286,8 +286,28 @@ export default function Booking() {
 
         <Navbar />
 
+        {/* Dedicated Domain Banner Notice */}
+        <div className="pt-28 md:pt-32 px-4 bg-black">
+          <div className="max-w-4xl mx-auto bg-gradient-to-r from-emerald-950 via-teal-900/60 to-slate-900 border border-emerald-500/30 rounded-2xl p-4 md:p-5 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+            <div className="flex items-center gap-3">
+              <Sparkles className="w-5 h-5 text-emerald-400 shrink-0" />
+              <p className="text-xs md:text-sm text-slate-200">
+                Planning a safari? You can also book directly on our dedicated platform at <strong className="text-emerald-400">adventures.nechabest.com</strong>
+              </p>
+            </div>
+            <a
+              href="https://adventures.nechabest.com/booking"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 rounded-xl bg-emerald-500 text-black font-bold text-xs hover:bg-emerald-400 transition-all shrink-0"
+            >
+              Go to Adventures Booking →
+            </a>
+          </div>
+        </div>
+
         {/* Hero Section */}
-        <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden pt-32 pb-16 md:pt-40">
+        <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden pt-12 pb-16 md:pt-16">
           <HeroSlideshow
             images={[
               get('booking.hero.image', 'https://iili.io/FvzmxwP.jpg'),

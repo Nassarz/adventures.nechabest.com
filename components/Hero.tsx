@@ -73,11 +73,11 @@ export default function Hero() {
                 Explore Our Work
               </motion.a>
               <motion.a
-                href="#tours"
+                href="https://adventures.nechabest.com/booking"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white/10 backdrop-blur-md text-white border border-white/30 font-bold text-sm hover:bg-white hover:text-primary transition-all text-center"
-                aria-label="Book an eco-tourism tour"
+                aria-label="Book an eco-tourism tour on Nechabest Adventures"
               >
                 Book a Tour
               </motion.a>

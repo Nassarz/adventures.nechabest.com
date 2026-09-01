@@ -55,19 +55,18 @@ export default function Navbar() {
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center space-x-8">
             {navLinks.map((link) => (
-              <Link
+              <a
                 key={link.name}
                 href={link.href}
-                prefetch={true}
                 className="text-sm font-bold text-white/70 transition-all hover:text-nature hover:scale-105"
               >
                 {link.name}
-              </Link>
+              </a>
             ))}
           </div>
 
           <div className="hidden lg:flex items-center space-x-4">
-            <Link href="/booking" onClick={() => setIsOpen(false)}>
+            <a href="https://adventures.nechabest.com/booking">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -75,7 +74,7 @@ export default function Navbar() {
               >
                 {get('global.nav.ctaLabel', 'Book a Tour')}
               </motion.button>
-            </Link>
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -115,7 +114,7 @@ export default function Navbar() {
                     {link.name}
                   </Link>
                 ))}
-                <Link href="/booking" onClick={() => setIsOpen(false)} className="w-full">
+                <a href="https://adventures.nechabest.com/booking" onClick={() => setIsOpen(false)} className="w-full">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -123,7 +122,7 @@ export default function Navbar() {
                   >
                     {get('global.nav.ctaLabel', 'Book a Tour')}
                   </motion.button>
-                </Link>
+                </a>
               </div>
               
             </div>
