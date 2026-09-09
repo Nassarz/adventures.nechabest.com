@@ -14,21 +14,22 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Nechabest Adventures | Eco-Tourism & Safari Tours in Uganda",
+  title: "Nechabest Adventures | Adventure & Safari Tours in Uganda",
   description:
-    "Discover Uganda with Nechabest Adventures. Gorilla trekking, safari tours, eco-tourism packages, and community-led experiences. Book your adventure today.",
+    "Discover Uganda with Nechabest Adventures. Gorilla trekking, wildlife safaris, mountain hiking, and cultural immersion. Book your adventure today.",
   keywords: [
     "Uganda tours",
     "gorilla trekking",
     "safari Uganda",
-    "eco-tourism",
-    "Nechabest",
     "Uganda adventure",
+    "Nechabest",
+    "wildlife safari",
+    "mountain hiking",
   ],
   openGraph: {
-    title: "Nechabest Adventures | Eco-Tourism & Safari Tours in Uganda",
+    title: "Nechabest Adventures | Adventure & Safari Tours in Uganda",
     description:
-      "Discover Uganda with Nechabest Adventures. Gorilla trekking, safari tours, eco-tourism packages, and community-led experiences.",
+      "Discover Uganda with Nechabest Adventures. Gorilla trekking, wildlife safaris, mountain hiking, and cultural immersion.",
     url: "https://adventures.nechabest.com",
     siteName: "Nechabest Adventures",
     locale: "en_US",
@@ -36,9 +37,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nechabest Adventures | Eco-Tourism & Safari Tours in Uganda",
+    title: "Nechabest Adventures | Adventure & Safari Tours in Uganda",
     description:
-      "Discover Uganda with Nechabest Adventures. Gorilla trekking, safari tours, eco-tourism packages, and community-led experiences.",
+      "Discover Uganda with Nechabest Adventures. Gorilla trekking, wildlife safaris, mountain hiking, and cultural immersion.",
   },
 };
 

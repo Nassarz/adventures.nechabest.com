@@ -10,7 +10,7 @@ export function defaultWhatsAppMessage(): string {
   return [
     'Hello Nechabest Adventures! 👋',
     '',
-    'I would like to know more about your tours and eco-tourism packages.',
+    'I would like to know more about your adventures and safari packages.',
     '',
     'Could you please share more details?',
   ].join('\n');

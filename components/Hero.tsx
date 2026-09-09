@@ -21,7 +21,7 @@ export default function Hero() {
     return () => clearInterval(timer);
   }, [HERO_IMAGES.length]);
 
-  const titleWords = 'Discover Uganda\'s Wild Beauty.'.split(' ');
+  const titleWords = 'Unforgettable Adventures Await.'.split(' ');
 
   return (
     <section className="relative h-screen w-full flex items-center overflow-hidden">
@@ -81,7 +81,7 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 1.2 }}
               className="text-base md:text-lg text-white/80 font-medium leading-relaxed max-w-2xl mx-auto"
             >
-              {get('home.hero.subtitle', 'Experience the magic of Uganda through gorilla trekking, wildlife safaris, and community-led eco-tourism adventures.')}
+              {get('home.hero.subtitle', 'Gorilla trekking, wildlife safaris, mountain hiking, and cultural immersion — your ultimate Uganda adventure starts here.')}
             </motion.p>
 
             <motion.div

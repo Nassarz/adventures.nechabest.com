@@ -74,7 +74,7 @@ export default function Tours() {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="text-foreground/60 max-w-md text-base md:text-lg leading-relaxed font-medium will-change-transform"
           >
-            {get('home.tours.subtitle', 'From gorilla trekking to wildlife safaris, discover the best eco-tourism experiences Uganda has to offer.')}
+              {get('home.tours.subtitle', 'From gorilla trekking to wildlife safaris, discover the best adventure experiences Uganda has to offer.')}
           </motion.p>
         </div>
 
@@ -107,7 +107,7 @@ export default function Tours() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                  onClick={() => router.push(`/eco-tourism/${tour.id}`)}
+                  onClick={() => router.push(`/adventures/${tour.id}`)}
                   className="group bg-white rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-black/10 cursor-pointer will-change-transform"
                 >
                   <div className="block aspect-[1.1/1] relative overflow-hidden">

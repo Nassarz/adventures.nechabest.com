@@ -21,7 +21,7 @@ export default function Navbar() {
   const navLinks = [
     { name: get('global.nav.homeLabel', 'Home'), href: '/' },
     { name: get('global.nav.aboutLabel', 'About Us'), href: '/about' },
-    { name: get('global.nav.ecoLabel', 'Eco-Tourism'), href: '/eco-tourism' },
+    { name: get('global.nav.ecoLabel', 'Adventures'), href: '/adventures' },
     { name: get('global.nav.blogLabel', 'Blog'), href: '/blog' },
     { name: get('global.nav.contactLabel', 'Contact Us'), href: '/contact' },
   ].filter((link) => !link.name.toLowerCase().includes('admin'));

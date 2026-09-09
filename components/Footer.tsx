@@ -127,9 +127,9 @@ export default function Footer() {
                 </span>
               </div>
             </Link>
-            <p className="text-nature font-bold text-lg tracking-tight">{get('global.footer.tagline', 'Discover Uganda\'s Wild Beauty.')}</p>
+            <p className="text-nature font-bold text-lg tracking-tight">              {get('global.footer.tagline', 'Unforgettable Adventures Await.')}</p>
             <p className="text-white/40 leading-relaxed text-sm font-medium">
-              {get('global.footer.description', 'Premium eco-tourism experiences in Uganda. Gorilla trekking, wildlife safaris, and community-led adventures.')}
+              {get('global.footer.description', 'Premium adventure experiences in Uganda. Gorilla trekking, wildlife safaris, mountain hiking, and cultural immersion.')}
             </p>
           </motion.div>
 
@@ -146,7 +146,7 @@ export default function Footer() {
               {[
                 { label: 'Home', href: '/' },
                 { label: 'About Us', href: '/about' },
-                { label: 'Eco-Tourism', href: '/eco-tourism' },
+                { label: 'Adventures', href: '/adventures' },
                 { label: 'Book a Tour', href: '/booking' },
                 { label: 'Blog', href: '/blog' },
                 { label: 'Contact', href: '/contact' },
@@ -179,7 +179,7 @@ export default function Footer() {
                 'Mountain Hiking',
               ].map((item) => (
                 <li key={item}>
-                  <Link href="/eco-tourism" className="text-white/30 hover:text-nature transition-all flex items-center gap-2 group text-sm font-bold">
+                  <Link href="/adventures" className="text-white/30 hover:text-nature transition-all flex items-center gap-2 group text-sm font-bold">
                     <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all -ml-5 group-hover:ml-0" />
                     {item}
                   </Link>

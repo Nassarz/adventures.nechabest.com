@@ -43,7 +43,7 @@ export default function AboutPage() {
               {get('about.hero.title', 'Our Story')}
             </h1>
             <p className="text-white/70 text-lg max-w-2xl">
-              {get('about.hero.subtitle', 'Nechabest Adventures is committed to sustainable tourism that benefits both travelers and local communities in Uganda.')}
+              {get('about.hero.subtitle', 'Nechabest Adventures delivers extraordinary adventure experiences across Uganda\'s most breathtaking landscapes.')}
             </p>
           </motion.div>
         </div>
@@ -62,7 +62,7 @@ export default function AboutPage() {
               {get('about.mission.title', 'Our Mission')}
             </h2>
             <p className="text-foreground/70 text-lg leading-relaxed">
-              {get('about.mission.text', 'To provide extraordinary eco-tourism experiences in Uganda while empowering local communities and protecting the natural environment for future generations.')}
+              {get('about.mission.text', 'To deliver extraordinary adventure experiences in Uganda — gorilla trekking, wildlife safaris, mountain expeditions, and cultural immersion — that create lasting memories for every traveler.')}
             </p>
           </motion.div>
 
@@ -76,7 +76,7 @@ export default function AboutPage() {
               {get('about.vision.title', 'Our Vision')}
             </h2>
             <p className="text-foreground/70 text-lg leading-relaxed">
-              {get('about.vision.text', 'To be East Africa\'s leading eco-tourism operator, recognized for our commitment to conservation, community development, and delivering authentic, transformative travel experiences.')}
+              {get('about.vision.text', 'To be East Africa\'s leading adventure operator, recognized for delivering authentic, transformative travel experiences that showcase the best of Uganda.')}
             </p>
           </motion.div>
 
@@ -87,9 +87,9 @@ export default function AboutPage() {
             className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8"
           >
             {[
-              { title: 'Conservation', desc: 'Every tour directly supports wildlife conservation and habitat protection across Uganda.' },
-              { title: 'Community', desc: 'We hire local guides, source from local businesses, and reinvest in community development.' },
-              { title: 'Sustainability', desc: 'Our operations are designed to minimize environmental impact and maximize positive outcomes.' },
+              { title: 'Expert Guides', desc: 'Our experienced local guides know Uganda inside out, ensuring safe and unforgettable adventures.' },
+              { title: 'Authentic Experiences', desc: 'We connect you with genuine cultural encounters and off-the-beaten-path destinations.' },
+              { title: 'Tailored Journeys', desc: 'Every adventure is crafted to match your interests, pace, and travel style.' },
             ].map((item, i) => (
               <div key={i} className="p-8 rounded-[2rem] bg-[#F8F9FA] border border-black/5 space-y-4">
                 <h3 className="font-display text-xl font-bold text-primary">{item.title}</h3>

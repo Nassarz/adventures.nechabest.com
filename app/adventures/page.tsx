@@ -22,9 +22,9 @@ interface Tour {
   location?: string;
 }
 
-export default function EcoTourismPage() {
+export default function AdventuresPage() {
   const router = useRouter();
-  const { get } = useSiteContent('eco-tourism');
+  const { get } = useSiteContent('adventures');
   const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -42,17 +42,17 @@ export default function EcoTourismPage() {
 
       <section className="relative h-[50vh] flex items-center overflow-hidden">
         <div className="absolute inset-0">
-          <Image src={get('eco.hero.image', 'https://iili.io/fdClSYg.png')} alt="Eco-Tourism" fill className="object-cover" referrerPolicy="no-referrer" unoptimized />
+          <Image src={get('adventures.hero.image', 'https://iili.io/fdClSYg.png')} alt="Adventures" fill className="object-cover" referrerPolicy="no-referrer" unoptimized />
           <div className="absolute inset-0 bg-black/60" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pt-32">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
             <div className="flex items-center gap-3">
               <span className="w-12 h-[1px] bg-nature/60" />
-              <span className="text-nature font-bold uppercase tracking-[0.3em] text-[10px]">Eco-Tourism</span>
+              <span className="text-nature font-bold uppercase tracking-[0.3em] text-[10px]">Adventures</span>
             </div>
-            <h1 className="font-display text-4xl md:text-6xl font-bold text-white">{get('eco.hero.title', 'Eco-Tourism Adventures')}</h1>
-            <p className="text-white/70 text-lg max-w-2xl">{get('eco.hero.subtitle', 'Sustainable tourism experiences that support conservation and local communities.')}</p>
+            <h1 className="font-display text-4xl md:text-6xl font-bold text-white">{get('adventures.hero.title', 'Uganda Adventures')}</h1>
+            <p className="text-white/70 text-lg max-w-2xl">{get('adventures.hero.subtitle', 'Gorilla trekking, wildlife safaris, mountain hikes, and cultural immersion — your Uganda adventure starts here.')}</p>
           </motion.div>
         </div>
       </section>
@@ -62,7 +62,7 @@ export default function EcoTourismPage() {
           {loading ? (
             <div className="flex justify-center py-20"><Loader2 className="w-12 h-12 text-nature animate-spin" /></div>
           ) : tours.length === 0 ? (
-            <div className="text-center py-20"><p className="text-foreground/60 text-lg">No tours available at the moment.</p></div>
+            <div className="text-center py-20"><p className="text-foreground/60 text-lg">No adventures available at the moment.</p></div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {tours.map((tour, i) => (
@@ -72,7 +72,7 @@ export default function EcoTourismPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  onClick={() => router.push(`/eco-tourism/${tour.id}`)}
+                  onClick={() => router.push(`/adventures/${tour.id}`)}
                   className="group bg-white rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-black/10 cursor-pointer"
                 >
                   <div className="aspect-[4/3] relative overflow-hidden">

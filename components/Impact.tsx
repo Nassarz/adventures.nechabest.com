@@ -47,7 +47,7 @@ export default function Impact() {
                 {get('home.impact.heading', 'Uganda\'s Trusted Tour Operator')}
               </h2>
               <p className="text-lg md:text-xl text-foreground/60 leading-relaxed max-w-lg pt-2 md:pt-4">
-                {get('home.impact.subtitle', 'With years of experience and a passion for sustainable tourism, we create unforgettable adventures while supporting local communities.')}
+                {get('home.impact.subtitle', 'With years of experience and a passion for adventure, we create unforgettable journeys through Uganda\'s most spectacular landscapes.')}
               </p>
             </div>
 
@@ -100,7 +100,7 @@ export default function Impact() {
               className="absolute -bottom-6 -left-4 md:-bottom-10 md:-left-10 p-6 md:p-10 bg-white rounded-[2rem] md:rounded-[3rem] shadow-[0_30px_60px_rgba(0,0,0,0.1)] max-w-[280px] md:max-w-sm border border-black/5"
             >
               <p className="text-primary font-bold text-lg md:text-xl leading-snug italic">
-                &quot;{get('home.impact.quote', 'Every tour we lead directly supports conservation and local communities in Uganda.')}&quot;
+                &quot;{get('home.impact.quote', 'Every adventure we craft is designed to leave you with memories that last a lifetime.')}&quot;
               </p>
               <div className="mt-6 md:mt-8 flex items-center gap-3 md:gap-4">
                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-nature/10 flex items-center justify-center">
