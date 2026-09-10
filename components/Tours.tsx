@@ -112,7 +112,7 @@ export default function Tours() {
                 >
                   <div className="block aspect-[1.1/1] relative overflow-hidden">
                     <Image
-                      src={tour.image || 'https://picsum.photos/seed/tour/800/600'}
+                      src={tour.image || 'https://iili.io/3ovy0N9.jpg'}
                       alt={tour.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
