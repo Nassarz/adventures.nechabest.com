@@ -158,7 +158,26 @@ export function isBotRequest(body: Record<string, unknown>): boolean {
 
 // ObjectId Validation
 export function isValidObjectId(id: unknown): boolean {
-  return typeof id === 'string' && /^[a-f\d]{24}$/i.test(id);
+  return typeof id === 'string' && /^[\da-f]{24}$/i.test(id);
+}
+
+// HTTPS URL Validation
+export function isValidHttpsUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+// Enum Validation
+export function sanitizeEnum<T extends string>(
+  value: unknown,
+  allowed: readonly T[]
+): T | '' {
+  if (typeof value !== 'string') return '';
+  return (allowed as readonly string[]).includes(value) ? (value as T) : '';
 }
 
 // Admin Rate Limiting

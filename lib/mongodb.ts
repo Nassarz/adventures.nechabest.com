@@ -30,5 +30,5 @@ export default clientProxy;
 
 export async function getDb(): Promise<Db> {
   const client = await getClientPromise();
-  return client.db(process.env.MONGODB_DB || 'adventures');
+  return client.db(process.env.MONGODB_DB || 'nechabest');
 }
