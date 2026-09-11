@@ -99,8 +99,8 @@ export async function POST(request: NextRequest) {
         const emailHtml = `
           <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
             <div style="text-align: center; margin-bottom: 20px;">
-              <h2 style="color: #1a3c34; margin: 0;">Nechabest Adventures</h2>
-              <p style="color: #58b05c; font-size: 14px; font-weight: bold; margin: 5px 0 0 0;">Together for a Greener Future</p>
+              <img src="https://iili.io/ffrDkkN.png" alt="Nechabest Sustainable Adventures" width="180" style="display: block; margin: 0 auto 12px;" />
+              <p style="color: #58b05c; font-size: 14px; font-weight: bold; margin: 5px 0 0 0;">Sustainable Adventures</p>
             </div>
             <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
             <p>Hello <strong>${subName}</strong>,</p>
@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
         sendEmail({
           type: 'info',
           to: sub.email,
-          subject: `New Blog Post: ${blog.title} - Nechabest`,
+          subject: `New Blog Post: ${blog.title} - Nechabest Sustainable Adventures`,
           html: emailHtml,
         }).catch((err) => {
           console.error(`[Email Notification] Failed sending newsletter email to ${sub.email}:`, err);

@@ -238,7 +238,7 @@ export default function Footer() {
                 { Icon: FacebookIcon, href: SOCIAL_LINKS.facebook, label: 'Facebook' },
                 { Icon: XIcon, href: SOCIAL_LINKS.x, label: 'X (Twitter)' },
                 { Icon: TikTokIcon, href: SOCIAL_LINKS.tiktok, label: 'TikTok' },
-                { Icon: WhatsAppLogoIcon, href: buildWhatsAppLink('Hello Nechabest Adventures!'), label: 'WhatsApp' },
+                { Icon: WhatsAppLogoIcon, href: buildWhatsAppLink('Hello Nechabest Sustainable Adventures!'), label: 'WhatsApp' },
               ].map((social) => (
                 <motion.a
                   key={social.label}
@@ -291,7 +291,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">
           <p>
-            © {currentYear} Nechabest Adventures. All Rights Reserved. |{' '}
+            © {currentYear} Nechabest Sustainable Adventures. All Rights Reserved. |{' '}
             <a href="https://wa.me/789649710" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
               Developed by IN&apos;TCODE
             </a>

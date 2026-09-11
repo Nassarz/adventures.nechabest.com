@@ -363,7 +363,7 @@ export default function AdminBookings() {
               {selectedBooking.phone && (
                 <a
                   href={buildWhatsAppLink(
-                    `Hello ${selectedBooking.customerName || 'there'}! This is Nechabest Adventures regarding your "${selectedBooking.tourName || 'tour'}" booking (${selectedBooking.date || 'date TBC'}). Please reply to confirm your payment details.`,
+                    `Hello ${selectedBooking.customerName || 'there'}! This is Nechabest Sustainable Adventures regarding your "${selectedBooking.tourName || 'tour'}" booking (${selectedBooking.date || 'date TBC'}). Please reply to confirm your payment details.`,
                     selectedBooking.phone
                   )}
                   target="_blank"

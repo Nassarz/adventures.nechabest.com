@@ -13,7 +13,7 @@ export default function PrivacyPolicyPage() {
           <h1 className="font-display text-4xl font-bold text-primary">Privacy Policy</h1>
           <div className="prose prose-lg text-foreground/70 space-y-6">
             <p>Last updated: {new Date().toLocaleDateString()}</p>
-            <p>Nechabest Adventures (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) operates the adventures.nechabest.com website. This page informs you of our policies regarding the collection, use, and disclosure of personal information when you use our service.</p>
+            <p>Nechabest Sustainable Adventures (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) operates the adventures.nechabest.com website. This page informs you of our policies regarding the collection, use, and disclosure of personal information when you use our service.</p>
             <h2 className="font-display text-2xl font-bold text-primary">Information Collection and Use</h2>
             <p>We collect information you provide directly to us, such as when you book a tour, subscribe to our newsletter, or contact us. This may include your name, email address, phone number, and payment information.</p>
             <h2 className="font-display text-2xl font-bold text-primary">Use of Data</h2>

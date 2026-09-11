@@ -47,9 +47,11 @@ export async function POST(request: NextRequest) {
 
     sendEmail({
       type: 'info', to: email,
-      subject: `We've received your inquiry: ${subject} - Nechabest Adventures`,
+      subject: `We've received your inquiry: ${subject} - Nechabest Sustainable Adventures`,
       html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;border:1px solid #e2e8f0;border-radius:12px;padding:24px;">
-        <h2 style="color:#1A3C34;">Nechabest Adventures</h2>
+        <div style="text-align:center;margin-bottom:20px;">
+          <img src="https://iili.io/ffrDkkN.png" alt="Nechabest Sustainable Adventures" width="180" style="display:block;margin:0 auto 12px;" />
+        </div>
         <p>Hello <strong>${safeName}</strong>,</p>
         <p>Thank you for contacting us! We have received your inquiry regarding <strong>${safeSubject}</strong>.</p>
         <p>A member of our team will get back to you within 24 hours.</p>

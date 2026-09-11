@@ -56,7 +56,7 @@ export async function sendEmail({ type, to, subject, html }: SendEmailArgs) {
   const user = isBookings
     ? (process.env.SMTP_USER_BOOKINGS ?? 'bookings@nechabest.com')
     : (process.env.SMTP_USER_INFO ?? 'info@nechabest.com');
-  const fromName = isBookings ? 'Nechabest Adventures' : 'Nechabest Adventures';
+  const fromName = isBookings ? 'Nechabest Sustainable Adventures' : 'Nechabest Sustainable Adventures';
 
   if (!process.env.SMTP_PASS_BOOKINGS || !process.env.SMTP_PASS_INFO) {
     console.error('[Email] SMTP credentials not configured. Email sending skipped.');

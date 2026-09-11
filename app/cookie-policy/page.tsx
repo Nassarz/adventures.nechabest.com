@@ -13,7 +13,7 @@ export default function CookiePolicyPage() {
           <h1 className="font-display text-4xl font-bold text-primary">Cookie Policy</h1>
           <div className="prose prose-lg text-foreground/70 space-y-6">
             <p>Last updated: {new Date().toLocaleDateString()}</p>
-            <p>This Cookie Policy explains how Nechabest Adventures uses cookies on our website.</p>
+            <p>This Cookie Policy explains how Nechabest Sustainable Adventures uses cookies on our website.</p>
             <h2 className="font-display text-2xl font-bold text-primary">What Are Cookies</h2>
             <p>Cookies are small text files that are placed on your computer or mobile device when you visit a website. They are widely used to make websites work more efficiently and to provide information to website owners.</p>
             <h2 className="font-display text-2xl font-bold text-primary">How We Use Cookies</h2>

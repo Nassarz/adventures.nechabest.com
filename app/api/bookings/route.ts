@@ -140,15 +140,21 @@ export async function POST(request: NextRequest) {
     const safeSpecialRequests = specialRequests ? escapeHtml(specialRequests) : '';
 
     // Send customer confirmation receipt email
+    const logoUrl = 'https://iili.io/ffrDkkN.png';
+    const igIcon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij48Y2lyY2xlIGN4PSIyNCIgY3k9IjI0IiByPSIyNCIgZmlsbD0idXJsKCNpZykiLz48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImlnIiB4MT0iMCIgeTE9IjQ4IiB4Mj0iNDgiIHkyPSIwIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZjA5NDMzIi8+PHN0b3Agb2Zmc2V0PSIyNSUiIHN0b3AtY29sb3I9IiNlNjY4M2MiLz48c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iI2RjMjc0MyIvPjxzdG9wIG9mZnNldD0iNzUlIiBzdG9wLWNvbG9yPSIjY2MyMzY2Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjYmMxODg4Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgeD0iMTAiIHk9IjEwIiB3aWR0aD0iMjgiIGhlaWdodD0iMjgiIHJ4PSI3IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIvPjxjaXJjbGUgY3g9IjI0IiBjeT0iMjQiIHI9IjYuNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyLjUiLz48Y2lyY2xlIGN4PSIzMyIgY3k9IjE1IiByPSIyIiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg==';
+    const fbIcon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij48Y2lyY2xlIGN4PSIyNCIgY3k9IjI0IiByPSIyNCIgZmlsbD0iIzE4NzdmMiIvPjxwYXRoIGQ9Ik0yOSAyNS41aC0zdjEwaC00di0xMGgtMnYtMy41aDJ2LTIuM2MwLTIuOCAxLjItNC40IDQuMy00LjRoMi43djMuNWgtMS43Yy0xLjIgMC0xLjMuNS0xLjMgMS4zdjIuMWgzbC0uNyAzLjV6IiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg==';
+    const xIcon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij48Y2lyY2xlIGN4PSIyNCIgY3k9IjI0IiByPSIyNCIgZmlsbD0iIzAwMCIvPjxwYXRoIGQ9Ik0zNC41IDExaC00LjhsLTUuNSA3LjFMMjEuMiAxMWgtNWw3LjUgOS42TDE2IDM3aDQuOGw1LjItNi44IDQuNCA2LjhoNWwtNy44LTEwLjFMMzQuNSAxMXptLTIuNiAyMS4zTDIxLjcgMTQuNWgxLjhsMTAuMiAxNy44aC0xLjh6IiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg==';
+    const ttIcon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij48Y2lyY2xlIGN4PSIyNCIgY3k9IjI0IiByPSIyNCIgZmlsbD0iIzAwMCIvPjxwYXRoIGQ9Ik0zMyAxNC41Yy0xLjUtLjgtMi41LTIuMy0yLjgtNGgtMy4ydjE1LjhjMCAxLjctMS40IDMuMS0zLjEgMy4xcy0zLjEtMS40LTMuMS0zLjEgMS40LTMuMSAzLjEtMy4xYy4zIDAgLjcuMSAxIC4ydi0zLjRjLS4zIDAtLjctLjEtMS0uMS0zLjUgMC02LjQgMi45LTYuNCA2LjRzMi45IDYuNCA2LjQgNi40IDYuNC0yLjkgNi40LTYuNHYtOC4zYzEuMy45IDIuOCAxLjUgNC41IDEuNXYtMy4yYy0xLjQgMC0yLjYtLjYtMy41LTEuNC0uMS0uMS0uMi0uMS0uMy0uMS0uMyAwLS41LjEtLjcuMnYtLjN6IiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg==';
+    const waIcon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij48Y2lyY2xlIGN4PSIyNCIgY3k9IjI0IiByPSIyNCIgZmlsbD0iIzI1RDM2NiIvPjxwYXRoIGQ9Ik0zNC42IDEzLjJjLTMtMy03LTQuNi0xMS4yLTQuNi04LjcgMC0xNS44IDcuMS0xNS44IDE1LjggMCAyLjguNyA1LjUgMi4xIDcuOUwxMSAzN2w1LjMtMS40YzIuMyAxLjIgNC44IDEuOSA3LjQgMS45IDguNyAwIDE1LjgtNy4xIDE1LjgtMTUuOCAwLTQuMi0xLjctOC4yLTQuOS0xMC41em0tMTEuMiAyNGMtMi40IDAtNC43LS42LTYuNy0xLjhsLS41LS4zLTQuOCAxLjMgMS4zLTQuNy0uMy0uNWMtMS4yLTItMS45LTQuMy0xLjktNi43IDAtNy4xIDUuOC0xMi45IDEyLjktMTIuOSAzLjUgMCA2LjcgMS4zIDkuMSAzLjcgMi40IDIuNCAzLjcgNS42IDMuNyA5LjEgMCA3LjEtNS44IDEyLjktMTIuOCAxMi45em03LTkuNmMtLjQtLjItMi4zLTEuMS0yLjctMS4zLS40LS4yLS43LS4yLTEgLjJzLTEuMSAxLjMtMS40IDEuNmMtLjMuMy0uNS4zLS45LjEtLjQtLjItMS43LS42LTMuMi0yLTEuMi0xLjEtMi0yLjQtMi4yLTIuOC0uMi0uNCAwLS42LjItLjguMi0uMi40LS41LjYtLjcuMi0uMy4zLS41LjQtLjguMS0uMyAwLS42IDAtLjgtLjEtLjMtMS0yLjQtMS40LTMuMy0uNC0uOS0uNy0uNy0xLS43aC0uOGMtLjMgMC0uOC4xLTEuMi42cy0xLjYgMS42LTEuNiAzLjggMS43IDQuNCAxLjkgNC43Yy4yLjMgMy4zIDUgOCA3IDEuMS43IDIgMS4xIDIuNiAxLjQgMS4xLjQgMi4yLjMgMiAuMi45LS4xIDIuOC0xLjEgMy4yLTIuMi40LTEuMS40LTIgLjMtMi4yLS4xLS4yLS40LS4zLS44LS41eiIgZmlsbD0id2hpdGUiLz48L3N2Zz4=';
     const clientEmailHtml = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
         <div style="text-align: center; margin-bottom: 20px;">
-          <h2 style="color: #1a3c34; margin: 0;">Nechabest Adventures</h2>
+          <img src="${logoUrl}" alt="Nechabest Sustainable Adventures" width="180" style="display: block; margin: 0 auto 12px;" />
           <p style="color: #58b05c; font-size: 14px; font-weight: bold; margin: 5px 0 0 0;">Explore Uganda's Wild Side</p>
         </div>
         <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
         <p>Dear <strong>${safeFullName}</strong>,</p>
-        <p>Thank you for booking your adventure with Nechabest Adventures! We have received your booking request.</p>
+        <p>Thank you for booking your adventure with Nechabest Sustainable Adventures! We have received your booking request.</p>
         <p><strong>Booking Summary:</strong></p>
         <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
           <tr>
@@ -189,27 +195,27 @@ export async function POST(request: NextRequest) {
           <tr>
             <td align="center" style="padding: 4px;">
               <a href="https://www.instagram.com/nechabest/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;" title="Instagram">
-                <img src="https://cdn.simpleicons.org/instagram/white/48/48" width="48" height="48" style="border-radius: 50%; display: block; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);" alt="Instagram" />
+                <img src="${igIcon}" width="48" height="48" style="display: block; border-radius: 50%;" alt="Instagram" />
               </a>
             </td>
             <td align="center" style="padding: 4px;">
               <a href="https://www.facebook.com/people/Nechabest-Sustainable-Initiatives/61576490034369/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;" title="Facebook">
-                <img src="https://cdn.simpleicons.org/facebook/white/48/48" width="48" height="48" style="border-radius: 50%; display: block; background: #1877f2;" alt="Facebook" />
+                <img src="${fbIcon}" width="48" height="48" style="display: block; border-radius: 50%;" alt="Facebook" />
               </a>
             </td>
             <td align="center" style="padding: 4px;">
               <a href="https://x.com/nechabest" target="_blank" rel="noopener noreferrer" style="text-decoration: none;" title="X (Twitter)">
-                <img src="https://cdn.simpleicons.org/x/white/48/48" width="48" height="48" style="border-radius: 50%; display: block; background: #000000;" alt="X" />
+                <img src="${xIcon}" width="48" height="48" style="display: block; border-radius: 50%;" alt="X" />
               </a>
             </td>
             <td align="center" style="padding: 4px;">
               <a href="https://www.tiktok.com/@nechabest" target="_blank" rel="noopener noreferrer" style="text-decoration: none;" title="TikTok">
-                <img src="https://cdn.simpleicons.org/tiktok/white/48/48" width="48" height="48" style="border-radius: 50%; display: block; background: #000000;" alt="TikTok" />
+                <img src="${ttIcon}" width="48" height="48" style="display: block; border-radius: 50%;" alt="TikTok" />
               </a>
             </td>
             <td align="center" style="padding: 4px;">
-              <a href="https://wa.me/256756310029?text=Hello%20Nechabest%20Adventures!" target="_blank" rel="noopener noreferrer" style="text-decoration: none;" title="WhatsApp">
-                <img src="https://cdn.simpleicons.org/whatsapp/white/48/48" width="48" height="48" style="border-radius: 50%; display: block; background: #25D366;" alt="WhatsApp" />
+              <a href="https://wa.me/256756310029?text=Hello%20Nechabest%20Sustainable%20Adventures!" target="_blank" rel="noopener noreferrer" style="text-decoration: none;" title="WhatsApp">
+                <img src="${waIcon}" width="48" height="48" style="display: block; border-radius: 50%;" alt="WhatsApp" />
               </a>
             </td>
           </tr>
@@ -220,7 +226,7 @@ export async function POST(request: NextRequest) {
         <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
 
         <p style="font-size: 11px; color: #718096; text-align: center; margin: 0;">
-          This is an automated booking confirmation receipt from Nechabest Adventures.<br />
+          This is an automated booking confirmation receipt from Nechabest Sustainable Adventures.<br />
           Kasangati Town Council, Wakiso District, Uganda
         </p>
       </div>
@@ -229,7 +235,7 @@ export async function POST(request: NextRequest) {
     sendEmail({
       type: 'bookings',
       to: email,
-      subject: `Booking Request Received: ${tourTitle} - Nechabest Adventures`,
+      subject: `Booking Request Received: ${tourTitle} - Nechabest Sustainable Adventures`,
       html: clientEmailHtml,
     }).catch((err) => {
       console.error('[Bookings] Client confirmation email failed:', err);
@@ -241,6 +247,9 @@ export async function POST(request: NextRequest) {
     // Send admin notification email
     const adminNotificationHtml = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <img src="https://iili.io/ffrDkkN.png" alt="Nechabest Sustainable Adventures" width="180" style="display: block; margin: 0 auto 12px;" />
+        </div>
         <h2 style="color: #1a3c34; border-bottom: 2px solid #58b05c; padding-bottom: 8px; margin-top: 0;">New Booking Request Received</h2>
         <p>A new booking request has been submitted. Details below:</p>
         <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">

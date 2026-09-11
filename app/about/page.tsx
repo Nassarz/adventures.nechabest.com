@@ -20,7 +20,7 @@ export default function AboutPage() {
         <div className="absolute inset-0">
           <Image
             src={get('about.hero.image', 'https://iili.io/fdC0KF9.jpg')}
-            alt="About Nechabest Adventures"
+            alt="About Nechabest Sustainable Adventures"
             fill
             className="object-cover"
             referrerPolicy="no-referrer"
@@ -43,7 +43,7 @@ export default function AboutPage() {
               {get('about.hero.title', 'Our Story')}
             </h1>
             <p className="text-white/70 text-lg max-w-2xl">
-              {get('about.hero.subtitle', 'Nechabest Adventures delivers extraordinary adventure experiences across Uganda\'s most breathtaking landscapes.')}
+              {get('about.hero.subtitle', 'Nechabest Sustainable Adventures delivers extraordinary adventure experiences across Uganda\'s most breathtaking landscapes.')}
             </p>
           </motion.div>
         </div>

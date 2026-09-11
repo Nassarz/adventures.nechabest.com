@@ -14,32 +14,37 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Nechabest Adventures | Adventure & Safari Tours in Uganda",
+  title: "Nechabest Sustainable Adventures | Adventure & Safari Tours in Uganda",
   description:
-    "Discover Uganda with Nechabest Adventures. Gorilla trekking, wildlife safaris, mountain hiking, and cultural immersion. Book your adventure today.",
+    "Discover Uganda with Nechabest Sustainable Adventures. Gorilla trekking, wildlife safaris, mountain hiking, and cultural immersion. Book your adventure today.",
   keywords: [
     "Uganda tours",
     "gorilla trekking",
     "safari Uganda",
     "Uganda adventure",
     "Nechabest",
+    "sustainable adventures",
     "wildlife safari",
     "mountain hiking",
   ],
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/logo.png",
+  },
   openGraph: {
-    title: "Nechabest Adventures | Adventure & Safari Tours in Uganda",
+    title: "Nechabest Sustainable Adventures | Adventure & Safari Tours in Uganda",
     description:
-      "Discover Uganda with Nechabest Adventures. Gorilla trekking, wildlife safaris, mountain hiking, and cultural immersion.",
+      "Discover Uganda with Nechabest Sustainable Adventures. Gorilla trekking, wildlife safaris, mountain hiking, and cultural immersion.",
     url: "https://adventures.nechabest.com",
-    siteName: "Nechabest Adventures",
+    siteName: "Nechabest Sustainable Adventures",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nechabest Adventures | Adventure & Safari Tours in Uganda",
+    title: "Nechabest Sustainable Adventures | Adventure & Safari Tours in Uganda",
     description:
-      "Discover Uganda with Nechabest Adventures. Gorilla trekking, wildlife safaris, mountain hiking, and cultural immersion.",
+      "Discover Uganda with Nechabest Sustainable Adventures. Gorilla trekking, wildlife safaris, mountain hiking, and cultural immersion.",
   },
 };
 

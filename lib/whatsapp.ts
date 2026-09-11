@@ -8,7 +8,7 @@ export function buildWhatsAppLink(message: string, number: string = WHATSAPP_NUM
 
 export function defaultWhatsAppMessage(): string {
   return [
-    'Hello Nechabest Adventures! 👋',
+    'Hello Nechabest Sustainable Adventures! 👋',
     '',
     'I would like to know more about your adventures and safari packages.',
     '',

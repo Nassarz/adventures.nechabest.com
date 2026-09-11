@@ -59,7 +59,7 @@ export default function FloatingWhatsApp() {
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Chat with Nechabest Adventures on WhatsApp"
+          aria-label="Chat with Nechabest Sustainable Adventures on WhatsApp"
           whileHover={{ scale: 1.1, rotate: 4 }}
           whileTap={{ scale: 0.92 }}
           initial={{ scale: 0, opacity: 0 }}

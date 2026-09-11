@@ -111,7 +111,7 @@ export default function Impact() {
                     {get('home.impact.quoteRole', 'Tour Director')}
                   </p>
                   <p className="text-xs md:text-sm text-foreground/60">
-                    {get('home.impact.quoteAuthor', 'Nechabest Adventures')}
+                    {get('home.impact.quoteAuthor', 'Nechabest Sustainable Adventures')}
                   </p>
                 </div>
               </div>

@@ -51,7 +51,7 @@ export default function Hero() {
             >
               <span className="w-8 h-[1px] bg-nature/60" />
               <span className="text-nature font-bold uppercase tracking-[0.3em] text-[10px]">
-                Nechabest Adventures
+                Nechabest Sustainable Adventures
               </span>
               <span className="w-8 h-[1px] bg-nature/60" />
             </motion.div>

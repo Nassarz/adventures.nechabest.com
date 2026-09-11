@@ -295,7 +295,7 @@ export default function AdminBanners() {
                   {formData.ctaType === 'whatsapp' ? (
                     <div>
                       <label className="block text-black font-bold mb-2">WhatsApp Pre-filled Message</label>
-                      <textarea value={formData.whatsappMessage} onChange={(e) => setFormData({ ...formData, whatsappMessage: e.target.value })} rows={4} placeholder="Hello Nechabest Adventures, I would like to book..." className="w-full px-4 py-2 border border-black/10 rounded-lg focus:outline-none focus:border-nature" />
+                      <textarea value={formData.whatsappMessage} onChange={(e) => setFormData({ ...formData, whatsappMessage: e.target.value })} rows={4} placeholder="Hello Nechabest Sustainable Adventures, I would like to book..." className="w-full px-4 py-2 border border-black/10 rounded-lg focus:outline-none focus:border-nature" />
                       <p className="text-xs text-black/50 mt-1">This message opens in WhatsApp (+256 756 310 029) when visitors tap the button.</p>
                     </div>
                   ) : (
