@@ -3,26 +3,41 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { MapPin, Star, Navigation, Loader2, ArrowLeft, Check } from 'lucide-react';
+import { MapPin, Star, Navigation, Loader2, ArrowLeft, Check, X } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import FloatingWhatsApp from '@/components/FloatingWhatsApp';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 
+interface ItineraryDay {
+  day: number;
+  title: string;
+  description: string;
+  location?: string;
+  accommodation?: string;
+  meals?: string;
+}
+
 interface TourDetail {
   id: string;
-  name: string;
+  title: string;
   description: string;
   longDescription?: string;
   image: string;
-  price: number;
+  gallery?: string[];
+  price: string;
+  priceNum?: number;
   duration: string;
+  group?: string;
   rating: number;
+  reviews?: number;
   highlights: string[];
-  location?: string;
   includes?: string[];
-  itinerary?: string[];
+  excludes?: string[];
+  itinerary?: ItineraryDay[];
+  location?: string;
+  category?: string;
 }
 
 export default function AdventureDetailPage() {
@@ -31,6 +46,7 @@ export default function AdventureDetailPage() {
   const id = params?.id as string;
   const [tour, setTour] = useState<TourDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState(0);
 
   useEffect(() => {
     if (!id) return;
@@ -68,6 +84,9 @@ export default function AdventureDetailPage() {
     );
   }
 
+  const tourTitle = tour.title || 'Untitled Adventure';
+  const gallery = tour.gallery && tour.gallery.length > 0 ? [tour.image, ...tour.gallery] : [tour.image];
+
   return (
     <main className="min-h-screen bg-white">
       <Navbar />
@@ -75,7 +94,7 @@ export default function AdventureDetailPage() {
       {/* Hero */}
       <section className="relative h-[60vh] flex items-end overflow-hidden">
         <div className="absolute inset-0">
-          <Image src={tour.image || 'https://iili.io/3ovy0N9.jpg'} alt={tour.name} fill className="object-cover" referrerPolicy="no-referrer" />
+          <Image src={tour.image || 'https://iili.io/3ovy0N9.jpg'} alt={tourTitle} fill className="object-cover" referrerPolicy="no-referrer" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
         </div>
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 pb-12">
@@ -83,15 +102,35 @@ export default function AdventureDetailPage() {
             <Link href="/adventures" className="inline-flex items-center gap-2 text-nature text-sm font-bold hover:underline mb-4">
               <ArrowLeft className="w-4 h-4" /> Back to Adventures
             </Link>
-            <h1 className="font-display text-4xl md:text-6xl font-bold text-white">{tour.name}</h1>
-            <div className="flex items-center gap-4 text-white/70 text-sm">
-              <span className="flex items-center gap-1"><MapPin className="w-4 h-4 text-nature" /> {tour.location || 'Uganda'}</span>
+            <h1 className="font-display text-4xl md:text-6xl font-bold text-white">{tourTitle}</h1>
+            <div className="flex flex-wrap items-center gap-4 text-white/70 text-sm">
+              {tour.location && <span className="flex items-center gap-1"><MapPin className="w-4 h-4 text-nature" /> {tour.location}</span>}
               <span className="flex items-center gap-1"><Star className="w-4 h-4 text-nature fill-nature" /> {tour.rating}</span>
               <span>{tour.duration}</span>
+              {tour.group && <span>{tour.group}</span>}
             </div>
           </motion.div>
         </div>
       </section>
+
+      {/* Gallery */}
+      {gallery.length > 1 && (
+        <section className="py-8 bg-black">
+          <div className="max-w-7xl mx-auto px-6 md:px-12">
+            <div className="flex gap-4 overflow-x-auto pb-4">
+              {gallery.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setSelectedImage(i)}
+                  className={`relative w-24 h-24 md:w-32 md:h-24 rounded-xl overflow-hidden shrink-0 border-2 transition-all ${selectedImage === i ? 'border-nature' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                >
+                  <Image src={img} alt={`${tourTitle} ${i + 1}`} fill className="object-cover" referrerPolicy="no-referrer" />
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Details */}
       <section className="py-16 md:py-32">
@@ -104,7 +143,7 @@ export default function AdventureDetailPage() {
               </p>
             </div>
 
-            {tour.highlights?.length > 0 && (
+            {tour.highlights && tour.highlights.length > 0 && (
               <div className="space-y-6">
                 <h2 className="font-display text-3xl font-bold text-primary">Highlights</h2>
                 <ul className="space-y-3">
@@ -131,6 +170,51 @@ export default function AdventureDetailPage() {
                 </ul>
               </div>
             )}
+
+            {tour.excludes && tour.excludes.length > 0 && (
+              <div className="space-y-6">
+                <h2 className="font-display text-3xl font-bold text-primary">What&apos;s Not Included</h2>
+                <ul className="space-y-3">
+                  {tour.excludes.map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-foreground/60">
+                      <X className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {tour.itinerary && tour.itinerary.length > 0 && (
+              <div className="space-y-6">
+                <h2 className="font-display text-3xl font-bold text-primary">Itinerary</h2>
+                <div className="space-y-6">
+                  {tour.itinerary.map((day, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.05 }}
+                      className="p-6 rounded-2xl bg-[#F8F9FA] border border-black/5 space-y-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="w-10 h-10 rounded-full bg-nature text-white flex items-center justify-center text-sm font-bold shrink-0">
+                          {day.day}
+                        </span>
+                        <h3 className="font-display text-xl font-bold text-primary">{day.title}</h3>
+                      </div>
+                      <p className="text-foreground/70 leading-relaxed">{day.description}</p>
+                      <div className="flex flex-wrap gap-4 text-xs text-foreground/50 font-bold uppercase tracking-wider">
+                        {day.location && <span>📍 {day.location}</span>}
+                        {day.accommodation && <span>🏨 {day.accommodation}</span>}
+                        {day.meals && <span>🍽️ {day.meals}</span>}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Booking Sidebar */}
@@ -138,11 +222,13 @@ export default function AdventureDetailPage() {
             <div className="sticky top-28 p-8 rounded-[2rem] bg-[#F8F9FA] border border-black/5 space-y-6">
               <div>
                 <p className="text-[10px] text-foreground/40 font-bold uppercase tracking-widest">Starting from</p>
-                <p className="text-4xl font-bold text-primary">${tour.price}</p>
+                <p className="text-4xl font-bold text-primary">{tour.price}</p>
               </div>
               <div className="space-y-2 text-sm text-foreground/60">
                 <p><span className="font-bold text-primary">Duration:</span> {tour.duration}</p>
-                <p><span className="font-bold text-primary">Location:</span> {tour.location || 'Uganda'}</p>
+                {tour.location && <p><span className="font-bold text-primary">Location:</span> {tour.location}</p>}
+                {tour.group && <p><span className="font-bold text-primary">Group Size:</span> {tour.group}</p>}
+                <p className="flex items-center gap-1"><span className="font-bold text-primary">Rating:</span> <Star className="w-4 h-4 text-nature fill-nature" /> {tour.rating}</p>
               </div>
               <motion.a
                 href={`/booking?tour=${tour.id}`}
@@ -153,7 +239,7 @@ export default function AdventureDetailPage() {
                 Book Now
               </motion.a>
               <a
-                href={`https://wa.me/256756310029?text=Hi! I'm interested in the ${tour.name} adventure.`}
+                href={`https://wa.me/256756310029?text=${encodeURIComponent(`Hi! I'm interested in the ${tourTitle} adventure.`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full text-center px-8 py-4 rounded-full border-2 border-nature text-nature font-bold text-sm hover:bg-nature hover:text-white transition-all"
