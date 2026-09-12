@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { sendEmail, escapeHtml } from '@/lib/email';
+import { buildContactAdminEmail, buildContactReplyEmail } from '@/lib/emailTemplates';
 import { checkRateLimit, getClientIdentifier, sanitizeString, sanitizeEmail, sanitizePhone, isBotRequest, secureJson, checkOrigin } from '@/lib/apiSecurity';
 
 export const dynamic = 'force-dynamic';
@@ -35,27 +36,13 @@ export async function POST(request: NextRequest) {
     sendEmail({
       type: 'info', to: 'info@nechabest.com',
       subject: `[Website Contact] ${subject} - from ${name}`,
-      html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;border:1px solid #e2e8f0;border-radius:12px;padding:24px;">
-        <h2 style="color:#1A3C34;">New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${safeName}</p>
-        <p><strong>Email:</strong> ${safeEmail}</p>
-        <p><strong>Subject:</strong> ${safeSubject}</p>
-        <p><strong>Message:</strong></p>
-        <div style="background:#f7fafc;border:1px solid #edf2f7;border-radius:8px;padding:16px;font-style:italic;">${safeMessage}</div>
-      </div>`,
+      html: buildContactAdminEmail({ safeName, safeEmail, safeSubject, safeMessage }),
     }).catch(() => {});
 
     sendEmail({
       type: 'info', to: email,
       subject: `We've received your inquiry: ${subject} - Nechabest Sustainable Adventures`,
-      html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;border:1px solid #e2e8f0;border-radius:12px;padding:24px;">
-        <div style="text-align:center;margin-bottom:20px;">
-          <img src="https://iili.io/ffrDkkN.png" alt="Nechabest Sustainable Adventures" width="180" style="display:block;margin:0 auto 12px;" />
-        </div>
-        <p>Hello <strong>${safeName}</strong>,</p>
-        <p>Thank you for contacting us! We have received your inquiry regarding <strong>${safeSubject}</strong>.</p>
-        <p>A member of our team will get back to you within 24 hours.</p>
-      </div>`,
+      html: buildContactReplyEmail({ safeName, safeSubject }),
     }).catch(() => {});
 
     return secureJson({ success: true, message: 'Your message has been sent successfully.' });

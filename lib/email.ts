@@ -50,6 +50,17 @@ export function escapeHtml(unsafe: string): string {
     .replace(/'/g, '&#039;');
 }
 
+async function fetchLogoAsDataUrl(): Promise<string | null> {
+  try {
+    const res = await fetch('https://iili.io/ffrDkkN.png');
+    if (!res.ok) return null;
+    const buffer = Buffer.from(await res.arrayBuffer());
+    return `data:image/png;base64,${buffer.toString('base64')}`;
+  } catch {
+    return null;
+  }
+}
+
 export async function sendEmail({ type, to, subject, html }: SendEmailArgs) {
   const isBookings = type === 'bookings';
   const transporter = isBookings ? bookingsTransporter : infoTransporter;
@@ -63,10 +74,37 @@ export async function sendEmail({ type, to, subject, html }: SendEmailArgs) {
     return;
   }
 
-  await transporter.sendMail({
+  // Fetch logo and embed as CID for email client compatibility
+  const logoDataUrl = await fetchLogoAsDataUrl();
+  const logoBuffer = logoDataUrl ? Buffer.from(logoDataUrl.split(',')[1], 'base64') : null;
+
+  // Replace hosted logo URL with CID reference in HTML
+  const cid = 'nechabest-logo';
+  const processedHtml = logoBuffer
+    ? html.replace(/https:\/\/iili\.io\/ffrDkkN\.png/g, `cid:${cid}`)
+    : html;
+
+  const mailOptions: nodemailer.SendMailOptions = {
     from: `"${fromName}" <${user}>`,
     to,
     subject,
-    html,
-  });
+    html: processedHtml,
+    list: {
+      unsubscribe: `mailto:info@nechabest.com?subject=Unsubscribe`,
+    },
+  };
+
+  // Attach logo as CID if available
+  if (logoBuffer) {
+    mailOptions.attachments = [
+      {
+        filename: 'nechabest-logo.png',
+        content: logoBuffer,
+        cid,
+        contentType: 'image/png',
+      },
+    ];
+  }
+
+  await transporter.sendMail(mailOptions);
 }
