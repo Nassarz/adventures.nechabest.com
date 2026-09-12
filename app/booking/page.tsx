@@ -182,7 +182,8 @@ export default function Booking() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setBookingData(prev => ({ ...prev, [name]: value }));
+    const parsedValue = name === 'numberOfPeople' ? Math.max(1, parseInt(value) || 1) : value;
+    setBookingData(prev => ({ ...prev, [name]: parsedValue }));
     if (errors[name]) {
       const newErrors = { ...errors };
       delete newErrors[name as keyof FormErrors];
@@ -446,9 +447,21 @@ export default function Booking() {
                           </div>
                         </div>
 
-                        <div className="pt-6 border-t border-black/10 flex justify-between items-center">
-                          <span className="text-lg font-bold text-foreground/60">Total Estimated Price:</span>
-                          <span className="text-3xl md:text-4xl font-extrabold text-nature">${totalPrice}</span>
+                        <div className="pt-6 border-t border-black/10">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm font-bold text-foreground/60">Price per person:</span>
+                            <span className="text-lg font-bold text-primary">${selectedTour.price}</span>
+                          </div>
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm font-bold text-foreground/60">Number of people:</span>
+                            <span className="text-lg font-bold text-primary">{bookingData.numberOfPeople}</span>
+                          </div>
+                          <div className="flex justify-between items-center pt-3 border-t border-black/10">
+                            <span className="text-lg font-bold text-foreground/60">Total Estimated Price:</span>
+                            <span className="text-3xl md:text-4xl font-extrabold text-nature">
+                              {totalPrice > 0 ? `$${totalPrice.toLocaleString()}` : 'Request for Quote'}
+                            </span>
+                          </div>
                         </div>
 
                         <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -737,7 +750,9 @@ export default function Booking() {
                           </div>
                           <div className="border-t border-slate-200 pt-3 flex justify-between">
                             <span className="text-foreground/60 font-bold">Estimated Price:</span>
-                            <span className="text-2xl font-bold text-primary">${totalPrice}</span>
+                            <span className="text-2xl font-bold text-primary">
+                              {totalPrice > 0 ? `$${totalPrice.toLocaleString()}` : 'Request for Quote'}
+                            </span>
                           </div>
                         </div>
                       )}
@@ -799,7 +814,7 @@ export default function Booking() {
                           <div className="pt-4 border-t border-primary/20 space-y-2">
                             <div className="flex justify-between text-sm">
                               <span className="text-foreground/60">Subtotal:</span>
-                              <span className="font-bold">${totalPrice}</span>
+                              <span className="font-bold">{totalPrice > 0 ? `$${totalPrice.toLocaleString()}` : 'Request for Quote'}</span>
                             </div>
                             <div className="flex justify-between text-sm">
                               <span className="text-foreground/60">Service Fee:</span>
@@ -807,7 +822,9 @@ export default function Booking() {
                             </div>
                             <div className="flex justify-between pt-2 border-t border-primary/20">
                               <span className="font-bold text-primary">Total:</span>
-                              <span className="text-2xl font-bold text-primary">${totalPrice}</span>
+                              <span className="text-2xl font-bold text-primary">
+                                {totalPrice > 0 ? `$${totalPrice.toLocaleString()}` : 'Request for Quote'}
+                              </span>
                             </div>
                           </div>
                         </>
@@ -940,7 +957,9 @@ export default function Booking() {
                         </div>
                         <div className="flex justify-between pt-4 border-t border-black/10">
                           <span className="text-foreground/60">Total Paid:</span>
-                          <span className="text-2xl font-bold text-green-600">${totalPrice}</span>
+                          <span className="text-2xl font-bold text-green-600">
+                            {totalPrice > 0 ? `$${totalPrice.toLocaleString()}` : 'Request for Quote'}
+                          </span>
                         </div>
                       </div>
                     )}
