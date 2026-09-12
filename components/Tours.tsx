@@ -96,7 +96,7 @@ export default function Tours() {
               const features = tour.features || [
                 { label: tour.duration || 'Multi-day', icon: Navigation },
                 { label: 'Guided', icon: MapPin },
-                { label: 'Eco-Stay', icon: Wind }
+                { label: 'Premium Stay', icon: Wind }
               ];
               const tags = tour.tags || ['Adventure', 'Nature'];
 

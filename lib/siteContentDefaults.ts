@@ -32,7 +32,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'footer',
     label: 'Footer Tagline',
     type: 'textarea',
-    value: 'Together for a Greener Future.',
+    value: 'Your Gateway to Unforgettable Adventures.',
   },
   {
     key: 'global.footer.emailPrimary',
@@ -56,7 +56,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'hero',
     label: 'Home Hero Title',
     type: 'textarea',
-    value: 'Building a Sustainable Future for People and Nature.',
+    value: 'Unforgettable Adventures Await.',
   },
   {
     key: 'home.hero.subtitle',
@@ -64,7 +64,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'hero',
     label: 'Home Hero Subtitle',
     type: 'textarea',
-    value: 'Empowering Ugandan communities through clean water, renewable energy, climate-smart farming, and adventures.',
+    value: 'Discover Uganda with Nechabest Sustainable Adventures. Gorilla trekking, wildlife safaris, mountain hiking, and cultural immersion.',
   },
   {
     key: 'home.hero.image1',
@@ -96,7 +96,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'about-slideshow',
     label: 'About Slide 1 Description',
     type: 'textarea',
-    value: 'Nechabest Sustainable Initiatives is building climate-resilient, environmentally conscious communities through research, innovation, and local empowerment.',
+    value: 'Nechabest Sustainable Adventures is Uganda\'s premier adventure tour operator, specializing in gorilla trekking, wildlife safaris, and cultural experiences across East Africa.',
   },
   {
     key: 'home.about.slide1.cta',
@@ -128,7 +128,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'about-slideshow',
     label: 'About Slide 2 Description',
     type: 'textarea',
-    value: 'Bridging the gap between environmental conservation and community development through smart, solar-powered initiatives and local action.',
+    value: 'To be East Africa\'s most trusted adventure company, creating extraordinary experiences that connect travelers with the wild beauty of Uganda and beyond.',
   },
   {
     key: 'home.about.slide2.cta',
@@ -160,7 +160,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'about-slideshow',
     label: 'About Slide 3 Description',
     type: 'textarea',
-    value: 'To create sustainable solutions where people and nature thrive together, ensuring conservation is a lived reality for the people we serve.',
+    value: 'To deliver safe, immersive, and unforgettable adventure experiences while supporting local communities and preserving Uganda\'s natural heritage for future generations.',
   },
   {
     key: 'home.about.slide3.cta',
@@ -184,7 +184,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'focus-areas',
     label: 'Focus Areas Heading',
     type: 'text',
-    value: 'Our Core Focus Areas',
+    value: 'Why Travel With Us',
   },
   {
     key: 'home.focus.subtitle',
@@ -192,7 +192,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'focus-areas',
     label: 'Focus Areas Subtitle',
     type: 'textarea',
-    value: 'Three Pillars of Sustainable Development driving our mission in Uganda.',
+    value: 'Three reasons adventurers choose Nechabest Sustainable Adventures for their Uganda experience.',
   },
   {
     key: 'home.focus.learnMoreLabel',
@@ -208,7 +208,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'focus-areas',
     label: 'Focus Area 1 Title',
     type: 'text',
-    value: 'Water-Energy-Food (WEF) Nexus',
+    value: 'Expert-Guided Safaris',
   },
   {
     key: 'home.focus.area1.desc',
@@ -216,7 +216,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'focus-areas',
     label: 'Focus Area 1 Description',
     type: 'textarea',
-    value: 'Clean water access, renewable energy solutions, and climate-smart agriculture for sustainable livelihoods.',
+    value: 'Our certified guides have decades of experience navigating Uganda\'s national parks, ensuring safe and extraordinary wildlife encounters.',
   },
   {
     key: 'home.focus.area1.image',
@@ -224,7 +224,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'focus-areas',
     label: 'Focus Area 1 Image',
     type: 'image',
-    value: 'https://picsum.photos/seed/water/600/400',
+    value: 'https://iili.io/fdC0KF9.jpg',
   },
   {
     key: 'home.focus.area2.title',
@@ -232,7 +232,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'focus-areas',
     label: 'Focus Area 2 Title',
     type: 'text',
-    value: 'Environmental Conservation',
+    value: 'Unique Destinations',
   },
   {
     key: 'home.focus.area2.desc',
@@ -240,7 +240,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'focus-areas',
     label: 'Focus Area 2 Description',
     type: 'textarea',
-    value: 'Tree planting initiatives, watershed protection, and ecosystem restoration for a resilient future.',
+    value: 'From Bwindi Impenetrable Forest to Queen Elizabeth National Park, we take you to Uganda\'s most breathtaking and exclusive locations.',
   },
   {
     key: 'home.focus.area2.image',
@@ -248,7 +248,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'focus-areas',
     label: 'Focus Area 2 Image',
     type: 'image',
-    value: 'https://picsum.photos/seed/energy/600/400',
+    value: 'https://iili.io/fdClSYg.png',
   },
   {
     key: 'home.focus.area3.title',
@@ -256,7 +256,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'focus-areas',
     label: 'Focus Area 3 Title',
     type: 'text',
-    value: 'Green Livelihoods & Innovation',
+    value: 'Tailored Experiences',
   },
   {
     key: 'home.focus.area3.desc',
@@ -264,7 +264,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'focus-areas',
     label: 'Focus Area 3 Description',
     type: 'textarea',
-    value: 'Consultancy services, youth empowerment programs, and sustainable enterprise development.',
+    value: 'Every adventure is crafted to your preferences — from luxury gorilla trekking to budget-friendly group safaris and honeymoon packages.',
   },
   {
     key: 'home.focus.area3.image',
@@ -272,7 +272,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'focus-areas',
     label: 'Focus Area 3 Image',
     type: 'image',
-    value: 'https://picsum.photos/seed/farming/600/400',
+    value: 'https://iili.io/fdC0KF9.jpg',
   },
   {
     key: 'home.focus.area4.title',
@@ -280,7 +280,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'focus-areas',
     label: 'Focus Area 4 Title',
     type: 'text',
-    value: 'Community Health & Well-being',
+    value: 'Community Impact',
   },
   {
     key: 'home.focus.area4.desc',
@@ -288,7 +288,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'focus-areas',
     label: 'Focus Area 4 Description',
     type: 'textarea',
-    value: 'Improving health outcomes through clean energy and sustainable food systems.',
+    value: 'Every booking directly supports local communities through employment, education initiatives, and sustainable tourism practices.',
   },
   {
     key: 'home.focus.area4.image',
@@ -296,7 +296,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'focus-areas',
     label: 'Focus Area 4 Image',
     type: 'image',
-    value: 'https://picsum.photos/seed/health/600/400',
+    value: 'https://iili.io/fdClSYg.png',
   },
   {
     key: 'home.tours.heading',
@@ -312,7 +312,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'tours',
     label: 'Home Tours Subtitle',
     type: 'textarea',
-    value: 'Immerse yourself in the heart of sustainable development through our community-led tours and technical field visits.',
+    value: 'Handpicked adventures across Uganda\'s most stunning landscapes. Gorilla trekking, wildlife safaris, and cultural immersions.',
   },
   {
     key: 'home.impact.kicker',
@@ -320,7 +320,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'impact',
     label: 'Impact Kicker Label',
     type: 'text',
-    value: 'Our Measurable Impact',
+    value: 'Our Track Record',
   },
   {
     key: 'home.impact.heading',
@@ -328,7 +328,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'impact',
     label: 'Impact Heading',
     type: 'text',
-    value: 'Driving Change Across Uganda',
+    value: 'Adventures Delivered',
   },
   {
     key: 'home.impact.subtitle',
@@ -336,7 +336,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'impact',
     label: 'Impact Subtitle',
     type: 'textarea',
-    value: 'We believe in transparency and results. Every initiative we launch is tracked, measured, and optimized for maximum community benefit.',
+    value: 'Numbers that reflect our commitment to delivering extraordinary adventure experiences across Uganda.',
   },
   {
     key: 'home.impact.image',
@@ -350,9 +350,9 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     key: 'home.impact.stat1.value',
     page: 'home',
     section: 'impact',
-    label: 'Stat 1 Value (Trees Planted)',
+    label: 'Stat 1 Value',
     type: 'text',
-    value: '10,000+',
+    value: '2,500+',
   },
   {
     key: 'home.impact.stat1.label',
@@ -360,15 +360,15 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'impact',
     label: 'Stat 1 Label',
     type: 'text',
-    value: 'Trees Planted',
+    value: 'Happy Travelers',
   },
   {
     key: 'home.impact.stat2.value',
     page: 'home',
     section: 'impact',
-    label: 'Stat 2 Value (Households Powered)',
+    label: 'Stat 2 Value',
     type: 'text',
-    value: '1,500+',
+    value: '15+',
   },
   {
     key: 'home.impact.stat2.label',
@@ -376,15 +376,15 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'impact',
     label: 'Stat 2 Label',
     type: 'text',
-    value: 'Households Powered',
+    value: 'Tour Packages',
   },
   {
     key: 'home.impact.stat3.value',
     page: 'home',
     section: 'impact',
-    label: 'Stat 3 Value (Farmers Trained)',
+    label: 'Stat 3 Value',
     type: 'text',
-    value: '2,000+',
+    value: '10+',
   },
   {
     key: 'home.impact.stat3.label',
@@ -392,15 +392,15 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'impact',
     label: 'Stat 3 Label',
     type: 'text',
-    value: 'Farmers Trained',
+    value: 'Years Experience',
   },
   {
     key: 'home.impact.stat4.value',
     page: 'home',
     section: 'impact',
-    label: 'Stat 4 Value (Strategic Partners)',
+    label: 'Stat 4 Value',
     type: 'text',
-    value: '15+',
+    value: '4.9',
   },
   {
     key: 'home.impact.stat4.label',
@@ -408,7 +408,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'impact',
     label: 'Stat 4 Label',
     type: 'text',
-    value: 'Strategic Partners',
+    value: 'Average Rating',
   },
   {
     key: 'home.impact.quote',
@@ -416,7 +416,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'impact',
     label: 'Impact Quote Text',
     type: 'textarea',
-    value: 'Sustainability is not just a goal, it\'s our way of life. We are building a legacy for the next generation.',
+    value: 'The gorilla trekking experience was absolutely life-changing. Our guide was incredible, and every detail was taken care of.',
   },
   {
     key: 'home.impact.quoteRole',
@@ -424,7 +424,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'impact',
     label: 'Impact Quote Role',
     type: 'text',
-    value: 'Project Director',
+    value: 'Happy Traveler',
   },
   {
     key: 'home.impact.quoteAuthor',
@@ -432,7 +432,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'impact',
     label: 'Impact Quote Author',
     type: 'text',
-    value: 'Nechabest Initiatives',
+    value: 'Nechabest Sustainable Adventures',
   },
   {
     key: 'home.projects.kicker',
@@ -440,7 +440,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'projects',
     label: 'Projects Kicker Label',
     type: 'text',
-    value: 'Innovation & Research',
+    value: 'Featured Adventures',
   },
   {
     key: 'home.projects.heading',
@@ -448,7 +448,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'projects',
     label: 'Projects Heading',
     type: 'text',
-    value: 'Featured Projects',
+    value: 'Popular Tour Packages',
   },
   {
     key: 'home.projects.featuredTitle',
@@ -456,7 +456,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'projects',
     label: 'Featured Project Title',
     type: 'text',
-    value: 'Solar-Powered Water Pumping',
+    value: 'Gorilla Trekking Express',
   },
   {
     key: 'home.projects.featuredCategory',
@@ -464,7 +464,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'projects',
     label: 'Featured Project Category',
     type: 'text',
-    value: 'WEF Nexus',
+    value: 'Wildlife Safari',
   },
   {
     key: 'home.projects.featuredYear',
@@ -472,7 +472,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'projects',
     label: 'Featured Project Year',
     type: 'text',
-    value: '2024',
+    value: '3 Days',
   },
   {
     key: 'home.projects.featuredDesc',
@@ -480,7 +480,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'projects',
     label: 'Featured Project Description',
     type: 'textarea',
-    value: 'Implementing renewable energy solutions to provide clean water access to remote communities in Kasese. Our system integrates IoT monitoring for real-time flow data.',
+    value: 'An intimate 3-day gorilla trekking experience in Bwindi Impenetrable Forest. Track mountain gorillas in their natural habitat with expert guides.',
   },
   {
     key: 'home.projects.featuredImage',
@@ -488,7 +488,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'projects',
     label: 'Featured Project Image',
     type: 'image',
-    value: 'https://iili.io/f0xoXA7.png',
+    value: 'https://iili.io/fdC0KF9.jpg',
   },
   {
     key: 'home.projects.project2Title',
@@ -496,7 +496,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'projects',
     label: 'Project 2 Title',
     type: 'text',
-    value: 'Watershed Management',
+    value: 'Uganda Adventure Package',
   },
   {
     key: 'home.projects.project2Category',
@@ -504,7 +504,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'projects',
     label: 'Project 2 Category',
     type: 'text',
-    value: 'Conservation',
+    value: 'Multi-Day Safari',
   },
   {
     key: 'home.projects.project2Image',
@@ -512,7 +512,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'projects',
     label: 'Project 2 Image',
     type: 'image',
-    value: 'https://iili.io/fdCAigf.jpg',
+    value: 'https://iili.io/fdClSYg.png',
   },
   {
     key: 'home.projects.project3Title',
@@ -520,7 +520,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'projects',
     label: 'Project 3 Title',
     type: 'text',
-    value: 'Climate-Smart Farming',
+    value: 'Luxury Gorilla & Fly-In Safari',
   },
   {
     key: 'home.projects.project3Category',
@@ -528,7 +528,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'projects',
     label: 'Project 3 Category',
     type: 'text',
-    value: 'Agriculture',
+    value: 'Luxury Safari',
   },
   {
     key: 'home.projects.project3Image',
@@ -536,7 +536,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'projects',
     label: 'Project 3 Image',
     type: 'image',
-    value: 'https://iili.io/fMclk92.jpg',
+    value: 'https://iili.io/fdC0KF9.jpg',
   },
   {
     key: 'home.research.heading',
@@ -544,7 +544,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'research',
     label: 'Research Section Heading',
     type: 'text',
-    value: 'Latest Research & Publications',
+    value: 'Travel Stories & Tips',
   },
   {
     key: 'home.research.subtitle',
@@ -552,7 +552,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'research',
     label: 'Research Section Subtitle',
     type: 'textarea',
-    value: 'Our team actively contributes to the global knowledge base on sustainable development, WEF nexus, and climate adaptation.',
+    value: 'Insider guides, travel tips, and stories from the field to help you plan your perfect Uganda adventure.',
   },
   {
     key: 'home.research.ctaLabel',
@@ -560,7 +560,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'research',
     label: 'Research CTA Label',
     type: 'text',
-    value: 'Browse Publication Library',
+    value: 'Read Our Blog',
   },
   {
     key: 'home.research.item1.title',
@@ -568,7 +568,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'research',
     label: 'Research Item 1 Title',
     type: 'text',
-    value: 'Impact of Micro-Irrigation on Smallholder Yields',
+    value: 'Ultimate Guide to Gorilla Trekking in Uganda',
   },
   {
     key: 'home.research.item1.author',
@@ -576,7 +576,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'research',
     label: 'Research Item 1 Author',
     type: 'text',
-    value: 'Kenny',
+    value: 'Nechabest Team',
   },
   {
     key: 'home.research.item1.date',
@@ -592,7 +592,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'research',
     label: 'Research Item 1 Tag 1',
     type: 'text',
-    value: 'Irrigation',
+    value: 'Gorilla Trekking',
   },
   {
     key: 'home.research.item1.tag2',
@@ -600,7 +600,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'research',
     label: 'Research Item 1 Tag 2',
     type: 'text',
-    value: 'Economics',
+    value: 'Travel Tips',
   },
   {
     key: 'home.research.item2.title',
@@ -608,7 +608,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'research',
     label: 'Research Item 2 Title',
     type: 'text',
-    value: 'Biodiversity Trends in the Rwenzori Foothills',
+    value: 'Best Time to Visit Queen Elizabeth National Park',
   },
   {
     key: 'home.research.item2.author',
@@ -616,7 +616,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'research',
     label: 'Research Item 2 Author',
     type: 'text',
-    value: 'Rosemary',
+    value: 'Nechabest Team',
   },
   {
     key: 'home.research.item2.date',
@@ -632,7 +632,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'research',
     label: 'Research Item 2 Tag 1',
     type: 'text',
-    value: 'Ecology',
+    value: 'Wildlife Safari',
   },
   {
     key: 'home.research.item2.tag2',
@@ -640,7 +640,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'research',
     label: 'Research Item 2 Tag 2',
     type: 'text',
-    value: 'GIS',
+    value: 'Destination Guide',
   },
   {
     key: 'about.hero.title',
@@ -648,7 +648,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'hero',
     label: 'About Hero Title',
     type: 'text',
-    value: 'About Nechabest Sustainable Initiatives',
+    value: 'About Nechabest Sustainable Adventures',
   },
   {
     key: 'about.hero.subtitle',
@@ -656,7 +656,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'hero',
     label: 'About Hero Subtitle',
     type: 'textarea',
-    value: 'We combine science and social values to deliver effective solutions for the better management of water, energy, and environment across Africa.',
+    value: 'Uganda\'s premier adventure tour operator. We craft extraordinary gorilla trekking, wildlife safari, and cultural experiences across East Africa.',
   },
   {
     key: 'about.hero.image',
@@ -680,7 +680,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'hero',
     label: 'Blog Hero Title',
     type: 'text',
-    value: 'Adventures Insights',
+    value: 'Adventure Insights',
   },
   {
     key: 'blog.hero.subtitle',
@@ -688,7 +688,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'hero',
     label: 'Blog Hero Subtitle',
     type: 'textarea',
-    value: 'Stories, research, and practical guides on sustainable travel and conservation across Africa',
+    value: 'Travel stories, insider tips, and expert guides for planning your Uganda adventure.',
   },
   {
     key: 'blog.hero.image',
@@ -712,7 +712,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'hero',
     label: 'Adventures Hero Title',
     type: 'text',
-    value: 'Adventures Experiences',
+    value: 'Adventure Experiences',
   },
   {
     key: 'adventures.hero.subtitle',
@@ -720,7 +720,7 @@ export const SITE_CONTENT_DEFAULTS: SiteContentDefault[] = [
     section: 'hero',
     label: 'Adventures Hero Subtitle',
     type: 'textarea',
-    value: "Explore Africa's natural wonders while supporting conservation. Every journey creates lasting impact for communities and the environment.",
+    value: 'Explore Uganda\'s most breathtaking landscapes. Gorilla trekking, wildlife safaris, mountain hiking, and cultural immersion.',
   },
   {
     key: 'adventures.hero.image',

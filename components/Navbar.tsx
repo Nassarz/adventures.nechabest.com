@@ -51,18 +51,18 @@ export default function Navbar() {
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center space-x-8">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
                 href={link.href}
                 className={`text-sm font-bold transition-all hover:scale-105 ${scrolled ? 'text-[#1A3C34]/70 hover:text-[#3a9e4f]' : 'text-white/70 hover:text-nature'}`}
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
           </div>
 
           <div className="hidden lg:flex items-center space-x-4">
-            <a href="/booking">
+            <Link href="/booking">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -70,7 +70,7 @@ export default function Navbar() {
               >
                 {get('global.nav.ctaLabel', 'Book a Tour')}
               </motion.button>
-            </a>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}

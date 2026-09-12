@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
       const blogUrl = `${baseUrl}/blog/${result.insertedId.toString()}`;
       const safeBlogTitle = escapeHtml(blog.title);
       const safeBlogExcerpt = escapeHtml(
-        blog.excerpt || 'Read our latest update on environmental sustainability and capacity building...'
+        blog.excerpt || 'Discover amazing adventures and travel tips from Nechabest Sustainable Adventures.'
       );
 
       subscribers.forEach((sub) => {

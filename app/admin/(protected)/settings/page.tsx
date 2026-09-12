@@ -138,7 +138,7 @@ export default function AdminSettings() {
                     if (item) handleChange(item.id, e.target.value);
                   }}
                   className="w-full px-4 py-2 border border-black/10 rounded-lg focus:outline-none focus:border-nature"
-                  placeholder="Nechabest"
+                  placeholder="Nechabest Sustainable Adventures"
                 />
                 <p className="text-black/50 text-sm mt-1">Displayed in the navigation bar</p>
               </div>
@@ -172,14 +172,14 @@ export default function AdminSettings() {
               <div>
                 <label className="block text-black font-bold mb-2">Footer Tagline</label>
                 <textarea
-                  value={getValue('global.footer.tagline', 'Together for a Greener Future.')}
+                  value={getValue('global.footer.tagline', 'Your Gateway to Unforgettable Adventures.')}
                   onChange={(e) => {
                     const item = getItemByKey('global.footer.tagline');
                     if (item) handleChange(item.id, e.target.value);
                   }}
                   rows={2}
                   className="w-full px-4 py-2 border border-black/10 rounded-lg focus:outline-none focus:border-nature"
-                  placeholder="Together for a Greener Future."
+                  placeholder="Your Gateway to Unforgettable Adventures."
                 />
               </div>
 

@@ -75,7 +75,7 @@ const normalizeTour = (tour: ApiTour): Tour => ({
   location: tour.location || 'Uganda',
   price: normalizePrice(tour.price),
   duration: tour.duration || 'Flexible',
-  image: tour.image || 'https://picsum.photos/seed/tour/800/600',
+  image: tour.image || 'https://iili.io/3ovy0N9.jpg',
   maxPeople: Number.isFinite(tour.maxPeople) ? Number(tour.maxPeople) : extractMaxPeople(tour.group),
 });
 

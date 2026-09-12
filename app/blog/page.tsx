@@ -24,9 +24,10 @@ export default function BlogPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/tours')
-      .then(() => {
-        setBlogs([]);
+    fetch('/api/blogs')
+      .then((res) => res.json())
+      .then((data) => {
+        setBlogs(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
