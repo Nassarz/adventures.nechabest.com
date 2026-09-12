@@ -179,13 +179,3 @@ export function sanitizeEnum<T extends string>(
   if (typeof value !== 'string') return '';
   return (allowed as readonly string[]).includes(value) ? (value as T) : '';
 }
-
-// Admin Rate Limiting
-export function checkAdminRateLimit(userId: string, request: NextRequest): NextResponse | null {
-  const ip = getClientIdentifier(request);
-  return checkRateLimit(`admin:${userId}:${ip}`, {
-    max: 120,
-    windowMs: 60 * 1000,
-    message: 'Too many admin requests. Please slow down.',
-  });
-}

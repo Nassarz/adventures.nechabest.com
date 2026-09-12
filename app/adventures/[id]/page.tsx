@@ -95,7 +95,7 @@ export default function AdventureDetailPage() {
       {/* Hero */}
       <section className="relative h-[60vh] flex items-end overflow-hidden">
         <div className="absolute inset-0">
-          <Image src={tour.image || 'https://iili.io/3ovy0N9.jpg'} alt={tourTitle} fill className="object-cover" referrerPolicy="no-referrer" />
+          <Image src={tour.image || 'https://iili.io/3ovy0N9.jpg'} alt={tourTitle} fill className="object-cover" referrerPolicy="no-referrer" priority quality={85} />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
         </div>
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 pb-12">

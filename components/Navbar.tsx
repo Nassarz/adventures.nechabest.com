@@ -44,7 +44,7 @@ export default function Navbar() {
             <span className={`font-display font-bold text-[11px] sm:text-sm md:text-lg tracking-tight leading-tight max-w-[180px] sm:max-w-[260px] md:max-w-[320px] transition-colors duration-300 ${scrolled ? 'text-[#1A3C34]' : 'text-white'}`}>
               Nechabest
               <br />
-              Adventures
+              Sustainable Adventures
             </span>
           </Link>
 

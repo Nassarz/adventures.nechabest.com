@@ -6,3 +6,4 @@ node_modules/
 *.tsbuildinfo
 .vercel
 next-env.d.ts
+public/tours/

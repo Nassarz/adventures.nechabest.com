@@ -123,7 +123,7 @@ export default function Footer() {
                   Nechabest
                 </span>
                 <span className="text-[10px] text-nature font-bold uppercase tracking-widest">
-                  Adventures
+                  Sustainable Adventures
                 </span>
               </div>
             </Link>

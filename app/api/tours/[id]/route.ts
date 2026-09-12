@@ -17,14 +17,14 @@ export async function GET(
     const { id } = await params;
 
     if (!isValidObjectId(id)) {
-      return secureJson({ error: 'Invalid tour ID' }, 400);
+      return secureJson({ error: 'Invalid tour ID' }, { status: 400 });
     }
 
     const db = await getDb();
     const tour = await db.collection('tours').findOne({ _id: new ObjectId(id) });
 
     if (!tour) {
-      return secureJson({ error: 'Tour not found' }, 404);
+      return secureJson({ error: 'Tour not found' }, { status: 404 });
     }
 
     return secureJson({
@@ -34,6 +34,6 @@ export async function GET(
     });
   } catch (error) {
     console.error('Error fetching tour:', error);
-    return secureJson({ error: 'Failed to fetch tour' }, 500);
+    return secureJson({ error: 'Failed to fetch tour' }, { status: 500 });
   }
 }
