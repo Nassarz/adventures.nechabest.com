@@ -50,14 +50,28 @@ export function escapeHtml(unsafe: string): string {
     .replace(/'/g, '&#039;');
 }
 
-async function fetchLogoAsDataUrl(): Promise<string | null> {
+const LOGO_URL = 'https://iili.io/ffrDkkN.png';
+const LOGO_CID = 'nechabest-logo';
+
+let cachedLogoBuffer: Buffer | null = null;
+let logoCacheTime = 0;
+const LOGO_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
+
+async function getLogoBuffer(): Promise<Buffer | null> {
+  const now = Date.now();
+  if (cachedLogoBuffer && now - logoCacheTime < LOGO_CACHE_TTL) {
+    return cachedLogoBuffer;
+  }
   try {
-    const res = await fetch('https://iili.io/ffrDkkN.png');
-    if (!res.ok) return null;
-    const buffer = Buffer.from(await res.arrayBuffer());
-    return `data:image/png;base64,${buffer.toString('base64')}`;
-  } catch {
-    return null;
+    const res = await fetch(LOGO_URL, { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) return cachedLogoBuffer;
+    cachedLogoBuffer = Buffer.from(await res.arrayBuffer());
+    logoCacheTime = now;
+    console.log('[Email] Logo fetched:', cachedLogoBuffer.length, 'bytes');
+    return cachedLogoBuffer;
+  } catch (err) {
+    console.error('[Email] Logo fetch error:', err instanceof Error ? err.message : err);
+    return cachedLogoBuffer;
   }
 }
 
@@ -67,40 +81,28 @@ export async function sendEmail({ type, to, subject, html }: SendEmailArgs) {
   const user = isBookings
     ? (process.env.SMTP_USER_BOOKINGS ?? 'bookings@nechabest.com')
     : (process.env.SMTP_USER_INFO ?? 'info@nechabest.com');
-  const fromName = isBookings ? 'Nechabest Sustainable Adventures' : 'Nechabest Sustainable Adventures';
+  const fromName = 'Nechabest Sustainable Adventures';
 
   if (!process.env.SMTP_PASS_BOOKINGS || !process.env.SMTP_PASS_INFO) {
     console.error('[Email] SMTP credentials not configured. Email sending skipped.');
     return;
   }
 
-  // Fetch logo and embed as CID for email client compatibility
-  const logoDataUrl = await fetchLogoAsDataUrl();
-  const logoBuffer = logoDataUrl ? Buffer.from(logoDataUrl.split(',')[1], 'base64') : null;
-
-  // Replace hosted logo URL with CID reference in HTML
-  const cid = 'nechabest-logo';
-  const processedHtml = logoBuffer
-    ? html.replace(/https:\/\/iili\.io\/ffrDkkN\.png/g, `cid:${cid}`)
-    : html;
+  const logoBuffer = await getLogoBuffer();
 
   const mailOptions: nodemailer.SendMailOptions = {
     from: `"${fromName}" <${user}>`,
     to,
     subject,
-    html: processedHtml,
-    list: {
-      unsubscribe: `mailto:info@nechabest.com?subject=Unsubscribe`,
-    },
+    html,
   };
 
-  // Attach logo as CID inline if available
   if (logoBuffer) {
     mailOptions.attachments = [
       {
-        filename: 'nechabest-logo.png',
+        filename: 'logo.png',
         content: logoBuffer,
-        cid,
+        cid: LOGO_CID,
         contentType: 'image/png',
         contentDisposition: 'inline',
       },
@@ -108,4 +110,7 @@ export async function sendEmail({ type, to, subject, html }: SendEmailArgs) {
   }
 
   await transporter.sendMail(mailOptions);
+  console.log('[Email] Sent to', to);
 }
+
+export { LOGO_URL, LOGO_CID };

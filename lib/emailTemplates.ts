@@ -1,5 +1,4 @@
-const LOGO_URL = 'https://iili.io/ffrDkkN.png';
-const LOGO_CID = 'nechabest-logo';
+import { LOGO_CID } from './email';
 
 const SOCIAL_LINKS = [
   { name: 'Instagram', url: 'https://www.instagram.com/nechabest/', color: '#E4405F', letter: 'IG' },
@@ -63,7 +62,7 @@ export function buildBookingClientEmail(data: {
   return `
     <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
       <div style="text-align: center; margin-bottom: 20px;">
-        <img src="${LOGO_URL}" alt="Nechabest Sustainable Adventures" width="180" style="display: block; margin: 0 auto 12px;" />
+        <img src="cid:${LOGO_CID}" alt="Nechabest Sustainable Adventures" width="180" style="display: block; margin: 0 auto 12px;" />
         <p style="color: #58b05c; font-size: 14px; font-weight: bold; margin: 5px 0 0 0;">Explore Uganda's Wild Side</p>
       </div>
       <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
@@ -119,7 +118,7 @@ export function buildBookingAdminEmail(data: {
   return `
     <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
       <div style="text-align: center; margin-bottom: 20px;">
-        <img src="${LOGO_URL}" alt="Nechabest Sustainable Adventures" width="180" style="display: block; margin: 0 auto 12px;" />
+        <img src="cid:${LOGO_CID}" alt="Nechabest Sustainable Adventures" width="180" style="display: block; margin: 0 auto 12px;" />
       </div>
       <h2 style="color: #1a3c34; border-bottom: 2px solid #58b05c; padding-bottom: 8px; margin-top: 0;">New Booking Request Received</h2>
       <p>A new booking request has been submitted. Details below:</p>
@@ -177,7 +176,7 @@ export function buildContactAdminEmail(data: {
   return `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;border:1px solid #e2e8f0;border-radius:12px;padding:24px;">
       <div style="text-align:center;margin-bottom:20px;">
-        <img src="${LOGO_URL}" alt="Nechabest Sustainable Adventures" width="180" style="display:block;margin:0 auto 12px;" />
+        <img src="cid:${LOGO_CID}" alt="Nechabest Sustainable Adventures" width="180" style="display:block;margin:0 auto 12px;" />
       </div>
       <h2 style="color:#1A3C34;">New Contact Form Submission</h2>
       <table style="width:100%;border-collapse:collapse;margin:16px 0;">
@@ -210,7 +209,7 @@ export function buildContactReplyEmail(data: {
   return `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;border:1px solid #e2e8f0;border-radius:12px;padding:24px;">
       <div style="text-align:center;margin-bottom:20px;">
-        <img src="${LOGO_URL}" alt="Nechabest Sustainable Adventures" width="180" style="display:block;margin:0 auto 12px;" />
+        <img src="cid:${LOGO_CID}" alt="Nechabest Sustainable Adventures" width="180" style="display:block;margin:0 auto 12px;" />
         <p style="color: #58b05c; font-size: 14px; font-weight: bold; margin: 5px 0 0 0;">Explore Uganda's Wild Side</p>
       </div>
       <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
@@ -222,4 +221,4 @@ export function buildContactReplyEmail(data: {
     </div>`;
 }
 
-export { LOGO_URL, LOGO_CID };
+export { LOGO_CID };

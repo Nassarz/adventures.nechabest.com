@@ -103,13 +103,13 @@ export async function POST(request: NextRequest) {
 
     const db = await getDb();
 
-    // Per-email rate limit: 3 bookings per day
+    // Per-email rate limit: 10 bookings per day
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const recentBookings = await db.collection('bookings').countDocuments({
       email,
       createdAt: { $gte: oneDayAgo },
     });
-    if (recentBookings >= 3) {
+    if (recentBookings >= 10) {
       return secureJson(
         { error: 'You have reached the maximum number of bookings for today. Please contact us directly.' },
         { status: 429 }
