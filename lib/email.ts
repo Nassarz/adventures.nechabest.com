@@ -94,7 +94,7 @@ export async function sendEmail({ type, to, subject, html }: SendEmailArgs) {
     },
   };
 
-  // Attach logo as CID if available
+  // Attach logo as CID inline if available
   if (logoBuffer) {
     mailOptions.attachments = [
       {
@@ -102,6 +102,7 @@ export async function sendEmail({ type, to, subject, html }: SendEmailArgs) {
         content: logoBuffer,
         cid,
         contentType: 'image/png',
+        contentDisposition: 'inline',
       },
     ];
   }

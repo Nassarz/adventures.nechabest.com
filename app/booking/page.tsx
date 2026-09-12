@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
-import { Users, CreditCard, CheckCircle, AlertCircle, Sparkles, MapPin, Clock, Loader2 } from 'lucide-react';
+import { Users, CreditCard, CheckCircle, AlertCircle, Sparkles, MapPin, Clock, Loader2, Download } from 'lucide-react';
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -111,6 +111,29 @@ export default function Booking() {
   const [loading, setLoading] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [confirmedCheckbox, setConfirmedCheckbox] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const pdfRef = useRef<HTMLDivElement>(null);
+
+  const downloadPdf = async () => {
+    if (!pdfRef.current || !selectedTour) return;
+    setPdfLoading(true);
+    try {
+      const html2pdf = (await import('html2pdf.js')).default;
+      const element = pdfRef.current;
+      const opt = {
+        margin: [10, 10] as [number, number],
+        filename: `nechabest-booking-${selectedTour.title.replace(/\s+/g, '-').toLowerCase()}.pdf`,
+        image: { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const },
+      };
+      await html2pdf().set(opt).from(element).save();
+    } catch (err) {
+      console.error('PDF generation failed:', err);
+    } finally {
+      setPdfLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchTours = async () => {
@@ -914,8 +937,12 @@ export default function Booking() {
                     <p className="text-lg text-foreground/60">Your adventure awaits</p>
                   </div>
 
-                  <div className="bg-slate-50 rounded-2xl p-8 space-y-4 text-left">
-                    <h3 className="font-bold text-xl text-primary text-center mb-4">Booking Details</h3>
+                  <div className="bg-slate-50 rounded-2xl p-8 space-y-4 text-left" ref={pdfRef}>
+                    <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+                      <img src="https://iili.io/ffrDkkN.png" alt="Nechabest Sustainable Adventures" width="160" style={{ display: 'block', margin: '0 auto 8px' }} />
+                      <p style={{ color: '#58b05c', fontSize: '13px', fontWeight: 'bold', margin: 0 }}>Explore Uganda's Wild Side</p>
+                    </div>
+                    <h3 className="font-bold text-xl text-primary text-center mb-4">Booking Confirmation</h3>
                     {selectedTour && (
                       <div className="space-y-3 text-sm md:text-base">
                         <div className="flex justify-between">
@@ -942,11 +969,22 @@ export default function Booking() {
                           <span className="text-foreground/60">Email:</span>
                           <span className="font-bold text-foreground">{bookingData.email}</span>
                         </div>
+                        {bookingData.phone && (
+                          <div className="flex justify-between">
+                            <span className="text-foreground/60">Phone:</span>
+                            <span className="font-bold text-foreground">{bookingData.phone}</span>
+                          </div>
+                        )}
                         <div className="flex justify-between pt-4 border-t border-black/10">
                           <span className="text-foreground/60">Total Paid:</span>
                           <span className="text-2xl font-bold text-green-600">
                             {totalPrice > 0 ? `$${totalPrice.toLocaleString()}` : 'Request for Quote'}
                           </span>
+                        </div>
+                        <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '12px', marginTop: '12px', textAlign: 'center', fontSize: '11px', color: '#718096' }}>
+                          <p style={{ margin: '0 0 4px 0' }}>Nechabest Sustainable Adventures</p>
+                          <p style={{ margin: 0 }}>Kasangati Town Council, Wakiso District, Uganda</p>
+                          <p style={{ margin: '4px 0 0 0' }}>WhatsApp: +256 756 310 029 | info@nechabest.com</p>
                         </div>
                       </div>
                     )}
@@ -958,11 +996,24 @@ export default function Booking() {
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                    <motion.button
+                      onClick={downloadPdf}
+                      disabled={pdfLoading}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="bg-gradient-to-r from-primary to-nature text-white font-bold py-4 px-8 rounded-xl hover:shadow-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      {pdfLoading ? (
+                        <><Loader2 className="w-5 h-5 animate-spin" /> Generating PDF...</>
+                      ) : (
+                        <><Download className="w-5 h-5" /> Download Booking Confirmation</>
+                      )}
+                    </motion.button>
                     <motion.a
                       href="/"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="bg-gradient-to-r from-primary to-nature text-white font-bold py-4 px-8 rounded-xl hover:shadow-xl transition-all text-center"
+                      className="bg-slate-200 text-foreground font-bold py-4 px-8 rounded-xl hover:bg-slate-300 transition-all text-center"
                     >
                       Return Home
                     </motion.a>
