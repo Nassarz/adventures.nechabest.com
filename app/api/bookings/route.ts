@@ -25,10 +25,10 @@ export async function POST(request: NextRequest) {
   const originError = checkOrigin(request, true);
   if (originError) return originError;
 
-  // Rate limit: 5 bookings per 10 minutes per IP
+  // Rate limit: 20 bookings per 10 minutes per IP
   const ip = getClientIdentifier(request);
   const rateLimitError = checkRateLimit(`booking:${ip}`, {
-    max: 5,
+    max: 20,
     windowMs: 10 * 60 * 1000,
     message: 'Too many booking attempts. Please wait a few minutes and try again.',
   });
