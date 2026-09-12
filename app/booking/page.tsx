@@ -9,7 +9,6 @@ import Footer from '@/components/Footer';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import HeroSlideshow from '@/components/HeroSlideshow';
-import { submitBookingForm } from '@/lib/formspree';
 import { buildBookingWhatsAppMessage, buildWhatsAppLink } from '@/lib/whatsapp';
 import { WhatsAppLogoIcon } from '@/components/FloatingWhatsApp';
 
@@ -233,32 +232,20 @@ export default function Booking() {
         _gotcha: bookingData._gotcha
       };
 
-      const [formspreeResult, mongoResult] = await Promise.allSettled([
-        submitBookingForm(bookingPayload),
-        fetch('/api/bookings', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(bookingPayload)
-        }).then(res => res.json())
-      ]);
+      const res = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookingPayload)
+      });
+      const result = await res.json();
 
-      const formspreeSuccess = formspreeResult.status === 'fulfilled' && formspreeResult.value.success;
-      const mongoSuccess = mongoResult.status === 'fulfilled' && mongoResult.value.success;
-
-      if (formspreeSuccess && mongoSuccess) {
+      if (result.success) {
         setLoading(false);
         setConfirmed(true);
         setStep(4);
         window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (!formspreeSuccess && mongoSuccess) {
-        setLoading(false);
-        setConfirmed(true);
-        setStep(4);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (formspreeSuccess && !mongoSuccess) {
-        throw new Error('Your request was received but could not be fully saved. Please contact us directly to confirm.');
       } else {
-        throw new Error('Failed to submit booking. Please try again or contact us directly.');
+        throw new Error(result.error || 'Failed to submit booking. Please try again or contact us directly.');
       }
     } catch (error) {
       console.error('Booking submission error:', error);
