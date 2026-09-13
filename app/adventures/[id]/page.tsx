@@ -47,7 +47,6 @@ export default function AdventureDetailPage() {
   const id = params?.id as string;
   const [tour, setTour] = useState<TourDetail | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedImage, setSelectedImage] = useState(0);
 
   useEffect(() => {
     if (!id) return;
@@ -86,7 +85,6 @@ export default function AdventureDetailPage() {
   }
 
   const tourTitle = tour.title || 'Untitled Adventure';
-  const gallery = tour.gallery && tour.gallery.length > 0 ? [tour.image, ...tour.gallery] : [tour.image];
 
   return (
     <main className="min-h-screen bg-white">
@@ -113,25 +111,6 @@ export default function AdventureDetailPage() {
           </motion.div>
         </div>
       </section>
-
-      {/* Gallery */}
-      {gallery.length > 1 && (
-        <section className="py-8 bg-black">
-          <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <div className="flex gap-4 overflow-x-auto pb-4">
-              {gallery.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSelectedImage(i)}
-                  className={`relative w-24 h-24 md:w-32 md:h-24 rounded-xl overflow-hidden shrink-0 border-2 transition-all ${selectedImage === i ? 'border-nature' : 'border-transparent opacity-60 hover:opacity-100'}`}
-                >
-                  <Image src={img} alt={`${tourTitle} ${i + 1}`} fill className="object-cover" referrerPolicy="no-referrer" />
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Details */}
       <section className="py-16 md:py-32">
